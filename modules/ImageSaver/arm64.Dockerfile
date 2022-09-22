@@ -1,10 +1,5 @@
 FROM nvcr.io/nvidia/l4t-base:r35.1.0
-
 RUN echo "BUILD MODULE: CameraCapture"
-
-# Enforces cross-compilation through Quemu
-#RUN [ "cross-build-start" ]
-
 # Update package index and install dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -13,14 +8,37 @@ RUN apt-get update && \
         python3-dev \
         libcurl4-openssl-dev \
         libboost-python-dev \
-        libgtk2.0-dev \
-        v4l-utils
-
-
-COPY /build/arm64-requirements.txt ./
+        libgtk2.0-dev
+# Install python dependencies
 RUN pip3 install --upgrade pip
 RUN pip3 install --upgrade setuptools
-RUN pip3 install -r arm64-requirements.txt
+RUN pip install numpy==1.17.3 tensorflow==2.10.0 flask pillow
+RUN pip install azure.storage.blob
+
+RUN mkdir app
+COPY ./app/app-amd64.py ./app/app.py
+COPY ./app/predict-amd64.py ./app/predict.py
+COPY ./app/labels.txt ./app/model.pb ./app/
+
+# Expose the port
+EXPOSE 80
+
+# Set the working directory
+WORKDIR /app
+
+# Run the flask server for the endpoints
+CMD python -u app.py
+
+
+
+# Enforces cross-compilation through Quemu
+#RUN [ "cross-build-start" ]
+
+
+# Required for OpenCV
+
+# Install Python packages
+
 
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/* \

@@ -1,5 +1,6 @@
 azure-iot-device
 azure-mgmt-iothub
+azure-storage-blob
 numpy
 opencv-contrib-python
 requests

@@ -1,6 +1,7 @@
 #To make python 2 and python 3 compatible code
 from __future__ import division
 from __future__ import absolute_import
+from cmath import log
 
 #Imports
 import sys
@@ -15,13 +16,19 @@ import numpy
 import requests
 import json
 import time
-
+import io
+import os
+from azure.storage.blob import BlobServiceClient, PublicAccess
 import VideoStream
 from VideoStream import VideoStream
 import AnnotationParser
 from AnnotationParser import AnnotationParser
 import ImageServer
 from ImageServer import ImageServer
+
+
+import string
+import random
 
 class CameraCapture(object):
 
@@ -44,7 +51,11 @@ class CameraCapture(object):
             resizeWidth = 0,
             resizeHeight = 0,
             annotate = False,
-            sendToHubCallback = None):
+            sendToHubCallback = None,
+            fps=0,
+            AZURE_STORAGE_BLOB="",
+            AZURE_STORAGE_CONNECTION_STRING="",
+            AZURE_STORAGE_CONTAINER=""):
         self.videoPath = videoPath
         if self.__IsInt(videoPath):
             #case of a usb camera (usually mounted at /dev/video* where * is an int)
@@ -67,6 +78,10 @@ class CameraCapture(object):
         self.nbOfPreprocessingSteps = 0
         self.autoRotate = False
         self.sendToHubCallback = sendToHubCallback
+        self.fps = fps
+        self.AZURE_STORAGE_BLOB = AZURE_STORAGE_BLOB
+        self.AZURE_STORAGE_CONNECTION_STRING = AZURE_STORAGE_CONNECTION_STRING
+        self.AZURE_STORAGE_CONTAINER = AZURE_STORAGE_CONTAINER
         self.vs = None
 
         if self.convertToGray:
@@ -91,6 +106,21 @@ class CameraCapture(object):
         if self.showVideo:
             self.imageServer = ImageServer(5012, self)
             self.imageServer.start()
+    def __uploadToAzure(self, counter, frame):
+        try:
+            #blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net")
+            print("storageblob")
+            #print(self.AZURE_STORAGE_BLOB)
+            print("storageconnectionstring")
+            #print(self.AZURE_STORAGE_CONNECTION_STRING)
+            #container_client = blob_service_client.get_container_client(self.AZURE_STORAGE_CONTAINER)
+            #blob_client = container_client.get_blob_client(self.AZURE_STORAGE_BLOB)
+           
+            #resized_img_bytes = frame.tobytes()
+            #blob_client.create_blob_from_bytes(self.AZURE_STORAGE_CONTAINER, counter+".jpg", resized_img_bytes)
+        except Exception as e:
+            print('__uploadToAzure Excpetion -' + str(e))
+            return
 
     def __annotate(self, frame, response):
         AnnotationParserInstance = AnnotationParser()
@@ -113,7 +143,9 @@ class CameraCapture(object):
                     print("Response from external processing service: (" + str(response.status_code) + ") " + json.dumps(response.json()))
                 except Exception:
                     print("Response from external processing service (status code): " + str(response.status_code))
-            return json.dumps(response.json())
+            print(response)
+            return []
+            #return json.dumps(response.json())
 
     def __displayTimeDifferenceInMs(self, endTime, startTime):
         return str(int((endTime-startTime) * 1000)) + " ms"
@@ -196,11 +228,15 @@ class CameraCapture(object):
                 if self.verbose:
                     print("Time to encode a frame for processing: " + self.__displayTimeDifferenceInMs(time.time(), startEncodingForProcessing))
                     startProcessingExternally = time.time()
-
+                print(frameCounter) 
+                #Send frame to Azure StorageBlob
+                ##if self.AZURE_STORAGE_CONTAINER != "" and self.AZURE_STORAGE_BLOB != "":
+                #self.__uploadToAzure(frameCounter,encodedFrame)
+                print("Frame uploaded to Azure Storage Blob")
                 #Send over HTTP for processing
-                ##response = self.__sendFrameForProcessing(encodedFrame)
-                ##if self.verbose:
-                ##    print("Time to process frame externally: " + self.__displayTimeDifferenceInMs(time.time(), startProcessingExternally))
+                response = self.__sendFrameForProcessing(encodedFrame)
+                if self.verbose:
+                    print("Time to process frame externally: " + self.__displayTimeDifferenceInMs(time.time(), startProcessingExternally))
                 ##    startSendingToEdgeHub = time.time()
 
                 #forwarding outcome of external processing to the EdgeHub

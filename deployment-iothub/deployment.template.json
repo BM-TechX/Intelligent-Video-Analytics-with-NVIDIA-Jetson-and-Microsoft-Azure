@@ -199,31 +199,36 @@
                                 "value": "stream-analytics-on-iot-edge"
                             }
                         }
-                    },"camera-capture": {
-                        "version": "latest",
+                    },
+                    "camera-capture": {
+                        "version": "1",
                         "type": "docker",
                         "status": "running",
                         "restartPolicy": "always",
                         "env": {
-                          "VIDEO_PATH": {"value": "0"},
-                          "IMAGE_PROCESSING_ENDPOINT":  {"value": "http://image-classifier-service:80/image"},
+                          "VIDEO_PATH": {"value": "1"},
+                          "IMAGE_PROCESSING_ENDPOINT":  {"value": "$IMAGEPROCESSOR_ENDPOINT"},
                           "RESIZE_WIDTH":  {"value": "256"},
                           "RESIZE_HEIGHT":  {"value": "256"},
-                          "SHOW_VIDEO":  {"value": "True"}
+                          "SHOW_VIDEO":  {"value": "True"},
+                          "FPS":{"value":"30"},
+                          "AZURE_STORAGE_BLOB":{"value": "$AZURE_STORAGE_BLOB"},
+                          "AZURE_STORAGE_CONNECTION_STRING" : { "value": "$AZURE_STORAGE_CONNECTION_STRING"},
+                          "AZURE_STORAGE_CONTAINER" : {"value": "$AZURE_STORAGE_CONTAINER"}
                         },
                         "settings": {
-                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture",
+                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v1",
                           "createOptions": {
                             "HostConfig": {
                               "PortBindings": {
                                 "5012/tcp": [ { "HostPort":"5012"}]
                               },
-                              "Binds": ["/dev/video0:/dev/video0"],
-                              "Devices":[{"PathOnHost":"/dev/video0","PathInContainer":"/dev/video0","CgroupPermissions":"mrw"}]
+                              "Binds": ["/dev/video1:/dev/video1"],
+                              "Devices":[{"PathOnHost":"/dev/video1","PathInContainer":"/dev/video1","CgroupPermissions":"mrw"}]
                             }
                           }
                         }
-                      }
+                    }
                 }
             }
         },

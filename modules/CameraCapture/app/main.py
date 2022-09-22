@@ -4,6 +4,7 @@
 
 import os
 import random
+from re import A
 import sys
 import time
 
@@ -65,8 +66,12 @@ def main(
         convertToGray=False,
         resizeWidth=0,
         resizeHeight=0,
-        annotate=False
-):
+        annotate=False,
+        fps=0,
+        AZURE_STORAGE_BLOB="",
+        AZURE_STORAGE_CONNECTION_STRING="",
+        AZURE_STORAGE_CONTAINER=""
+        ):
     '''
     Capture a camera feed, send it to processing and forward outputs to EdgeHub
 
@@ -80,6 +85,10 @@ def main(
     :param int resizeWidth: resize frame width before sending to external service for processing. Does not resize by default (0). Optional.
     :param int resizeHeight: resize frame width before sending to external service for processing. Does not resize by default (0). Optional.ion(
     :param bool annotate: when showing the video in a window, it will annotate the frames with rectangles given by the image processing service. False by default. Optional. Rectangles should be passed in a json blob with a key containing the string rectangle, and a top left corner + bottom right corner or top left corner with width and height.
+    :param int fps: frames per second to send to the external service for processing. 0 by default, which means no throttling. Optional.
+    :param str AZURE_STORAGE_BLOB: Azure Storage Blob name. Optional.
+    :param str AZURE_STORAGE_CONNECTION_STRING: Azure Storage Connection String. Optional.
+    :param str AZURE_STORAGE_CONTAINER: Azure Storage Container name. Optional.
     '''
     try:
         print("\nPython %s\n" % sys.version)
@@ -91,7 +100,7 @@ def main(
         except Exception as iothub_error:
             print("Unexpected error %s from IoTHub" % iothub_error)
             return
-        with CameraCapture(videoPath, imageProcessingEndpoint, imageProcessingParams, showVideo, verbose, loopVideo, convertToGray, resizeWidth, resizeHeight, annotate, send_to_Hub_callback) as cameraCapture:
+        with CameraCapture(videoPath, imageProcessingEndpoint, imageProcessingParams, showVideo, verbose, loopVideo, convertToGray, resizeWidth, resizeHeight, annotate, send_to_Hub_callback,fps,AZURE_STORAGE_BLOB,AZURE_STORAGE_CONNECTION_STRING,AZURE_STORAGE_CONTAINER) as cameraCapture:
             cameraCapture.start()
     except KeyboardInterrupt:
         print("Camera capture module stopped")
@@ -115,14 +124,20 @@ if __name__ == '__main__':
         VERBOSE = __convertStringToBool(os.getenv('VERBOSE', 'False'))
         LOOP_VIDEO = __convertStringToBool(os.getenv('LOOP_VIDEO', 'True'))
         CONVERT_TO_GRAY = __convertStringToBool(
-            os.getenv('CONVERT_TO_GRAY', 'False'))
+            os.getenv('CONVERT_TO_GRAY', 'False')),
         RESIZE_WIDTH = int(os.getenv('RESIZE_WIDTH', 0))
         RESIZE_HEIGHT = int(os.getenv('RESIZE_HEIGHT', 0))
+        FPS = int(os.getenv("FPS",0)),
+        AZURE_STORAGE_BLOB = os.getenv("AZURE_STORAGE_BLOB",""),
+        AZURE_STORAGE_CONNECTION_STRING = os.getenv("AZURE_STORAGE_CONNECTION_STRING",""),
+        AZURE_STORAGE_CONTAINER = os.getenv("AZURE_STORAGE_CONTAINER",""),
         ANNOTATE = __convertStringToBool(os.getenv('ANNOTATE', 'False'))
+        
 
     except ValueError as error:
         print(error)
         sys.exit(1)
 
     main(VIDEO_PATH, IMAGE_PROCESSING_ENDPOINT, IMAGE_PROCESSING_PARAMS, SHOW_VIDEO,
-         VERBOSE, LOOP_VIDEO, CONVERT_TO_GRAY, RESIZE_WIDTH, RESIZE_HEIGHT, ANNOTATE)
+         VERBOSE, LOOP_VIDEO, CONVERT_TO_GRAY, RESIZE_WIDTH, RESIZE_HEIGHT, ANNOTATE,
+         FPS,AZURE_STORAGE_BLOB,AZURE_STORAGE_CONNECTION_STRING,AZURE_STORAGE_CONTAINER)
