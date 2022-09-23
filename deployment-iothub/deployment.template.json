@@ -208,16 +208,18 @@
                         "env": {
                           "VIDEO_PATH": {"value": "1"},
                           "IMAGE_PROCESSING_ENDPOINT":  {"value": "$IMAGEPROCESSOR_ENDPOINT"},
-                          "RESIZE_WIDTH":  {"value": "256"},
-                          "RESIZE_HEIGHT":  {"value": "256"},
+                          "RESIZE_WIDTH":  {"value": "0"},
+                          "RESIZE_HEIGHT":  {"value": "0"},
                           "SHOW_VIDEO":  {"value": "True"},
                           "FPS":{"value":"30"},
                           "AZURE_STORAGE_BLOB":{"value": "$AZURE_STORAGE_BLOB"},
                           "AZURE_STORAGE_CONNECTION_STRING" : { "value": "$AZURE_STORAGE_CONNECTION_STRING"},
-                          "AZURE_STORAGE_CONTAINER" : {"value": "$AZURE_STORAGE_CONTAINER"}
+                          "AZURE_STORAGE_CONTAINER" : {"value": "$AZURE_STORAGE_CONTAINER"},
+                          "IMAGEWIDTH":{"value":"$IMAGEWIDTH"},
+                          "IMAGEHEIGHT":{"value":"$IMAGEHEIGHT"}
                         },
                         "settings": {
-                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v1",
+                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v21",
                           "createOptions": {
                             "HostConfig": {
                               "PortBindings": {
