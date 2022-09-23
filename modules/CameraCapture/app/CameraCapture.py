@@ -55,7 +55,10 @@ class CameraCapture(object):
             fps=0,
             AZURE_STORAGE_BLOB="",
             AZURE_STORAGE_CONNECTION_STRING="",
-            AZURE_STORAGE_CONTAINER=""):
+            AZURE_STORAGE_CONTAINER=""
+            IMAGEWIDTH=0,
+            IMAGEHEIGHT=0
+            ):
         self.videoPath = videoPath
         if self.__IsInt(videoPath):
             #case of a usb camera (usually mounted at /dev/video* where * is an int)
@@ -108,16 +111,16 @@ class CameraCapture(object):
             self.imageServer.start()
     def __uploadToAzure(self, counter, frame):
         try:
-            #blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net")
-            print("storageblob")
-            #print(self.AZURE_STORAGE_BLOB)
+            
+            blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net")
+            local_file_name = "frame" + str(counter) + ".jpg"
+            _, img_encode = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 99])
+
+            blob_client = blob_service_client.get_blob_client(container="nnpic3", blob=local_file_name)
+            blob_client.upload_blob(img_encode.tobytes(), overwrite=True)
+            
+            print(self.AZURE_STORAGE_BLOB)
             print("storageconnectionstring")
-            #print(self.AZURE_STORAGE_CONNECTION_STRING)
-            #container_client = blob_service_client.get_container_client(self.AZURE_STORAGE_CONTAINER)
-            #blob_client = container_client.get_blob_client(self.AZURE_STORAGE_BLOB)
-           
-            #resized_img_bytes = frame.tobytes()
-            #blob_client.create_blob_from_bytes(self.AZURE_STORAGE_CONTAINER, counter+".jpg", resized_img_bytes)
         except Exception as e:
             print('__uploadToAzure Excpetion -' + str(e))
             return
@@ -153,7 +156,10 @@ class CameraCapture(object):
     def __enter__(self):
         if self.isWebcam:
             #The VideoStream class always gives us the latest frame from the webcam. It uses another thread to read the frames.
-            self.vs = VideoStream(int(self.videoPath)).start()
+            self.vs = VideoStream(int(self.videoPath))
+            self.vs.setSize(4032,3040)
+            #self.vs.setSize(2560,1440)
+            self.vs.start()
             time.sleep(1.0)#needed to load at least one frame into the VideoStream class
             #self.capture = cv2.VideoCapture(int(self.videoPath))
         else:
@@ -166,13 +172,14 @@ class CameraCapture(object):
 
     def start(self):
         frameCounter = 0
+        offsetCounter= 0
         perfForOneFrameInMs = None
         while True:
             if self.showVideo or self.verbose:
                 startOverall = time.time()
             if self.verbose:
                 startCapture = time.time()
-
+            offsetCounter += 1
             frameCounter +=1
             if self.isWebcam:
                 frame = self.vs.read()
@@ -231,10 +238,14 @@ class CameraCapture(object):
                 print(frameCounter) 
                 #Send frame to Azure StorageBlob
                 ##if self.AZURE_STORAGE_CONTAINER != "" and self.AZURE_STORAGE_BLOB != "":
-                #self.__uploadToAzure(frameCounter,encodedFrame)
+                
                 print("Frame uploaded to Azure Storage Blob")
                 #Send over HTTP for processing
-                response = self.__sendFrameForProcessing(encodedFrame)
+                if offsetCounter==10:
+                    #response = self.__sendFrameForProcessing(encodedFrame)
+                    self.__uploadToAzure(frameCounter,frame)
+                    offsetCounter=0
+                #response = self.__sendFrameForProcessing(encodedFrame)
                 if self.verbose:
                     print("Time to process frame externally: " + self.__displayTimeDifferenceInMs(time.time(), startProcessingExternally))
                 ##    startSendingToEdgeHub = time.time()

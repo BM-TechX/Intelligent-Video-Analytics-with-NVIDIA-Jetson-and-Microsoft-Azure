@@ -25,9 +25,13 @@ else:
 class VideoStream(object):
     def __init__(self, path, queueSize=3):
         self.stream = cv2.VideoCapture(path)
+        #self.stream.set(cv2.CAP.PROP_FRAME_WIDTH, 1920)
+        #self.stream.set(cv2.CAP.PROP_FRAME_HEIGHT, 1080)
         self.stopped = False
         self.Q = Queue(maxsize=queueSize)
-
+    def setSize(self, width, height):
+        self.stream.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
     def start(self):
         # start a thread to read frames from the video stream
         t = Thread(target=self.update, args=())

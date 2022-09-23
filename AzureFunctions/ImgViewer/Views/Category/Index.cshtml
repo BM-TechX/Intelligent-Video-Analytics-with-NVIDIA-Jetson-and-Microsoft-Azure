@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewData["Title"] = "View";
+}
+@*Header Section*@
+<div class="jumbotron">
+    <h2>Categories</h2>
+</div>
+
+<div class="text-center">
+</div>
+@using (Html.BeginForm("AddNew","Category",FormMethod.Post,new {enctype = "multipart/form.date"}))
+{
+    <div class="fileUpload btn btn-default">
+        <span>Create New Category</span>
+        <input type="submit" name="AddNew" class="upload" />
+    </div>
+
+}
+@if (Model != null && Model.Count > 0)
+{<table>
+    <tr>
+        <th>Category Name</th>
+        <th>Action</th>
+    </tr>
+ 
+
+        @foreach (var item in Model)
+        {
+                <tr>
+                    <td>
+                        @item
+                    </td>
+                    <td>
+                        Delete
+                    </td>
+                </tr>       
+        }
+    </table>
+}
+<script>
+    //Calls async Task<ActionResult> DeleteImage(string name) in the HomeController and Refreshes the page
+    function deleteImage(item) {
+        var url = "/Home/DeleteImage";
+        $.post(url, { Name: item }, function (data) {
+            window.location.href = "/Home/Index";
+        });
+    }
+
+    //Lists the file name and size for all files to be uploaded by updating the <p id="FilesToUpload"></p> control
+    function DisplayFilesToUpload() {
+        var element = document.getElementById("file");
+        var html = "";
+
+        html = "<h3>Image(s) to Upload</h3>"
+        for (var i = 0; i < element.files.length; i++) {
+            html += "<strong>" + (i + 1) + "</strong>. File: ";
+            var file = element.files[i];
+            if ('name' in file) { html += file.name + " ("; }
+            if ('size' in file) { html += "size: " + file.size + " bytes)<br>"; }
+        }
+
+        html += "<div class='fileUpload btn btn-default'><span>Upload</span><input type='submit' class='upload' value='Upload'/></div>"
+        document.getElementById("FilesToUpload").innerHTML = html;
+    }
+
+</script>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="details-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Product Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body"></div>
+        </div>
+    </div>
+</div>

@@ -70,7 +70,9 @@ def main(
         fps=0,
         AZURE_STORAGE_BLOB="",
         AZURE_STORAGE_CONNECTION_STRING="",
-        AZURE_STORAGE_CONTAINER=""
+        AZURE_STORAGE_CONTAINER="",
+        IMAGEWIDTH=0,
+        IMAGEHEIGHT=0
         ):
     '''
     Capture a camera feed, send it to processing and forward outputs to EdgeHub
@@ -100,7 +102,7 @@ def main(
         except Exception as iothub_error:
             print("Unexpected error %s from IoTHub" % iothub_error)
             return
-        with CameraCapture(videoPath, imageProcessingEndpoint, imageProcessingParams, showVideo, verbose, loopVideo, convertToGray, resizeWidth, resizeHeight, annotate, send_to_Hub_callback,fps,AZURE_STORAGE_BLOB,AZURE_STORAGE_CONNECTION_STRING,AZURE_STORAGE_CONTAINER) as cameraCapture:
+        with CameraCapture(videoPath, imageProcessingEndpoint, imageProcessingParams, showVideo, verbose, loopVideo, convertToGray, resizeWidth, resizeHeight, annotate, send_to_Hub_callback,fps,AZURE_STORAGE_BLOB,AZURE_STORAGE_CONNECTION_STRING,AZURE_STORAGE_CONTAINER,IMAGEWIDTH,IMAGEHEIGHT) as cameraCapture:
             cameraCapture.start()
     except KeyboardInterrupt:
         print("Camera capture module stopped")
@@ -131,7 +133,9 @@ if __name__ == '__main__':
         AZURE_STORAGE_BLOB = os.getenv("AZURE_STORAGE_BLOB",""),
         AZURE_STORAGE_CONNECTION_STRING = os.getenv("AZURE_STORAGE_CONNECTION_STRING",""),
         AZURE_STORAGE_CONTAINER = os.getenv("AZURE_STORAGE_CONTAINER",""),
-        ANNOTATE = __convertStringToBool(os.getenv('ANNOTATE', 'False'))
+        ANNOTATE = __convertStringToBool(os.getenv('ANNOTATE', 'False')),
+        IMAGEWIDTH = int(os.getenv('IMAGEWIDTH', 0)),
+        IMAGEHEIGHT = int(os.getenv('IMAGEHEIGHT', 0)),
         
 
     except ValueError as error:
@@ -140,4 +144,4 @@ if __name__ == '__main__':
 
     main(VIDEO_PATH, IMAGE_PROCESSING_ENDPOINT, IMAGE_PROCESSING_PARAMS, SHOW_VIDEO,
          VERBOSE, LOOP_VIDEO, CONVERT_TO_GRAY, RESIZE_WIDTH, RESIZE_HEIGHT, ANNOTATE,
-         FPS,AZURE_STORAGE_BLOB,AZURE_STORAGE_CONNECTION_STRING,AZURE_STORAGE_CONTAINER)
+         FPS,AZURE_STORAGE_BLOB,AZURE_STORAGE_CONNECTION_STRING,AZURE_STORAGE_CONTAINER,IMAGEWIDTH,IMAGEHEIGHT)
