@@ -25,7 +25,7 @@ import AnnotationParser
 from AnnotationParser import AnnotationParser
 import ImageServer
 from ImageServer import ImageServer
-
+from datetime import datetime
 
 import string
 import random
@@ -55,7 +55,7 @@ class CameraCapture(object):
             fps=0,
             AZURE_STORAGE_BLOB="",
             AZURE_STORAGE_CONNECTION_STRING="",
-            AZURE_STORAGE_CONTAINER=""
+            AZURE_STORAGE_CONTAINER="",
             IMAGEWIDTH=0,
             IMAGEHEIGHT=0
             ):
@@ -77,7 +77,7 @@ class CameraCapture(object):
         self.convertToGray = convertToGray
         self.resizeWidth = resizeWidth
         self.resizeHeight = resizeHeight
-        self.annotate = (self.imageProcessingEndpoint != "") and self.showVideo & annotate
+        #self.annotate = (self.imageProcessingEndpoint != "") and self.showVideo & annotate
         self.nbOfPreprocessingSteps = 0
         self.autoRotate = False
         self.sendToHubCallback = sendToHubCallback
@@ -101,7 +101,7 @@ class CameraCapture(object):
             print("   - Convert to gray: " + str(self.convertToGray))
             print("   - Resize width: " + str(self.resizeWidth))
             print("   - Resize height: " + str(self.resizeHeight))
-            print("   - Annotate: " + str(self.annotate))
+            #print("   - Annotate: " + str(self.annotate))
             print("   - Send processing results to hub: " + str(self.sendToHubCallback is not None))
             print()
         
@@ -113,9 +113,10 @@ class CameraCapture(object):
         try:
             
             blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net")
-            local_file_name = "frame" + str(counter) + ".jpg"
+            #time = datetime.now.strftime("%m/%d/%Y-%H:%M:%S")
+            local_file_name = "frame_261bu" + str(counter) +  ".jpg"
             _, img_encode = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 99])
-
+            
             blob_client = blob_service_client.get_blob_client(container="nnpic3", blob=local_file_name)
             blob_client.upload_blob(img_encode.tobytes(), overwrite=True)
             
@@ -241,7 +242,7 @@ class CameraCapture(object):
                 
                 print("Frame uploaded to Azure Storage Blob")
                 #Send over HTTP for processing
-                if offsetCounter==10:
+                if offsetCounter==100:
                     #response = self.__sendFrameForProcessing(encodedFrame)
                     self.__uploadToAzure(frameCounter,frame)
                     offsetCounter=0
@@ -263,16 +264,16 @@ class CameraCapture(object):
                     if self.nbOfPreprocessingSteps == 0:
                         if self.verbose and (perfForOneFrameInMs is not None):
                             cv2.putText(frame, "FPS " + str(round(1000/perfForOneFrameInMs, 2)),(10, 35),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255), 2)
-                        if self.annotate:
-                            #TODO: fix bug with annotate function
-                            self.__annotate(frame, response)
+                        #if self.annotate:
+                        #    #TODO: fix bug with annotate function
+                        #    self.__annotate(frame, response)
                         self.displayFrame = cv2.imencode('.jpg', frame)[1].tobytes()
                     else:
                         if self.verbose and (perfForOneFrameInMs is not None):
                             cv2.putText(preprocessedFrame, "FPS " + str(round(1000/perfForOneFrameInMs, 2)),(10, 35),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255), 2)
-                        if self.annotate:
-                            #TODO: fix bug with annotate function
-                            self.__annotate(preprocessedFrame, response)
+                        #if self.annotate:
+                        #    #TODO: fix bug with annotate function
+                        #    self.__annotate(preprocessedFrame, response)
                         self.displayFrame = cv2.imencode('.jpg', preprocessedFrame)[1].tobytes()
                 except Exception as e:
                     print("Could not display the video to a web browser.") 

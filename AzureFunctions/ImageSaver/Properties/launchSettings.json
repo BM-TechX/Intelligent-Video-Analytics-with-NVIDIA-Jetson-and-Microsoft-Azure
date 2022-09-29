@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "ImageSaver": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:63703;http://localhost:63704"
+    }
+  }
+}

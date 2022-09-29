@@ -12,3 +12,11 @@ AzureFunctions/ImgViewer/obj/
 AzureFunctions/ImgViewer/Properties/
 AzureFunctions/ImgViewer/wwwroot/
 AzureFunctions/storage-blobs-dotnet-webapp/
+AzureFunctions/ImageSorter/obj/
+AzureFunctions/ImageSorter/bin/
+AzureFunctions/ImageSorter/Properties/
+AzureFunctions/ImageSorter/wwwroot/
+AzureFunctions/Compare/obj/
+AzureFunctions/Compare/bin/
+AzureFunctions/Compare/Properties/
+AzureFunctions/Compare/wwwroot/ 

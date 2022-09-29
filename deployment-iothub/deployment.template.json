@@ -130,7 +130,7 @@
                         },
                         "env": {
                             "RTSP_IP": {
-                              "value": "wowzaec2demo.streamlock.net"
+                              "value": "192.168.8.100"
                             },
                             "RTSP_PORT": {
                               "value": "554"
@@ -219,14 +219,14 @@
                           "IMAGEHEIGHT":{"value":"$IMAGEHEIGHT"}
                         },
                         "settings": {
-                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v21",
+                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v27",
                           "createOptions": {
                             "HostConfig": {
                               "PortBindings": {
                                 "5012/tcp": [ { "HostPort":"5012"}]
                               },
                               "Binds": ["/dev/video1:/dev/video1"],
-                              "Devices":[{"PathOnHost":"/dev/video1","PathInContainer":"/dev/video1","CgroupPermissions":"mrw"}]
+                              "Devices":[{"PathOnHost":"/dev/video1","PathInContainer":"/dev/video1s","CgroupPermissions":"mrw"}]
                             }
                           }
                         }

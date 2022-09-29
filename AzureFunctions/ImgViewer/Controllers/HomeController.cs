@@ -49,7 +49,10 @@ namespace ImgViewer.Controllers
                 foreach (BlobItem blob in blobContainer.GetBlobs())
                 {
                     if (blob.Properties.BlobType == BlobType.Block)
-                        allBlobs.Add(blobContainer.GetBlobClient(blob.Name).Uri);
+                        if (blob.Name.Contains("_26"))
+                        {
+                            allBlobs.Add(blobContainer.GetBlobClient(blob.Name).Uri);
+                        }
                 }
 
                 return View(allBlobs);
