@@ -26,6 +26,8 @@ from AnnotationParser import AnnotationParser
 import ImageServer
 from ImageServer import ImageServer
 from datetime import datetime
+import UndistortParser
+from UndistortParser import UndistortParser
 
 import string
 import random
@@ -38,7 +40,7 @@ class CameraCapture(object):
             return True
         except ValueError:
             return False
-
+    
     def __init__(
             self,
             videoPath,
@@ -57,7 +59,11 @@ class CameraCapture(object):
             AZURE_STORAGE_CONNECTION_STRING="",
             AZURE_STORAGE_CONTAINER="",
             IMAGEWIDTH=0,
-            IMAGEHEIGHT=0
+            IMAGEHEIGHT=0,
+            ROI1="0,0,0,0",
+            ROI2="0,0,0,0",
+            ROI3="0,0,0,0",
+            ROI4="0,0,0,0",
             ):
         self.videoPath = videoPath
         if self.__IsInt(videoPath):
@@ -65,7 +71,12 @@ class CameraCapture(object):
             self.isWebcam = True
         else:
             #case of a video file
-            self.isWebcam = False
+            if (videoPath.startswith("rtsps://") or videoPath.startswith("rtsp://")):
+                self.isWebcam = True
+                self.isRTSP = True
+            else:
+                self.isWebcam = False
+                self.isRTSP=False
         self.imageProcessingEndpoint = imageProcessingEndpoint
         if imageProcessingParams == "":
             self.imageProcessingParams = "" 
@@ -85,6 +96,11 @@ class CameraCapture(object):
         self.AZURE_STORAGE_BLOB = AZURE_STORAGE_BLOB
         self.AZURE_STORAGE_CONNECTION_STRING = AZURE_STORAGE_CONNECTION_STRING
         self.AZURE_STORAGE_CONTAINER = AZURE_STORAGE_CONTAINER
+        self.ROI1 = ROI1
+        self.ROI2 = ROI2
+        self.ROI3 = ROI3
+        self.ROI4 = ROI4
+        self.UndistortParserInstance = UndistortParser()
         self.vs = None
 
         if self.convertToGray:
@@ -116,12 +132,14 @@ class CameraCapture(object):
             #time = datetime.now.strftime("%m/%d/%Y-%H:%M:%S")
             local_file_name = "frame_261bu" + str(counter) +  ".jpg"
             _, img_encode = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 99])
+            ##blob_client = blob_service_client.get_blob_client(container="nnpic3", blob=local_file_name)
+            ##blob_client.upload_blob(img_encode.tobytes(), overwrite=True)
             
-            blob_client = blob_service_client.get_blob_client(container="nnpic3", blob=local_file_name)
-            blob_client.upload_blob(img_encode.tobytes(), overwrite=True)
-            
-            print(self.AZURE_STORAGE_BLOB)
-            print("storageconnectionstring")
+            try:
+                blob_client = blob_service_client.get_blob_client(container=self.AZURE_STORAGE_BLOB[0], blob=local_file_name)
+                blob_client.upload_blob(img_encode.tobytes(), overwrite=True)
+            except:
+                print("error")
         except Exception as e:
             print('__uploadToAzure Excpetion -' + str(e))
             return
@@ -133,7 +151,9 @@ class CameraCapture(object):
         for rectangle in listOfRectanglesToDisplay:
             cv2.rectangle(frame, (rectangle(0), rectangle(1)), (rectangle(2), rectangle(3)), (0,0,255),4)
         return
-
+    def __undistort(self, frame):
+        UndistortParserInstance = UndistortParser()
+        
     def __sendFrameForProcessing(self, frame):
             headers = {'Content-Type': 'application/octet-stream'}
             try:
@@ -157,11 +177,14 @@ class CameraCapture(object):
     def __enter__(self):
         if self.isWebcam:
             #The VideoStream class always gives us the latest frame from the webcam. It uses another thread to read the frames.
-            self.vs = VideoStream(int(self.videoPath))
-            self.vs.setSize(4032,3040)
-            #self.vs.setSize(2560,1440)
+            if self.isRTSP==False:
+                self.vs = VideoStream(int(self.videoPath))
+                self.vs.setSize(4032,3040)
+            else:
+                self.vs = VideoStream(self.videoPath)
             self.vs.start()
-            time.sleep(1.0)#needed to load at least one frame into the VideoStream class
+            time.sleep(1.0)
+            #needed to load at least one frame into the VideoStream class
             #self.capture = cv2.VideoCapture(int(self.videoPath))
         else:
             #In the case of a video file, we want to analyze all the frames of the video thus are not using VideoStream class
@@ -170,7 +193,22 @@ class CameraCapture(object):
 
     def get_display_frame(self):
         return self.displayFrame
-
+    
+    def __get_roi_cropped(self,img_raw, roi):
+        #Crop selected roi from raw image
+        roi_cropped = img_raw[int(roi[1]):int(roi[1]+roi[3]), int(roi[0]):int(roi[0]+roi[2])]
+        return roi_cropped
+    
+    def __process_frame(self, frame):
+        #print("process_frame")
+        roi1 = [1102, 90, 418, 1823]
+        roi2 = [1588, 164, 418, 1823]
+        roi3 = [2075, 172, 418, 1823]
+        roi4 = [2591, 63, 418, 1823]
+        return __get_roi_cropped(self,frame, roi1)
+    
+    
+    
     def start(self):
         frameCounter = 0
         offsetCounter= 0
@@ -267,14 +305,42 @@ class CameraCapture(object):
                         #if self.annotate:
                         #    #TODO: fix bug with annotate function
                         #    self.__annotate(frame, response)
-                        self.displayFrame = cv2.imencode('.jpg', frame)[1].tobytes()
+                        
+                        self.displayFrame = cv2.imencode('.jpg', process_frame(frame))[1].tobytes()
                     else:
                         if self.verbose and (perfForOneFrameInMs is not None):
                             cv2.putText(preprocessedFrame, "FPS " + str(round(1000/perfForOneFrameInMs, 2)),(10, 35),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255), 2)
                         #if self.annotate:
                         #    #TODO: fix bug with annotate function
                         #    self.__annotate(preprocessedFrame, response)
-                        self.displayFrame = cv2.imencode('.jpg', preprocessedFrame)[1].tobytes()
+                      
+                        #roi1 = [1102, 90, 418, 1823]
+                        ##undistort the image
+                        preprocessedFrame = self.UndistortParserInstance.undistortImage(preprocessedFrame)
+                        print("Frame undistorted")
+                        print(self.ROI1)
+                        rs = self.ROI1[0].split(",")
+                        roi1=[int(rs[0]),int(rs[1]),int(rs[2]),int(rs[3])]
+                        preroi1= preprocessedFrame[int(roi1[1]):int(roi1[1]+roi1[3]), int(roi1[0]):int(roi1[0]+roi1[2])]
+                        
+                        #roi2 = [1588, 164, 418, 1823]
+                        rs = self.ROI2[0].split(",")
+                        roi2 = [int(rs[0]),int(rs[1]),int(rs[2]),int(rs[3])]
+                        preroi2 = preprocessedFrame[int(roi2[1]):int(roi2[1]+roi2[3]), int(roi2[0]):int(roi2[0]+roi2[2])]
+                        
+                        #roi3 = [2075, 172, 418, 1823]
+                        rs = self. ROI3[0].split(",")
+                        roi3 = [int(rs[0]),int(rs[1]),int(rs[2]),int(rs[3])]
+                        preroi3 = preprocessedFrame[int(roi3[1]):int(roi3[1]+roi3[3]), int(roi3[0]):int(roi3[0]+roi3[2])]
+                        
+                        #roi4 = [2591, 63, 418, 1823]
+                        rs = self.ROI4[0].split(",")
+                        roi4 = [int(rs[0]),int(rs[1]),int(rs[2]),int(rs[3])]
+                        preroi4 = preprocessedFrame[int(roi4[1]):int(roi4[1]+roi4[3]), int(roi4[0]):int(roi4[0]+roi4[2])]
+                        import numpy as np
+                        numpy_horizontal_concat = np.concatenate((preroi1, preroi2, preroi3, preroi4), axis=1)
+     
+                        self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
                 except Exception as e:
                     print("Could not display the video to a web browser.") 
                     print('Excpetion -' + str(e))

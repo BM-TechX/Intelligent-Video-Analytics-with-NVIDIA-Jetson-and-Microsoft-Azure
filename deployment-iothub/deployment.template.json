@@ -57,107 +57,7 @@
                     }
                 },
                 "modules": {
-                    "NVIDIADeepStreamSDK": {
-                        "version": "1.0",
-                        "type": "docker",
-                        "status": "running",
-                        "restartPolicy": "always",
-                        "settings": {
-                            "image": "nvcr.io/nvidia/deepstream-l4t:6.1.1-iot",
-                            "createOptions": {
-                                "Entrypoint": [
-                                    "/usr/bin/deepstream-test5-app",
-                                    "-c",
-                                    "DSConfig-CustomVisionAI.txt"
-                                ],
-                                "HostConfig": {
-                                    "runtime": "nvidia",
-                                    "NetworkMode": "host",
-                                    "Binds": [
-                                        "/data/misc/storage:/data/misc/storage",
-                                        "/tmp/argus_socket:/tmp/argus_socket",
-                                        "/tmp/.X11-unix/:/tmp/.X11-unix/"
-                                    ],
-                                    "IpcMode": "host"
-                                },
-                                "NetworkingConfig": {
-                                    "EndpointsConfig": {
-                                        "host": {}
-                                    }
-                                },
-                                "WorkingDir": "/data/misc/storage/Intelligent-Video-Analytics-with-NVIDIA-Jetson-and-Microsoft-Azure/services/DEEPSTREAM/configs"
-                            }
-                        },
-                        "env": {
-                            "DISPLAY": {
-                                "value": ":1"
-                            }
-                        }
-                    },
-                    "CameraTaggingModule": {
-                        "version": "1.0.3",
-                        "type": "docker",
-                        "status": "running",
-                        "restartPolicy": "always",
-                        "settings": {
-                            "image": "toolboc/camerataggingmodule:latest",
-                            "createOptions": {
-                                "ExposedPorts": {
-                                    "3000/tcp": {},
-                                    "3002/tcp": {},
-                                    "3003/tcp": {}
-                                },
-                                "HostConfig": {
-                                    "PortBindings": {
-                                        "3000/tcp": [
-                                            {
-                                                "HostPort": "3000"
-                                            }
-                                        ],
-                                        "3002/tcp": [
-                                            {
-                                                "HostPort": "3002"
-                                            }
-                                        ],
-                                        "3003/tcp": [
-                                            {
-                                                "HostPort": "3003"
-                                            }
-                                        ]
-                                    }
-                                }
-                            }
-                        },
-                        "env": {
-                            "RTSP_IP": {
-                              "value": "192.168.8.100"
-                            },
-                            "RTSP_PORT": {
-                              "value": "554"
-                            },
-                            "RTSP_PATH": {
-                              "value": "vod/mp4:BigBuckBunny_115k.mov"
-                            },
-                            "REACT_APP_SERVER_PORT": {
-                                "value": "3003"
-                            },
-                            "REACT_APP_WEB_SOCKET_PORT": {
-                                "value": "3002"
-                            },
-                            "REACT_APP_LOCAL_STORAGE_MODULE_NAME": {
-                                "value": "azureblobstorageoniotedge"
-                            },
-                            "REACT_APP_LOCAL_STORAGE_PORT": {
-                                "value": "11002"
-                            },
-                            "REACT_APP_LOCAL_STORAGE_ACCOUNT_NAME": {
-                                "value": "$LOCAL_STORAGE_ACCOUNT_NAME"
-                            },
-                            "REACT_APP_LOCAL_STORAGE_ACCOUNT_KEY": {
-                                "value": "$LOCAL_STORAGE_ACCOUNT_KEY"
-                            }
-                        }
-                    },
+                   
                     "azureblobstorageoniotedge": {
                         "version": "1.2",
                         "type": "docker",
@@ -188,7 +88,7 @@
                     "DeepStreamAnalytics": {
                         "version": "1.0",
                         "type": "docker",
-                        "status": "running",
+                        "status": "stopped",
                         "restartPolicy": "always",
                         "settings": {
                             "image": "mcr.microsoft.com/azure-stream-analytics/azureiotedge:1.0.9-linux-arm32v7",
@@ -206,7 +106,7 @@
                         "status": "running",
                         "restartPolicy": "always",
                         "env": {
-                          "VIDEO_PATH": {"value": "1"},
+                          "VIDEO_PATH": {"value": "rtsp://admin:S0lskin1234!@10.10.50.100:554"},
                           "IMAGE_PROCESSING_ENDPOINT":  {"value": "$IMAGEPROCESSOR_ENDPOINT"},
                           "RESIZE_WIDTH":  {"value": "0"},
                           "RESIZE_HEIGHT":  {"value": "0"},
@@ -215,11 +115,15 @@
                           "AZURE_STORAGE_BLOB":{"value": "$AZURE_STORAGE_BLOB"},
                           "AZURE_STORAGE_CONNECTION_STRING" : { "value": "$AZURE_STORAGE_CONNECTION_STRING"},
                           "AZURE_STORAGE_CONTAINER" : {"value": "$AZURE_STORAGE_CONTAINER"},
+                          "ROI1":{"value": "$ROI1"},
+                          "ROI2":{"value": "$ROI2"},
+                          "ROI3":{"value": "$ROI3"},
+                          "ROI4":{"value": "$ROI4"},
                           "IMAGEWIDTH":{"value":"$IMAGEWIDTH"},
                           "IMAGEHEIGHT":{"value":"$IMAGEHEIGHT"}
                         },
                         "settings": {
-                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v27",
+                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v31",
                           "createOptions": {
                             "HostConfig": {
                               "PortBindings": {
