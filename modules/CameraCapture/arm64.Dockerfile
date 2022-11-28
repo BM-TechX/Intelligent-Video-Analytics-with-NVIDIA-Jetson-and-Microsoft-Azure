@@ -1,20 +1,28 @@
-FROM nvcr.io/nvidia/l4t-base:r35.1.0
-
+#FROM nvcr.io/nvidia/l4t-base:r35.1.0
+FROM hubber.azurecr.io/anomlib:v1
 RUN echo "BUILD MODULE: CameraCapture"
 
 # Enforces cross-compilation through Quemu
 #RUN [ "cross-build-start" ]
 
 # Update package index and install dependencies
+#RUN apt-get update && \
+#    apt-get install -y --no-install-recommends \
+#        python3 \
+#        python3-pip \
+#        python3-dev \
+#        libcurl4-openssl-dev \
+#        libboost-python-dev \
+#        libgtk2.0-dev \
+#        v4l-utils
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        python3 \
-        python3-pip \
-        python3-dev \
         libcurl4-openssl-dev \
         libboost-python-dev \
         libgtk2.0-dev \
         v4l-utils
+
 
 
 COPY /build/arm64-requirements.txt ./
@@ -22,10 +30,14 @@ RUN pip3 install --upgrade pip
 RUN pip3 install --upgrade setuptools
 RUN pip3 install -r arm64-requirements.txt
 
+#RUN apt-get update && apt-get install --reinstall python-opencv -y
+#RUN pip3 install opencv-python to 4.5.5.64 -U 
+
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/* \
     && apt-get -y autoremove
-
+RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/config.yaml
+RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_1.ckpt
 ADD /app/ .
 
 # Expose the port

@@ -123,7 +123,7 @@
                           "IMAGEHEIGHT":{"value":"$IMAGEHEIGHT"}
                         },
                         "settings": {
-                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v31",
+                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v34",
                           "createOptions": {
                             "HostConfig": {
                               "PortBindings": {

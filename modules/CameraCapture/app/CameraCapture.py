@@ -4,6 +4,7 @@ from __future__ import absolute_import
 from cmath import log
 
 #Imports
+import sklearn
 import sys
 if sys.version_info[0] < 3:#e.g python version <3
     import cv2
@@ -28,7 +29,8 @@ from ImageServer import ImageServer
 from datetime import datetime
 import UndistortParser
 from UndistortParser import UndistortParser
-
+import torch_inference
+from torch_inference import Infrence
 import string
 import random
 
@@ -101,6 +103,7 @@ class CameraCapture(object):
         self.ROI3 = ROI3
         self.ROI4 = ROI4
         self.UndistortParserInstance = UndistortParser()
+        self.infrencer = Infrence()
         self.vs = None
 
         if self.convertToGray:
@@ -339,7 +342,12 @@ class CameraCapture(object):
                         preroi4 = preprocessedFrame[int(roi4[1]):int(roi4[1]+roi4[3]), int(roi4[0]):int(roi4[0]+roi4[2])]
                         import numpy as np
                         numpy_horizontal_concat = np.concatenate((preroi1, preroi2, preroi3, preroi4), axis=1)
-     
+                        try:
+                            
+                            #output = self.__encodeFrame(numpy_horizontal_concat)
+                            print("Frame infrence")
+                        except:
+                            print("Error in infrence")
                         self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
                 except Exception as e:
                     print("Could not display the video to a web browser.") 

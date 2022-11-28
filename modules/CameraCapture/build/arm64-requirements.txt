@@ -1,11 +1,11 @@
 azure-iot-device
 azure-mgmt-iothub
 azure-storage-blob
-numpy
-opencv-contrib-python
+#numpy
+#opencv-contrib-python
 requests
 trollius
 tornado
-opencv-python
+#opencv-python
 asyncio
 datetime
