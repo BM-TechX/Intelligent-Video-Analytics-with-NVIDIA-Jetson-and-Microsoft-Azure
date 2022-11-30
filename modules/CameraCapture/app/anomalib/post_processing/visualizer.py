@@ -57,8 +57,8 @@ class Visualizer:
     """
 
     def __init__(self, mode: str, task: str) -> None:
-        if mode not in ["full", "simple"]:
-            raise ValueError(f"Unknown visualization mode: {mode}. Please choose one of ['full', 'simple']")
+        if mode not in ["full", "simple","segmentation"]:
+            raise ValueError(f"Unknown visualization mode: {mode}. Please choose one of ['full', 'simple','segmentation']")
         self.mode = mode
         if task not in ["classification", "segmentation"]:
             raise ValueError(f"Unknown task type: {mode}. Please choose one of ['classification', 'segmentation']")
@@ -98,6 +98,8 @@ class Visualizer:
             return self._visualize_full(image_result)
         if self.mode == "simple":
             return self._visualize_simple(image_result)
+        if self.mode == "segmentation":
+            return self._visualize_segmentation(image_result)
         raise ValueError(f"Unknown visualization mode: {self.mode}")
 
     def _visualize_full(self, image_result: ImageResult) -> np.ndarray:
@@ -131,7 +133,20 @@ class Visualizer:
             visualization.add_image(image=image_classified, title="Prediction")
 
         return visualization.generate()
-
+    
+    def _visualize_segmentation(self,image_result:ImageResult) -> np.ndarray:
+        if self.task == "segmentation":
+            visualization = image_result.segmentations
+            return (visualization ).astype(np.uint8)
+        if self.task == "classification":
+            if image_result.pred_label:
+                image_classified = add_anomalous_label(image_result.image, image_result.pred_score)
+            else:
+                image_classified = add_normal_label(image_result.image, 1 - image_result.pred_score)
+            return image_classified
+        raise ValueError(f"Unknown task type: {self.task}")
+    
+    
     def _visualize_simple(self, image_result: ImageResult) -> np.ndarray:
         """Generate a simple visualization for an image.
 
@@ -216,6 +231,30 @@ class ImageGrid:
         figure_size = (num_cols * 5, 5)
         self.figure, self.axis = plt.subplots(1, num_cols, figsize=figure_size)
         self.figure.subplots_adjust(right=0.9)
+
+        axes = self.axis if isinstance(self.axis, np.ndarray) else np.array([self.axis])
+        for axis, image_dict in zip(axes, self.images):
+            axis.axes.xaxis.set_visible(False)
+            axis.axes.yaxis.set_visible(False)
+            axis.imshow(image_dict["image"], image_dict["color_map"], vmin=0, vmax=255)
+            if image_dict["title"] is not None:
+                axis.title.set_text(image_dict["title"])
+        self.figure.canvas.draw()
+        # convert canvas to numpy array to prepare for visualization with opencv
+        img = np.frombuffer(self.figure.canvas.tostring_rgb(), dtype=np.uint8)
+        img = img.reshape(self.figure.canvas.get_width_height()[::-1] + (3,))
+        plt.close(self.figure)
+        return img
+    
+    def generate_one(self) -> np.ndarray:
+        """Generate the image.
+        Returns:
+            Image consisting of a grid of added images and their title.
+        """
+        num_cols = len(self.images)
+        figure_size = (num_cols * 5, 5)
+        self.figure, self.axis = plt.subplots(1, num_cols, figsize=figure_size)
+        self.figure.subplots_adjust(right=1)
 
         axes = self.axis if isinstance(self.axis, np.ndarray) else np.array([self.axis])
         for axis, image_dict in zip(axes, self.images):

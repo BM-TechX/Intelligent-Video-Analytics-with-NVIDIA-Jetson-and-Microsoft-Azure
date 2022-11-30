@@ -33,11 +33,22 @@ RUN pip3 install -r arm64-requirements.txt
 #RUN apt-get update && apt-get install --reinstall python-opencv -y
 #RUN pip3 install opencv-python to 4.5.5.64 -U 
 
+#
+# Install nvidia-cudnn8-dev for CuDNN developer packages
+# Use nvidia-cudnn8 if need CuDNN runtime only
+#
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nvidia-cudnn8-dev 
+RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/config.yaml
+RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_1.ckpt
+RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_2.ckpt
+RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_3.ckpt
+RUN pip3 install datetime
+RUN pip3 install imutils
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/* \
     && apt-get -y autoremove
-RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/config.yaml
-RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_1.ckpt
+
 ADD /app/ .
 
 # Expose the port

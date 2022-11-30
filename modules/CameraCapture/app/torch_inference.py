@@ -11,6 +11,7 @@ import warnings
 import sklearn
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
+import cv2
 import torch
 
 from anomalib.data.utils import (
@@ -29,21 +30,24 @@ class Infrence:
     
     def loadInfrencer(self):
         # Load the model
-        model_path = 'model_1.ckpt'
+        
+        model_path = 'model_3.ckpt'
         config_path = 'config.yaml'
-        device = 'cpu'
-        visualization_mode = 'simple'
-        task = 'classification' # 'segmentation'
+        device = 'cuda'
+        visualization_mode = 'segmentation'
+        task = 'segmentation' # 'classification'
         inferencer = TorchInferencer(config=config_path,model_source=model_path, device=device)
         visualizer = Visualizer(mode=visualization_mode, task=task)
 
         return inferencer, visualizer
-    
-    def getInfrence(self, inferencer, image):
+
+    def getInfrence(self, image):
         # Perform inference
         predictions = self.inferencer.predict(image=image)
+        print(predictions.pred_label)
+        print(predictions.anomaly_map)
         output = self.visualizer.visualize_image(predictions)
-        return output
+        return output,predictions
     
     def get_args() -> Namespace:
         """Get command line arguments.

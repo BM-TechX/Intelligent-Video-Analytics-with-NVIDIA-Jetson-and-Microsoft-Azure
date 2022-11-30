@@ -123,9 +123,10 @@
                           "IMAGEHEIGHT":{"value":"$IMAGEHEIGHT"}
                         },
                         "settings": {
-                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v34",
+                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v35",
                           "createOptions": {
                             "HostConfig": {
+                              "runtime": "nvidia",
                               "PortBindings": {
                                 "5012/tcp": [ { "HostPort":"5012"}]
                               },

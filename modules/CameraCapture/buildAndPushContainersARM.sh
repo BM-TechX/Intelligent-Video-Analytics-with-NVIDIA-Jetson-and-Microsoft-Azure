@@ -1,2 +1,2 @@
-docker build -t hubber.azurecr.io/cameracapture:v34 -f arm64.Dockerfile .
-docker push hubber.azurecr.io/cameracapture:v34
+docker build -t hubber.azurecr.io/cameracapture:v35 -f arm64.Dockerfile .
+docker push hubber.azurecr.io/cameracapture:v35

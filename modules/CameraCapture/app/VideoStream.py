@@ -23,8 +23,12 @@ else:
 
 
 class VideoStream(object):
-    def __init__(self, path, queueSize=3):
+    
+    def __init__(self, path, queueSize=2):
         self.stream = cv2.VideoCapture(path)
+        self.stream.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+        self.path = path
+        self.retrycount=10
         #self.stream.set(cv2.CAP.PROP_FRAME_WIDTH, 1920)
         #self.stream.set(cv2.CAP.PROP_FRAME_HEIGHT, 1080)
         self.stopped = False
@@ -38,7 +42,15 @@ class VideoStream(object):
         t.daemon = True
         t.start()
         return self
-
+    def retryUpdate(self,counter):
+        if (counter > 0):
+            self.stream.release()
+            self.stream = cv2.VideoCapture(self.path)
+            self.stream.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            self.retrycount=counter-1
+            self.stop=False
+            self.start()
+            
     def update(self):
         try:
             while True:
@@ -47,13 +59,12 @@ class VideoStream(object):
 
                 if not self.Q.full():
                     (grabbed, frame) = self.stream.read()
-
                     # if the `grabbed` boolean is `False`, then we have
                     # reached the end of the video file
                     if not grabbed:
                         self.stop()
                         return
-
+                    self.retrycount=10
                     self.Q.put(frame)
 
                     # Clean the queue to keep only the latest frame
@@ -73,3 +84,4 @@ class VideoStream(object):
 
     def __exit__(self, exception_type, exception_value, traceback):
         self.stream.release()
+        

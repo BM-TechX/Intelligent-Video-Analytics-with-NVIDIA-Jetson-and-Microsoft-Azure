@@ -4,6 +4,7 @@ from __future__ import absolute_import
 from cmath import log
 
 #Imports
+from datetime import datetime
 import sklearn
 import sys
 if sys.version_info[0] < 3:#e.g python version <3
@@ -33,6 +34,7 @@ import torch_inference
 from torch_inference import Infrence
 import string
 import random
+import imutils
 
 class CameraCapture(object):
 
@@ -66,6 +68,7 @@ class CameraCapture(object):
             ROI2="0,0,0,0",
             ROI3="0,0,0,0",
             ROI4="0,0,0,0",
+            NUMBERFRAME=20,
             ):
         self.videoPath = videoPath
         if self.__IsInt(videoPath):
@@ -105,7 +108,7 @@ class CameraCapture(object):
         self.UndistortParserInstance = UndistortParser()
         self.infrencer = Infrence()
         self.vs = None
-
+        self.NB_OF_FRAMES_TO_SKIP=20
         if self.convertToGray:
             self.nbOfPreprocessingSteps +=1
         if self.resizeWidth != 0 or self.resizeHeight != 0:
@@ -125,6 +128,11 @@ class CameraCapture(object):
             print()
         
         self.displayFrame = None
+        self.Lane1State = None
+        self.Lane2State = None
+        self.Lane3State = None
+        self.Lane4State = None
+        
         if self.showVideo:
             self.imageServer = ImageServer(5012, self)
             self.imageServer.start()
@@ -133,7 +141,7 @@ class CameraCapture(object):
             
             blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net")
             #time = datetime.now.strftime("%m/%d/%Y-%H:%M:%S")
-            local_file_name = "frame_261bu" + str(counter) +  ".jpg"
+            local_file_name = str(counter) +  ".jpg"
             _, img_encode = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 99])
             ##blob_client = blob_service_client.get_blob_client(container="nnpic3", blob=local_file_name)
             ##blob_client.upload_blob(img_encode.tobytes(), overwrite=True)
@@ -195,25 +203,26 @@ class CameraCapture(object):
         return self
 
     def get_display_frame(self):
-        return self.displayFrame
+        return self.displayFrame   
+    def get_LaneState(self):
+        return self.Lane1State + self.Lane2State + self.Lane3State + self.Lane4State
     
-    def __get_roi_cropped(self,img_raw, roi):
-        #Crop selected roi from raw image
-        roi_cropped = img_raw[int(roi[1]):int(roi[1]+roi[3]), int(roi[0]):int(roi[0]+roi[2])]
-        return roi_cropped
+    def put_text(self, frame, text, position, color, font_scale, thickness):
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(frame, text, position, font, font_scale, color, thickness, cv2.LINE_AA)
+        return frame
     
-    def __process_frame(self, frame):
-        #print("process_frame")
-        roi1 = [1102, 90, 418, 1823]
-        roi2 = [1588, 164, 418, 1823]
-        roi3 = [2075, 172, 418, 1823]
-        roi4 = [2591, 63, 418, 1823]
-        return __get_roi_cropped(self,frame, roi1)
-    
-    
+    def get_process_lane(self,rs,region1,regioninner,rotation,frame):
+        region1= rs[0].split(",")
+        roi1=[int(region1[0]),int(region1[1]),int(region1[2]),int(region1[3])]
+        frame_cropped= frame[int(roi1[1]):int(roi1[1]+roi1[3]), int(roi1[0]):int(roi1[0]+roi1[2])]
+        frame_cropped_rotated=imutils.rotate(frame_cropped,rotation)
+        frame_cropped_rotated_inner = frame_cropped_rotated[int(regioninner[1]):int(regioninner[1]+regioninner[3]), int(regioninner[0]):int(regioninner[0]+regioninner[2])]
+        return frame_cropped_rotated_inner
     
     def start(self):
         frameCounter = 0
+        infrenceCounter = 0
         offsetCounter= 0
         perfForOneFrameInMs = None
         while True:
@@ -224,8 +233,10 @@ class CameraCapture(object):
             offsetCounter += 1
             frameCounter +=1
             if self.isWebcam:
+                
                 frame = self.vs.read()
             else:
+                print("video")
                 frame = self.capture.read()[1]
                 if frameCounter == 1:
                     if self.capture.get(cv2.CAP_PROP_FRAME_WIDTH) < self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT):
@@ -277,16 +288,14 @@ class CameraCapture(object):
                 if self.verbose:
                     print("Time to encode a frame for processing: " + self.__displayTimeDifferenceInMs(time.time(), startEncodingForProcessing))
                     startProcessingExternally = time.time()
-                print(frameCounter) 
-                #Send frame to Azure StorageBlob
-                ##if self.AZURE_STORAGE_CONTAINER != "" and self.AZURE_STORAGE_BLOB != "":
                 
-                print("Frame uploaded to Azure Storage Blob")
+                #print("Frame uploaded to Azure Storage Blob")
                 #Send over HTTP for processing
                 if offsetCounter==100:
                     #response = self.__sendFrameForProcessing(encodedFrame)
-                    self.__uploadToAzure(frameCounter,frame)
-                    offsetCounter=0
+                    #ONLY CAPTURE FRAME FROM INFRERNCE
+                    ###self.__uploadToAzure(frameCounter,frame)
+                    offsetCounter=0 
                 #response = self.__sendFrameForProcessing(encodedFrame)
                 if self.verbose:
                     print("Time to process frame externally: " + self.__displayTimeDifferenceInMs(time.time(), startProcessingExternally))
@@ -302,53 +311,124 @@ class CameraCapture(object):
             #Display frames
             if self.showVideo:
                 try:
-                    if self.nbOfPreprocessingSteps == 0:
-                        if self.verbose and (perfForOneFrameInMs is not None):
-                            cv2.putText(frame, "FPS " + str(round(1000/perfForOneFrameInMs, 2)),(10, 35),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255), 2)
-                        #if self.annotate:
-                        #    #TODO: fix bug with annotate function
-                        #    self.__annotate(frame, response)
+                    self.NB_OF_FRAMES_TO_SKIP = self.NB_OF_FRAMES_TO_SKIP -1
+                    if self.NB_OF_FRAMES_TO_SKIP <= 0:
+                        self.NB_OF_FRAMES_TO_SKIP =5
                         
-                        self.displayFrame = cv2.imencode('.jpg', process_frame(frame))[1].tobytes()
-                    else:
-                        if self.verbose and (perfForOneFrameInMs is not None):
-                            cv2.putText(preprocessedFrame, "FPS " + str(round(1000/perfForOneFrameInMs, 2)),(10, 35),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255), 2)
-                        #if self.annotate:
-                        #    #TODO: fix bug with annotate function
-                        #    self.__annotate(preprocessedFrame, response)
-                      
-                        #roi1 = [1102, 90, 418, 1823]
-                        ##undistort the image
-                        preprocessedFrame = self.UndistortParserInstance.undistortImage(preprocessedFrame)
-                        print("Frame undistorted")
-                        print(self.ROI1)
-                        rs = self.ROI1[0].split(",")
-                        roi1=[int(rs[0]),int(rs[1]),int(rs[2]),int(rs[3])]
-                        preroi1= preprocessedFrame[int(roi1[1]):int(roi1[1]+roi1[3]), int(roi1[0]):int(roi1[0]+roi1[2])]
-                        
-                        #roi2 = [1588, 164, 418, 1823]
-                        rs = self.ROI2[0].split(",")
-                        roi2 = [int(rs[0]),int(rs[1]),int(rs[2]),int(rs[3])]
-                        preroi2 = preprocessedFrame[int(roi2[1]):int(roi2[1]+roi2[3]), int(roi2[0]):int(roi2[0]+roi2[2])]
-                        
-                        #roi3 = [2075, 172, 418, 1823]
-                        rs = self. ROI3[0].split(",")
-                        roi3 = [int(rs[0]),int(rs[1]),int(rs[2]),int(rs[3])]
-                        preroi3 = preprocessedFrame[int(roi3[1]):int(roi3[1]+roi3[3]), int(roi3[0]):int(roi3[0]+roi3[2])]
-                        
-                        #roi4 = [2591, 63, 418, 1823]
-                        rs = self.ROI4[0].split(",")
-                        roi4 = [int(rs[0]),int(rs[1]),int(rs[2]),int(rs[3])]
-                        preroi4 = preprocessedFrame[int(roi4[1]):int(roi4[1]+roi4[3]), int(roi4[0]):int(roi4[0]+roi4[2])]
-                        import numpy as np
-                        numpy_horizontal_concat = np.concatenate((preroi1, preroi2, preroi3, preroi4), axis=1)
-                        try:
+                        if self.nbOfPreprocessingSteps == 0:
+                            if self.verbose and (perfForOneFrameInMs is not None):
+                                cv2.putText(frame, "FPS " + str(round(1000/perfForOneFrameInMs, 2)),(10, 35),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255), 2)
+                            #if self.annotate:
+                            #    #TODO: fix bug with annotate function
+                            #    self.__annotate(frame, response)
                             
-                            #output = self.__encodeFrame(numpy_horizontal_concat)
-                            print("Frame infrence")
-                        except:
-                            print("Error in infrence")
-                        self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
+                            self.displayFrame = cv2.imencode('.jpg', process_frame(frame))[1].tobytes()
+                        else:
+                            if self.verbose and (perfForOneFrameInMs is not None):
+                                cv2.putText(preprocessedFrame, "FPS " + str(round(1000/perfForOneFrameInMs, 2)),(10, 35),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255), 2)
+                            genral_rotation = 358.5
+                            roi1_rotation=360.1
+                            roi2_rotation=359.8
+                            roi3_rotation=359.25
+                            roi4_rotation=358.7
+                            roi1a = [9,100, 303, 1750]
+                            roi2a = [15,100, 316, 1750]
+                            roi3a = [30,100, 320, 1750]
+                            roi4a = [30,100, 325, 1750]
+                           
+                            
+                            preprocessedFrame = self.UndistortParserInstance.undistortImage(preprocessedFrame)
+                            print("Frame undistorted")
+                            preprocessedFrame=imutils.rotate(preprocessedFrame,genral_rotation)
+                            #preroi1 = self.get_process_lane(self,self.ROI1,roi1a,roi1_rotation,preprocessedFrame)
+                            rs = self.ROI1[0].split(",")
+                            roi1=[int(rs[0]),int(rs[1]),int(rs[2]),int(rs[3])]
+                            preroi1= preprocessedFrame[int(roi1[1]):int(roi1[1]+roi1[3]), int(roi1[0]):int(roi1[0]+roi1[2])]
+                            preroi1=imutils.rotate(preroi1,roi1_rotation)
+                            preroi1 = preroi1[int(roi1a[1]):int(roi1a[1]+roi1a[3]), int(roi1a[0]):int(roi1a[0]+roi1a[2])]
+                            
+                            rs = self.ROI2[0].split(",")
+                            roi2 = [int(rs[0]),int(rs[1]),int(rs[2]),int(rs[3])]
+                            preroi2 = preprocessedFrame[int(roi2[1]):int(roi2[1]+roi2[3]), int(roi2[0]):int(roi2[0]+roi2[2])]
+                            preroi2=imutils.rotate(preroi2,roi2_rotation)
+                            preroi2 = preroi2[int(roi2a[1]):int(roi2a[1]+roi2a[3]), int(roi2a[0]):int(roi2a[0]+roi2a[2])]
+                          
+                            rs = self. ROI3[0].split(",")
+                            roi3 = [int(rs[0]),int(rs[1]),int(rs[2]),int(rs[3])]
+                            preroi3 = preprocessedFrame[int(roi3[1]):int(roi3[1]+roi3[3]), int(roi3[0]):int(roi3[0]+roi3[2])]
+                            preroi3 =imutils.rotate(preroi3,roi3_rotation)
+                            preroi3 = preroi3[int(roi3a[1]):int(roi3a[1]+roi3a[3]), int(roi3a[0]):int(roi3a[0]+roi3a[2])]
+                            
+
+                            rs = self.ROI4[0].split(",")
+                            roi4 = [int(rs[0]),int(rs[1]),int(rs[2]),int(rs[3])]
+                            preroi4 = preprocessedFrame[int(roi4[1]):int(roi4[1]+roi4[3]), int(roi4[0]):int(roi4[0]+roi4[2])]
+                            preroi4 = imutils.rotate(preroi4,roi4_rotation)
+                            preroi4 = preroi4[int(roi4a[1]):int(roi4a[1]+roi4a[3]), int(roi4a[0]):int(roi4a[0]+roi4a[2])]
+                            import numpy as np
+                            combined=False
+                            if (combined):
+                                numpy_horizontal_concat = np.concatenate((preroi1, preroi2, preroi3, preroi4), axis=1)
+                                try:
+                                    
+                                    #infrenceCounter=infrenceCounter+1
+                                    if (infrenceCounter==0):
+                                        infrenceCounter=0
+                                        #cv2.imwrite("frame%d.jpg" % frameCounter, numpy_horizontal_concat)
+                                        #image = cv2.imread("frame%d.jpg" % frameCounter)
+                                        #image =  cv2.resize(numpy_horizontal_concat[...,::-1], dsize=(256, 256))
+                                        image_large = cv2.cvtColor(numpy_horizontal_concat, cv2.COLOR_GRAY2BGR)
+                                        #image =  cv2.resize(image_large, dsize=(256, 256))
+                                        #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                                        ot,predictions =self.infrencer.getInfrence(image_large)
+                                        try:
+                                            self.__uploadToAzure("29_11_22",frame=image_large)
+                                        except Exception as e:
+                                            print("something went wrong while uploading to azure")
+                                        #image = cv2.cvtColor(ot, cv2.COLOR_GRAY2BGR)
+                                        #image_large_scaled = cv2.resize(image_large, dsize=(1024, 1024))
+                                        #image_large_pred = cv2.resize(image, dsize=(1024, 1024))
+                                        #numpy_horizontal_concat = np.concatenate((image_large_scaled, image_large_pred), axis=1)
+                                        height, width, channels = ot.shape
+                                        numpy_horizontal_concat = np.concatenate((cv2.resize(image_large, dsize=(height, width)),cv2.resize(ot,dsize=(height,width))), axis=1)
+                                       
+                                        # numpy_horizontal_concat = np.concatenate((numpy_horizontal_concat, ot), axis=1)
+
+                                except Exception as e:
+                                    print(e)
+                            else:
+                                
+                               
+                                
+                                
+                                preroi1_img = cv2.cvtColor(preroi1, cv2.COLOR_GRAY2BGR)
+                                preroi1_img_ot,predictions_1 =self.infrencer.getInfrence(preroi1_img)
+                                self.Lane1State = predictions_1.pred_label + " " + str(round(predictions_1.pred_score,2))
+                                cv2.putText(preroi1_img_ot, self.Lane1State, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
+                                preroi2_img = cv2.cvtColor(preroi2, cv2.COLOR_GRAY2BGR)
+                                preroi2_img_ot,predictions_2 =self.infrencer.getInfrence(preroi2_img)
+                                self.Lane2State = predictions_2.pred_label + " " + str(round(predictions_2.pred_score,2))
+                                cv2.putText(preroi2_img_ot, self.Lane2State, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
+                                preroi3_img = cv2.cvtColor(preroi3, cv2.COLOR_GRAY2BGR)
+                                preroi3_img_ot,predictions_3 =self.infrencer.getInfrence(preroi3_img)
+                                self.Lane3State = predictions_3.pred_label + " " + str(round(predictions_3.pred_score,2))
+                                cv2.putText(preroi3_img_ot, self.Lane3State, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
+                                preroi4_img = cv2.cvtColor(preroi4, cv2.COLOR_GRAY2BGR)
+                                preroi4_img_ot,predictions_4=self.infrencer.getInfrence(preroi4_img)
+                                self.Lane4State = predictions_4.pred_label + " " + str(round(predictions_4.pred_score,2))
+                                cv2.putText(preroi4_img_ot, self.Lane4State, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
+                                
+                               
+                            
+                                print("før combine")
+                                print (self.Lane1State + " " + self.Lane2State + " " + self.Lane3State + " " + self.Lane4State)
+                                numpy_horizontal_concat = np.concatenate((preroi1_img_ot, preroi2_img_ot, preroi3_img_ot, preroi4_img_ot), axis=1)
+                                print("efter combine")
+                                #height, width, channels = numpy_horizontal_concat.shape
+                                #base = np.concatenate((preroi1, preroi2, preroi3, preroi4), axis=1)
+                                #numpy_horizontal_concat = np.concatenate((cv2.resize(base, dsize=(height, width)),cv2.resize(numpy_horizontal_concat,dsize=(height,width))), axis=1)
+                                #numpy_horizontal_concat = cv2.putText(numpy_horizontal_concat, self.Lane1State, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
+                            self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
                 except Exception as e:
                     print("Could not display the video to a web browser.") 
                     print('Excpetion -' + str(e))
@@ -365,7 +445,6 @@ class CameraCapture(object):
                     print("Wait time between frames :" + str(waitTimeBetweenFrames))
                     if cv2.waitKey(waitTimeBetweenFrames) & 0xFF == ord('q'):
                         break
-
             if self.verbose:
                 perfForOneFrameInMs = int((time.time()-startOverall) * 1000)
                 print("Total time for one frame: " + self.__displayTimeDifferenceInMs(time.time(), startOverall))
