@@ -42,14 +42,15 @@ class VideoStream(object):
         t.daemon = True
         t.start()
         return self
-    def retryUpdate(self,counter):
-        if (counter > 0):
+    def retryUpdate(self):
+        if (self.retrycount > 0):
             self.stream.release()
             self.stream = cv2.VideoCapture(self.path)
             self.stream.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-            self.retrycount=counter-1
+            self.retrycount=self.retrycount-1
             self.stop=False
-            self.start()
+            self.update()
+        print("retrying to open video stream")
             
     def update(self):
         try:
@@ -62,8 +63,10 @@ class VideoStream(object):
                     # if the `grabbed` boolean is `False`, then we have
                     # reached the end of the video file
                     if not grabbed:
-                        self.stop()
-                        return
+                        #self.stop()
+                        self.retryUpdate()
+                        
+                        #return
                     self.retrycount=10
                     self.Q.put(frame)
 

@@ -313,7 +313,7 @@ class CameraCapture(object):
                 try:
                     self.NB_OF_FRAMES_TO_SKIP = self.NB_OF_FRAMES_TO_SKIP -1
                     if self.NB_OF_FRAMES_TO_SKIP <= 0:
-                        self.NB_OF_FRAMES_TO_SKIP =5
+                        self.NB_OF_FRAMES_TO_SKIP =8
                         
                         if self.nbOfPreprocessingSteps == 0:
                             if self.verbose and (perfForOneFrameInMs is not None):
@@ -397,26 +397,49 @@ class CameraCapture(object):
                                 except Exception as e:
                                     print(e)
                             else:
-                                
+                                state="GOOD"
                                
-                                
+                                threshold = 0.5
                                 
                                 preroi1_img = cv2.cvtColor(preroi1, cv2.COLOR_GRAY2BGR)
                                 preroi1_img_ot,predictions_1 =self.infrencer.getInfrence(preroi1_img)
                                 self.Lane1State = predictions_1.pred_label + " " + str(round(predictions_1.pred_score,2))
-                                cv2.putText(preroi1_img_ot, self.Lane1State, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
+                                if(predictions_1.pred_score>threshold):
+                                    try:
+                                        self.__uploadToAzure(str(datetime.date)+".jpg",frame=preroi1_img)
+                                        state="ALARM"
+                                    except Exception as e:
+                                            print("something went wrong while uploading to azure")
+                                cv2.putText(preroi1_img_ot, self.Lane1State, (15, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
                                 preroi2_img = cv2.cvtColor(preroi2, cv2.COLOR_GRAY2BGR)
                                 preroi2_img_ot,predictions_2 =self.infrencer.getInfrence(preroi2_img)
                                 self.Lane2State = predictions_2.pred_label + " " + str(round(predictions_2.pred_score,2))
-                                cv2.putText(preroi2_img_ot, self.Lane2State, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
+                                if (predictions_2.pred_score > threshold):
+                                    try:
+                                        self.__uploadToAzure(str(datetime.date)+".jpg",frame=preroi2_img)
+                                        state="ALARM"
+                                    except Exception as e:
+                                        print("something went wrong while uploading to azure")
+                                cv2.putText(preroi2_img_ot, self.Lane2State, (15, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
                                 preroi3_img = cv2.cvtColor(preroi3, cv2.COLOR_GRAY2BGR)
                                 preroi3_img_ot,predictions_3 =self.infrencer.getInfrence(preroi3_img)
                                 self.Lane3State = predictions_3.pred_label + " " + str(round(predictions_3.pred_score,2))
-                                cv2.putText(preroi3_img_ot, self.Lane3State, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
+                                if(predictions_3.pred_score>threshold):
+                                    try:
+                                        self.__uploadToAzure(str(datetime.date)+".jpg",frame=preroi3_img)
+                                    except Exception as e:
+                                        print("something went wrong while uploading to azure")
+                                cv2.putText(preroi3_img_ot, self.Lane3State, (15, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
                                 preroi4_img = cv2.cvtColor(preroi4, cv2.COLOR_GRAY2BGR)
                                 preroi4_img_ot,predictions_4=self.infrencer.getInfrence(preroi4_img)
                                 self.Lane4State = predictions_4.pred_label + " " + str(round(predictions_4.pred_score,2))
-                                cv2.putText(preroi4_img_ot, self.Lane4State, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
+                                if(predictions_4.pred_score>threshold):
+                                    try:
+                                        self.__annotateToAzure(str(datetime.date)+".jpg",frame=preroi4_img)
+                                        state="ALARM"
+                                    except Exception as e:
+                                        print("something went wrong while uploading to azure")
+                                cv2.putText(preroi4_img_ot, self.Lane4State, (15, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
                                 
                                
                             
@@ -428,7 +451,7 @@ class CameraCapture(object):
                                 #base = np.concatenate((preroi1, preroi2, preroi3, preroi4), axis=1)
                                 #numpy_horizontal_concat = np.concatenate((cv2.resize(base, dsize=(height, width)),cv2.resize(numpy_horizontal_concat,dsize=(height,width))), axis=1)
                                 #numpy_horizontal_concat = cv2.putText(numpy_horizontal_concat, self.Lane1State, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
-                            self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
+                            self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()# +"|"+state
                 except Exception as e:
                     print("Could not display the video to a web browser.") 
                     print('Excpetion -' + str(e))
