@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <title>Video Stream</title>
+  </head>
+  <body>
+    
+    <img id="logo" src="fiberline-logo.svg" ">
+    <div style="font-style:inter;"><h1>Annom Detector</h1></div>
+    <img id="currentImage" style="border:2px solid">
+    <script>
+
+      var img = document.getElementById("currentImage");
+      var ws = new WebSocket("ws://" + location.host + "/stream");
+
+      ws.onopen = function() {
+          console.log("connection was established");
+          ws.send("next");
+      };
+
+      ws.onmessage = function(msg) {
+          img.src = 'data:image/png;base64, ' + msg.data
+      };
+
+      img.onload = function() {
+        ws.send("next");
+      }
+    </script>
+  </body>
+</html>

@@ -9,7 +9,7 @@ namespace ImgViewer.Controllers
     public class HomeController : Controller
     {
 
-        const string blobContainerName = "nnpic4";
+        const string blobContainerName = "nnpic5";
         const string connectionstring = @"DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net";
         static BlobContainerClient blobContainer;
 
@@ -49,7 +49,7 @@ namespace ImgViewer.Controllers
                 foreach (BlobItem blob in blobContainer.GetBlobs())
                 {
                     if (blob.Properties.BlobType == BlobType.Block)
-                        if (blob.Name.Contains("test21"))
+                        if (blob.Name.Contains("0712"))
                         {
                             allBlobs.Add(blobContainer.GetBlobClient(blob.Name).Uri);
                         }

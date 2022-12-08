@@ -1,0 +1,60 @@
+  "camera-capture": {
+            "version": "1",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "env": {
+              "VIDEO_PATH": {
+                "value": "rtsp://admin:S0lskin1234!@10.10.50.100:554"
+              },
+              "IMAGE_PROCESSING_ENDPOINT": {
+                "value": "https://imgr.azurewebsites.net/api/ImageUpload"
+              },
+              "RESIZE_WIDTH": {
+                "value": "0"
+              },
+              "RESIZE_HEIGHT": {
+                "value": "0"
+              },
+              "SHOW_VIDEO": {
+                "value": "True"
+              },
+              "FPS": {
+                "value": "30"
+              },
+              "AZURE_STORAGE_BLOB": {
+                "value": "nnpic4"
+              },
+              "AZURE_STORAGE_CONNECTION_STRING": {
+                "value": "DefaultEndpointsProtocol"
+              },
+              "AZURE_STORAGE_CONTAINER": {
+                "value": "camerataggingmodulecloud"
+              },
+              "ROI1": {
+                "value": "1120,200,370,1750"
+              },
+              "ROI2": {
+                "value": "1600,200,370,1750"
+              },
+              "ROI3": {
+                "value": "2090,200,370,1750"
+              },
+              "ROI4": {
+                "value": "2600,200,370,1750"
+              },
+              "IMAGEWIDTH": {
+                "value": "1980"
+              },
+              "IMAGEHEIGHT": {
+                "value": "1080"
+              }
+            },
+            "settings": {
+              "image": "hubber.azurecr.io/cameracapture:v35",
+              "createOptions": "{\"HostConfig\":{\"runtime\":\"nvidia\",\"PortBindings\":{\"5012/tcp\":[{\"HostPort\":\"5012\"}]},\"Binds\":[\"/dev/video1:/dev/video1\"],\"Devices\":[{\"PathOnHost\":\"/dev/video1\",\"PathInContainer\":\"/dev/video1s\",\"CgroupPermissions\":\"mrw\"}]}}"
+            }
+          }
+        }
+      }
+    },

@@ -41,7 +41,7 @@ class ImageResult:
             self.heat_map = superimpose_anomaly_map(self.anomaly_map, self.image, normalize=False)
         if self.pred_mask is not None and self.pred_mask.max() <= 1.0:
             self.pred_mask *= 255
-            self.segmentations = mark_boundaries(self.image, self.pred_mask, color=(1, 0, 0), mode="thick")
+            self.segmentations = mark_boundaries(self.image, self.pred_mask, color=(0, 0, 1), mode="thick")
             if self.segmentations.max() <= 1.0:
                 self.segmentations = (self.segmentations * 255).astype(np.uint8)
         if self.gt_mask is not None and self.gt_mask.max() <= 1.0:

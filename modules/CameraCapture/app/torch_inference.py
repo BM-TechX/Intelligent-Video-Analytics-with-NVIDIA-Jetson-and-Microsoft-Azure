@@ -22,17 +22,17 @@ from anomalib.data.utils import (
 from anomalib.deploy import TorchInferencer
 from anomalib.post_processing import Visualizer
 class Infrence:
-    def __init__(self):
-        # Get the camera calibration matrix and distortion coefficients
-        inferencer,visualizer= self.loadInfrencer()
+    def __init__(self, model_path, config_path, device, visualization_mode, task):
+        # Get the camera calibration matrix and distortion coefficients    
+        inferencer,visualizer= self.loadInfrencer(model_path=model_path,config_path=config_path,device=device,visualization_mode=visualization_mode,task=task)
         self.inferencer = inferencer
         self.visualizer = visualizer
     
-    def loadInfrencer(self):
+    def loadInfrencer(self,model_path,config_path,device,visualization_mode,task):
         # Load the model
-        
-        model_path = 'model_3.ckpt'
-        config_path = 'config.yaml'
+        print(model_path)
+        #model_path = 'model_3.ckpt'
+        #config_path = 'config.yaml'
         device = 'cuda'
         visualization_mode = 'segmentation'
         task = 'segmentation' # 'classification'

@@ -76,7 +76,16 @@ def main(
         ROI1="0,0,0,0",
         ROI2="0,0,0,0",
         ROI3="0,0,0,0",
-        ROI4="0,0,0,0"
+        ROI4="0,0,0,0",
+        genral_rotation="0",
+        roi1_rotation="0",
+        roi2_rotation="0",
+        roi3_rotation="0",
+        roi4_rotation="0",
+        roi1a="0,0,0,0",
+        roi1b="0,0,0,0",
+        roi1c="0,0,0,0",
+        rpo1d="0,0,0,0"
         ):
     '''
     Capture a camera feed, send it to processing and forward outputs to EdgeHub
@@ -106,7 +115,8 @@ def main(
         except Exception as iothub_error:
             print("Unexpected error %s from IoTHub" % iothub_error)
             return
-        with CameraCapture(videoPath, imageProcessingEndpoint, imageProcessingParams, showVideo, verbose, loopVideo, convertToGray, resizeWidth, resizeHeight, annotate, send_to_Hub_callback,fps,AZURE_STORAGE_BLOB,AZURE_STORAGE_CONNECTION_STRING,AZURE_STORAGE_CONTAINER,IMAGEWIDTH,IMAGEHEIGHT,ROI1,ROI2,ROI3,ROI4) as cameraCapture:
+        with CameraCapture(videoPath, imageProcessingEndpoint, imageProcessingParams, showVideo, verbose, loopVideo, convertToGray, resizeWidth, resizeHeight, annotate, send_to_Hub_callback,fps,AZURE_STORAGE_BLOB,AZURE_STORAGE_CONNECTION_STRING,AZURE_STORAGE_CONTAINER,IMAGEWIDTH,IMAGEHEIGHT,
+                           ROI1,ROI2,ROI3,ROI4,genral_rotation,roi1_rotation,roi2_rotation,roi3_rotation,roi4_rotation,roi1a,roi2a,roi3a,roi4a) as cameraCapture:
             cameraCapture.start()
     except KeyboardInterrupt:
         print("Camera capture module stopped")
@@ -144,6 +154,15 @@ if __name__ == '__main__':
         ROI2 = os.getenv('ROI2', ""),
         ROI3 = os.getenv('ROI3', ""),
         ROI4 = os.getenv('ROI4', ""),
+        genral_rotation = os.getenv('genral_rotation', ""),
+        roi1_rotation = os.getenv('roi1_rotation', ""),
+        roi2_rotation = os.getenv('roi2_rotation', ""),
+        roi3_rotation = os.getenv('roi3_rotation', ""),
+        roi4_rotation = os.getenv('roi4_rotation', ""),
+        roi1a = os.getenv('roi1a', ""),
+        roi2a = os.getenv('roi2a', ""),
+        roi3a = os.getenv('roi3a', ""),
+        roi4a = os.getenv('roi4a', "")
         
 
     except ValueError as error:
@@ -153,4 +172,5 @@ if __name__ == '__main__':
     main(VIDEO_PATH, IMAGE_PROCESSING_ENDPOINT, IMAGE_PROCESSING_PARAMS, SHOW_VIDEO,
          VERBOSE, LOOP_VIDEO, CONVERT_TO_GRAY, RESIZE_WIDTH, RESIZE_HEIGHT, ANNOTATE,
          FPS,AZURE_STORAGE_BLOB,AZURE_STORAGE_CONNECTION_STRING,AZURE_STORAGE_CONTAINER,
-         IMAGEWIDTH,IMAGEHEIGHT,ROI1,ROI2,ROI3,ROI4)
+         IMAGEWIDTH,IMAGEHEIGHT,ROI1,ROI2,ROI3,ROI4,genral_rotation,roi1_rotation,roi2_rotation,
+         roi3_rotation,roi4_rotation,roi1a,roi2a,roi3a,roi4a)

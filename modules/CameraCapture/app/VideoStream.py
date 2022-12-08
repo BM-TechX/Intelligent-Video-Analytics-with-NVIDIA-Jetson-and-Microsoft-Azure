@@ -24,11 +24,11 @@ else:
 
 class VideoStream(object):
     
-    def __init__(self, path, queueSize=2):
+    def __init__(self, path, queueSize=1):
         self.stream = cv2.VideoCapture(path)
-        self.stream.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+        self.stream.set(cv2.CAP_PROP_BUFFERSIZE, 2)
         self.path = path
-        self.retrycount=10
+        self.retrycount=4
         #self.stream.set(cv2.CAP.PROP_FRAME_WIDTH, 1920)
         #self.stream.set(cv2.CAP.PROP_FRAME_HEIGHT, 1080)
         self.stopped = False
@@ -36,6 +36,11 @@ class VideoStream(object):
     def setSize(self, width, height):
         self.stream.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+    def setFPS(self, fps):
+        try:
+            self.stream.set(cv2.CAP_PROP_FPS, fps)
+        except:
+            print("Error setting FPS")
     def start(self):
         # start a thread to read frames from the video stream
         t = Thread(target=self.update, args=())
@@ -67,7 +72,7 @@ class VideoStream(object):
                         self.retryUpdate()
                         
                         #return
-                    self.retrycount=10
+                    self.retrycount=4
                     self.Q.put(frame)
 
                     # Clean the queue to keep only the latest frame

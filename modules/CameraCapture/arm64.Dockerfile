@@ -43,6 +43,8 @@ RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/config.yaml
 RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_1.ckpt
 RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_2.ckpt
 RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_3.ckpt
+RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_bottom.ckpt
+RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/config_bot.yaml
 RUN pip3 install datetime
 RUN pip3 install imutils
 # Cleanup

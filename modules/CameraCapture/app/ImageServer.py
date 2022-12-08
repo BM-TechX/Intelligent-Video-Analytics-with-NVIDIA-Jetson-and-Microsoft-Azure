@@ -10,10 +10,12 @@ import os
 
 
 class ImageStreamHandler(tornado.websocket.WebSocketHandler):
+
     def initialize(self, camera):
         self.clients = []
         self.camera = camera
-
+        self.counter=0
+        self.maxcounter=10
     def check_origin(self, origin):
         return True
 

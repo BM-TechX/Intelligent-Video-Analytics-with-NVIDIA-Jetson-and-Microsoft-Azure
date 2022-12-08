@@ -9,8 +9,8 @@
       margin-top: 100px;
     }
     .img {
-      border-radius: 8px;
-      width: 30%;
+      border-radius: 2px;
+      width: 60%;
     }
     .textbox {
       display: flex;
@@ -19,14 +19,14 @@
       width: 400px;
     }
     .background {
-      background-color: #121212;
+      background-color: #FFFFFF;
     }
     .primaryText {
-      color : #FFFFFF;
+      color : #1c3640;
       font-family: 'Roboto', sans-serif;
     }
     .secondaryText {
-      color : #B3B3B3;
+      color : #1c3640;
       font-family: 'Roboto', sans-serif;
       text-align: left;
     }
@@ -41,7 +41,7 @@
       margin-top: -10px;
       margin-left: -6px;
       margin-right: -6px;
-      background-color: #181818;
+      background-color: #FFFFFF;
       color: #181818;
       justify-content: space-between;
     }
@@ -60,10 +60,10 @@
   <body>
     <div class = "navbar">
       <div class = "left">
-        <h1 id="logo"><span class="primaryText">BM  </span><span class="logoText">TECHX</span></h1>
+        <img id="logo" src="fiberline-logo.svg" ">
       </div>
       <div class = "center">
-        <h1 class = "primaryText" style = "justify-content: center;">Fiberline Anommaly</h1>
+        <h1 class = "primaryText" style = "justify-content: center;">Anommaly Detection</h1>
       </div>
       <div class = "right"></div>
     </div>
@@ -71,12 +71,6 @@
     <div class = "container">
       <!--Put the Object Detection Image here.-->
       <img id="currentImage" class = "img">
-      <div class = "textbox">
-        <h1 class = "primaryText">Current Status</h1>
-        <p class = "secondaryText">
-          Status: <span id="status">Loading...</span>
-        </p>
-      </div>
     </div>
     
     <script>
@@ -104,7 +98,7 @@
       }
 
     </script>
-
+    <h1 id="logo"><span class="primaryText">BM  </span><span class="logoText">TECHX</span></h1>
   </body>
 
 </html>
