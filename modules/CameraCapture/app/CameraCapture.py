@@ -135,7 +135,7 @@ class CameraCapture(object):
         self.roi4a=roi4a
         self.UndistortParserInstance = UndistortParser()
         self.vs = None
-        self.useUSB=True
+        self.useUSB=False
       
 
         self.displayFrame = None
@@ -392,82 +392,85 @@ class CameraCapture(object):
             #Display frames
             if self.showVideo:
                 try:
-                    self.NB_OF_FRAMES_TO_SKIP = self.NB_OF_FRAMES_TO_SKIP -1
-                    if self.NB_OF_FRAMES_TO_SKIP <= 0:
-                        self.NB_OF_FRAMES_TO_SKIP =8
+                    # self.NB_OF_FRAMES_TO_SKIP = self.NB_OF_FRAMES_TO_SKIP -1
+                    # if self.NB_OF_FRAMES_TO_SKIP <= 0:
+                    #     self.NB_OF_FRAMES_TO_SKIP =8
                         
-                        if self.nbOfPreprocessingSteps == 0:
-                            if self.verbose and (perfForOneFrameInMs is not None):
-                                cv2.putText(frame, "FPS " + str(round(1000/perfForOneFrameInMs, 2)),(10, 35),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255), 2)
-                            #if self.annotate:
-                            #    #TODO: fix bug with annotate function
-                            #    self.__annotate(frame, response)
-                            
-                            self.displayFrame = cv2.imencode('.jpg', process_frame(frame))[1].tobytes()
-                        else:
-                            if self.verbose and (perfForOneFrameInMs is not None):
-                                cv2.putText(preprocessedFrame, "FPS " + str(round(1000/perfForOneFrameInMs, 2)),(10, 35),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255), 2)
-                            genral_rotation = 358.5
-                            roi1_rotation=360.1
-                            roi2_rotation=359.8
-                            roi3_rotation=359.25
-                            roi4_rotation=358.7
-                            roi1a = [9,100,303,1750]
-                            roi2a = [15,100,316,1750]
-                            roi3a = [30,100,320,1750]
-                            roi4a = [30,100,325,1750]
-                            print("roi4a :" + self.roi4a[0])
-                            
-                            preprocessedFrame = self.UndistortParserInstance.undistortImage(preprocessedFrame)
-                            print("Frame undistorted")
-                            preprocessedFrame=imutils.rotate(preprocessedFrame,genral_rotation)
-                            preroi1 = self.get_process_lane(self.ROI1,roi1a,roi1_rotation,preprocessedFrame)
-                            preroi2 = self.get_process_lane(self.ROI2,roi2a,roi2_rotation,preprocessedFrame)
-                            preroi3 = self.get_process_lane(self.ROI3,roi3a,roi3_rotation,preprocessedFrame)
-                            preroi4 = self.get_process_lane(self.ROI4,roi4a,roi4_rotation,preprocessedFrame)
-                            threshold = 0.5
-                            state = "NORMAL"
-                            #########LANE 1
-                            preroi1_img_ot,self.Lane1State = self.process_lane(preroi1,threshold)
-                            #########LANE 2
-                            preroi2_img_ot,self.Lane2State = self.process_lane(preroi2,threshold)
-                            ###########LANE 3
-                            preroi3_img_ot,self.Lane3State = self.process_lane(preroi3,threshold)
-                            ###########LANE 4
-                            preroi4_img_ot,self.Lane4State = self.process_lane(preroi4,threshold)
+                    
+                    if self.verbose and (perfForOneFrameInMs is not None):
+                        cv2.putText(preprocessedFrame, "FPS " + str(round(1000/perfForOneFrameInMs, 2)),(10, 35),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255), 2)
+                    genral_rotation = 358.5
+                    roi1_rotation=360.1
+                    roi2_rotation=359.8
+                    roi3_rotation=359.25
+                    roi4_rotation=358.7
+                    roi1a = [9,100,303,1750]
+                    roi2a = [15,100,316,1750]
+                    roi3a = [30,100,320,1750]
+                    roi4a = [30,100,325,1750]
+                    print("roi4a :" + self.roi4a[0])
+                    
+                    preprocessedFrame = self.UndistortParserInstance.undistortImage(preprocessedFrame)
+                    print("Frame undistorted")
+                    
+                    preprocessedFrame=imutils.rotate(preprocessedFrame,genral_rotation)
+                    preroi1 = self.get_process_lane(self.ROI1,roi1a,roi1_rotation,preprocessedFrame)
+                    preroi2 = self.get_process_lane(self.ROI2,roi2a,roi2_rotation,preprocessedFrame)
+                    preroi3 = self.get_process_lane(self.ROI3,roi3a,roi3_rotation,preprocessedFrame)
+                    preroi4 = self.get_process_lane(self.ROI4,roi4a,roi4_rotation,preprocessedFrame)
+                    threshold = 0.5
+                    state = "NORMAL"
+                    # #########LANE 1
+                    preroi1_img_ot,self.Lane1State = self.process_lane(preroi1,threshold)
+                    # #########LANE 2
+                    preroi2_img_ot,self.Lane2State = self.process_lane(preroi2,threshold)
+                    # ###########LANE 3
+                    preroi3_img_ot,self.Lane3State = self.process_lane(preroi3,threshold)
+                    # ###########LANE 4
+                    preroi4_img_ot,self.Lane4State = self.process_lane(preroi4,threshold)
+                    # preroi1_gray = cv2.cvtColor(preroi1, cv2.COLOR_BGR2GRAY)
+                    # preroi1_img_ot,predictions =self.infrencerTop.getInfrence(preroi1_gray)
+                    # preroi2_gray = cv2.cvtColor(preroi2, cv2.COLOR_BGR2GRAY)
+                    # preroi2_img_ot,predictions =self.infrencerTop.getInfrence(preroi2_gray)
+                    # preroi3_gray = cv2.cvtColor(preroi3, cv2.COLOR_BGR2GRAY)
+                    # preroi3_img_ot,predictions =self.infrencerTop.getInfrence(preroi3_gray)
+                    # preroi4_gray = cv2.cvtColor(preroi4, cv2.COLOR_BGR2GRAY)
+                    # preroi4_img_ot,predictions =self.infrencerTop.getInfrence(preroi4_gray)
+                    
+                    #LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
 
-                            #####################COMBINE
-                            print("før combine")
-                            print (self.Lane1State + " " + self.Lane2State + " " + self.Lane3State + " " + self.Lane4State)
-                            numpy_horizontal_concat = np.concatenate((preroi1_img_ot, preroi2_img_ot, preroi3_img_ot, preroi4_img_ot), axis=1)
-                            width, height, channels = numpy_horizontal_concat.shape
-                            width = int(width/2)
-                            height = int(height/2)
-                            try:
-                                frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
-                                #frame1,self.Lane4State = self.process_lane_bottom(frame1,threshold)
-                                frame1_resized = cv2.resize(frame1, dsize=(height, width))
-                                frame2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
-                                #frame2,self.Lane4State = self.process_lane_bottom(frame2,threshold)
-                                frame2_resized = cv2.resize(frame2, dsize=(height, width))
-                                frame3 = cv2.cvtColor(frame3, cv2.COLOR_BGR2GRAY)
-                                #frame3,self.Lane4State = self.process_lane_bottom(frame3,threshold)
-                                frame3_resized = cv2.resize(frame3, dsize=(height, width))
-                                frame4 = cv2.cvtColor(frame4, cv2.COLOR_BGR2GRAY)
-                                #frame4,self.Lane4State = self.process_lane_bottom(frame4,threshold)
-                                frame4_resized = cv2.resize(frame4, dsize=(height, width))
-                            except Exception as e:
-                                print("Error in frame1: " + str(e))
-                            
-                            try:
-                                numpy_horizontal_concat_usb_top = np.concatenate((frame1_resized, frame2_resized), axis=1)
-                                numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
-                                numpy_horizontal_concat_usb = np.concatenate((numpy_horizontal_concat_usb_top, numpy_horizontal_concat_usb_bottom), axis=0)
-                                numpy_horizontal_concat = np.concatenate((numpy_horizontal_concat, numpy_horizontal_concat_usb), axis=1)
-                            except Exception as e:
-                                print("Error in concat: " + str(e))
-                            print("efter combine")
-                        self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()# +"|"+state
+                    #####################COMBINE
+                    print("før combine")
+                    print (self.Lane1State + " " + self.Lane2State + " " + self.Lane3State + " " + self.Lane4State)
+                    numpy_horizontal_concat = np.concatenate((preroi1_img_ot, preroi2_img_ot, preroi3_img_ot, preroi4_img_ot), axis=1)
+                    width, height, channels = numpy_horizontal_concat.shape
+                    width = int(width/2)
+                    height = int(height/2)
+                    if self.useUSB==True:
+                        try:
+                            frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
+                            #frame1,self.Lane4State = self.process_lane_bottom(frame1,threshold)
+                            frame1_resized = cv2.resize(frame1, dsize=(height, width))
+                            frame2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
+                            #frame2,self.Lane4State = self.process_lane_bottom(frame2,threshold)
+                            frame2_resized = cv2.resize(frame2, dsize=(height, width))
+                            frame3 = cv2.cvtColor(frame3, cv2.COLOR_BGR2GRAY)
+                            #frame3,self.Lane4State = self.process_lane_bottom(frame3,threshold)
+                            frame3_resized = cv2.resize(frame3, dsize=(height, width))
+                            frame4 = cv2.cvtColor(frame4, cv2.COLOR_BGR2GRAY)
+                            #frame4,self.Lane4State = self.process_lane_bottom(frame4,threshold)
+                            frame4_resized = cv2.resize(frame4, dsize=(height, width))
+                        except Exception as e:
+                            print("Error in frame1: " + str(e))
+                    try:
+                        numpy_horizontal_concat_usb_top = np.concatenate((frame1_resized, frame2_resized), axis=1)
+                        numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
+                        numpy_horizontal_concat_usb = np.concatenate((numpy_horizontal_concat_usb_top, numpy_horizontal_concat_usb_bottom), axis=0)
+                        numpy_horizontal_concat = np.concatenate((numpy_horizontal_concat, numpy_horizontal_concat_usb), axis=1)
+                    except Exception as e:
+                        print("Error in concat: " + str(e))
+                    print("efter combine")
+                    self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()# +"|"+state
                 except Exception as e:
                     print("Could not display the video to a web browser.") 
                     print('Excpetion -' + str(e))

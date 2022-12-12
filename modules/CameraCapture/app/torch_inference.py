@@ -12,7 +12,6 @@ import sklearn
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 import cv2
-import torch
 
 from anomalib.data.utils import (
     generate_output_image_filename,
@@ -45,7 +44,6 @@ class Infrence:
         # Perform inference
         predictions = self.inferencer.predict(image=image)
         print(predictions.pred_label)
-        print(predictions.anomaly_map)
         output = self.visualizer.visualize_image(predictions)
         return output,predictions
     
