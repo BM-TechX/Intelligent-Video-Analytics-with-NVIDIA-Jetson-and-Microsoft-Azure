@@ -132,7 +132,7 @@
                           "roi4a" : {"value":"$roi4a"}
                         },
                         "settings": {
-                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v36",
+                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v37",
                           "createOptions": {
                             "HostConfig": {
                               "runtime": "nvidia",
@@ -182,7 +182,7 @@
                           "roi4a" : {"value":"$roi4a"}
                         },
                         "settings": {
-                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v36",
+                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v37",
                           "createOptions": {
                             "HostConfig": {
                               "runtime": "nvidia",
@@ -194,6 +194,106 @@
                                 {"PathOnHost":"/dev/$USBHOST_ALT1","PathInContainer":"/dev/video0","CgroupPermissions":"mrw"},
                                 {"PathOnHost":"/dev/$USBHOST2","PathInContainer":"/dev/video1","CgroupPermissions":"mrw"},
                                 {"PathOnHost":"/dev/$USBHOST3","PathInContainer":"/dev/video2","CgroupPermissions":"mrw"},
+                                {"PathOnHost":"/dev/$USBHOST4","PathInContainer":"/dev/video3","CgroupPermissions":"mrw"}
+                                ]
+                            }
+                          }
+                        }
+                    },
+                    "camera-capture-ALT_2": {
+                        "version": "1",
+                        "type": "docker",
+                        "status": "running",
+                        "restartPolicy": "always",
+                        "env": {
+                          "VIDEO_PATH": {"value": "rtsp://$USERNAME:$PASSWORD@$IPADDRESS:$PORT"},
+                          "IMAGE_PROCESSING_ENDPOINT":  {"value": "$IMAGEPROCESSOR_ENDPOINT"},
+                          "RESIZE_WIDTH":  {"value": "0"},
+                          "RESIZE_HEIGHT":  {"value": "0"},
+                          "SHOW_VIDEO":  {"value": "True"},
+                          "FPS":{"value":"10"},
+                          "AZURE_STORAGE_BLOB":{"value": "$AZURE_STORAGE_BLOB"},
+                          "AZURE_STORAGE_CONNECTION_STRING" : { "value": "$AZURE_STORAGE_CONNECTION_STRING"},
+                          "AZURE_STORAGE_CONTAINER" : {"value": "$AZURE_STORAGE_CONTAINER"},
+                          "ROI1":{"value": "$ROI1"},
+                          "ROI2":{"value": "$ROI2"},
+                          "ROI3":{"value": "$ROI3"},
+                          "ROI4":{"value": "$ROI4"},
+                          "IMAGEWIDTH":{"value":"$IMAGEWIDTH"},
+                          "IMAGEHEIGHT":{"value":"$IMAGEHEIGHT"},
+                          "genral_rotation" : {"value":"$genral_rotation"},
+                          "roi1_rotation" : {"value":"$roi1_rotation"},
+                          "roi2_rotation" : {"value":"$roi2_rotation"},
+                          "roi3_rotation" : {"value":"$roi3_rotation"},
+                          "roi4_rotation" : {"value":"$roi4_rotation"},
+                          "roi1a" : {"value":"$roi1a"},
+                          "roi2a" : {"value":"$roi2a"},
+                          "roi3a" : {"value":"$roi3a"},
+                          "roi4a" : {"value":"$roi4a"}
+                        },
+                        "settings": {
+                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v37",
+                          "createOptions": {
+                            "HostConfig": {
+                              "runtime": "nvidia",
+                              "PortBindings": {
+                                "5012/tcp": [ { "HostPort":"5012"}]
+                              },
+                              "Binds": ["/dev/$USBHOST_ALT1:/dev/video0","/dev/$USBHOST_ALT2:/dev/video1","/dev/$USBHOST3:/dev/video2","/dev/$USBHOST4:/dev/video3"],
+                              "Devices":[
+                                {"PathOnHost":"/dev/$USBHOST_ALT1","PathInContainer":"/dev/video0","CgroupPermissions":"mrw"},
+                                {"PathOnHost":"/dev/$USBHOST_ALT2","PathInContainer":"/dev/video1","CgroupPermissions":"mrw"},
+                                {"PathOnHost":"/dev/$USBHOST3","PathInContainer":"/dev/video2","CgroupPermissions":"mrw"},
+                                {"PathOnHost":"/dev/$USBHOST4","PathInContainer":"/dev/video3","CgroupPermissions":"mrw"}
+                                ]
+                            }
+                          }
+                        }
+                    },
+                    "camera-capture-ALT_3": {
+                        "version": "1",
+                        "type": "docker",
+                        "status": "running",
+                        "restartPolicy": "always",
+                        "env": {
+                          "VIDEO_PATH": {"value": "rtsp://$USERNAME:$PASSWORD@$IPADDRESS:$PORT"},
+                          "IMAGE_PROCESSING_ENDPOINT":  {"value": "$IMAGEPROCESSOR_ENDPOINT"},
+                          "RESIZE_WIDTH":  {"value": "0"},
+                          "RESIZE_HEIGHT":  {"value": "0"},
+                          "SHOW_VIDEO":  {"value": "True"},
+                          "FPS":{"value":"10"},
+                          "AZURE_STORAGE_BLOB":{"value": "$AZURE_STORAGE_BLOB"},
+                          "AZURE_STORAGE_CONNECTION_STRING" : { "value": "$AZURE_STORAGE_CONNECTION_STRING"},
+                          "AZURE_STORAGE_CONTAINER" : {"value": "$AZURE_STORAGE_CONTAINER"},
+                          "ROI1":{"value": "$ROI1"},
+                          "ROI2":{"value": "$ROI2"},
+                          "ROI3":{"value": "$ROI3"},
+                          "ROI4":{"value": "$ROI4"},
+                          "IMAGEWIDTH":{"value":"$IMAGEWIDTH"},
+                          "IMAGEHEIGHT":{"value":"$IMAGEHEIGHT"},
+                          "genral_rotation" : {"value":"$genral_rotation"},
+                          "roi1_rotation" : {"value":"$roi1_rotation"},
+                          "roi2_rotation" : {"value":"$roi2_rotation"},
+                          "roi3_rotation" : {"value":"$roi3_rotation"},
+                          "roi4_rotation" : {"value":"$roi4_rotation"},
+                          "roi1a" : {"value":"$roi1a"},
+                          "roi2a" : {"value":"$roi2a"},
+                          "roi3a" : {"value":"$roi3a"},
+                          "roi4a" : {"value":"$roi4a"}
+                        },
+                        "settings": {
+                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v37",
+                          "createOptions": {
+                            "HostConfig": {
+                              "runtime": "nvidia",
+                              "PortBindings": {
+                                "5012/tcp": [ { "HostPort":"5012"}]
+                              },
+                              "Binds": ["/dev/$USBHOST1:/dev/video0","/dev/$USBHOST2:/dev/video1","/dev/$USBHOST_ALT2:/dev/video2","/dev/$USBHOST4:/dev/video3"],
+                              "Devices":[
+                                {"PathOnHost":"/dev/$USBHOST1","PathInContainer":"/dev/video0","CgroupPermissions":"mrw"},
+                                {"PathOnHost":"/dev/$USBHOST2","PathInContainer":"/dev/video1","CgroupPermissions":"mrw"},
+                                {"PathOnHost":"/dev/$USBHOST_ALT2","PathInContainer":"/dev/video2","CgroupPermissions":"mrw"},
                                 {"PathOnHost":"/dev/$USBHOST4","PathInContainer":"/dev/video3","CgroupPermissions":"mrw"}
                                 ]
                             }

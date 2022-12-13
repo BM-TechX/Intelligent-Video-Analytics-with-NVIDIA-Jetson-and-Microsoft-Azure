@@ -16,7 +16,8 @@ import cv2 as cv
 class FreshestFrame(threading.Thread):
 	def __init__(self, capture, name='FreshestFrame'):
 		self.capture = capture
-		assert self.capture.isOpened()
+        
+		#assert self.capture.isOpened()
 
 		# this lets the read() method block until there's a new frame
 		self.cond = threading.Condition()

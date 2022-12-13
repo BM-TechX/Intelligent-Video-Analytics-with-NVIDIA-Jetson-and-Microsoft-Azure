@@ -26,7 +26,7 @@ class VideoStream(object):
     
     def __init__(self, path, queueSize=1):
         self.stream = cv2.VideoCapture(path)
-        self.stream.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+        #self.stream.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         self.path = path
         self.retrycount=4
         #self.stream.set(cv2.CAP.PROP_FRAME_WIDTH, 1920)
@@ -51,7 +51,7 @@ class VideoStream(object):
         if (self.retrycount > 0):
             self.stream.release()
             self.stream = cv2.VideoCapture(self.path)
-            self.stream.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            #self.stream.set(cv2.CAP_PROP_BUFFERSIZE, 1)
             self.retrycount=self.retrycount-1
             self.stop=False
             self.update()

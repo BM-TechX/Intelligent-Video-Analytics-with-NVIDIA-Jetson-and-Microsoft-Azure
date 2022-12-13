@@ -24,11 +24,15 @@ import os
 from azure.storage.blob import BlobServiceClient, PublicAccess
 import VideoStream
 from VideoStream import VideoStream
-import AnnotationParser
-from AnnotationParser import AnnotationParser
+import FreshestFrame
+from FreshestFrame import FreshestFrame
+import BufferLess
+from BufferLess import BufferLess
 import ImageServer
 from ImageServer import ImageServer
 from datetime import datetime
+import ProcessFrame
+from ProcessFrame import ProcessFrame
 import UndistortParser
 from UndistortParser import UndistortParser
 import torch_inference
@@ -36,6 +40,7 @@ from torch_inference import Infrence
 import string
 import random
 import imutils
+
 
 class CameraCapture(object):
 
@@ -81,8 +86,6 @@ class CameraCapture(object):
             roi4a="0,0,0,0",
             NUMBERFRAME=20,
             ):
-        self.infrencerTop = Infrence(model_path='model_3.ckpt',config_path='config.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
-       # self.infrencerbuttom = Infrence(model_path='model_bottom.ckpt',config_path='config_bot.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
         self.videoPath = videoPath
         self.isRTSP = False
         self.vscam1 = None
@@ -135,15 +138,18 @@ class CameraCapture(object):
         self.roi4a=roi4a
         self.UndistortParserInstance = UndistortParser()
         self.vs = None
-        self.useUSB=False
-      
-
+        self.useUSB=True
         self.displayFrame = None
         self.Lane1State = None
         self.Lane2State = None
         self.Lane3State = None
         self.Lane4State = None
-        self.NB_OF_FRAMES_TO_SKIP=20
+        self.numpy_horizontal_concat_usb = None
+        self.numpy_horizontal_concat_rtsp = None
+        self.infrencerTop = Infrence(model_path='model_3.ckpt',config_path='config.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
+        if self.useUSB == True:
+            self.infrencerbuttom = Infrence(model_path='model_bottom.ckpt',config_path='config_bot.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
+        
         print("booting up")
         if self.convertToGray:
             self.nbOfPreprocessingSteps +=1
@@ -170,45 +176,19 @@ class CameraCapture(object):
             self.imageServer.start()
     def __uploadToAzure(self, counter, frame):
         try:
-            
-            blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net")
-            local_file_name = str(counter) +  ".jpg"
-            _, img_encode = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 99])            
-            try:
-                blob_client = blob_service_client.get_blob_client(container=self.AZURE_STORAGE_BLOB[0], blob=local_file_name)
-                blob_client.upload_blob(img_encode.tobytes(), overwrite=True)
-            except:
-                print("error")
+            print("uploading to azure")
+            # blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net")
+            # local_file_name = str(counter) +  ".jpg"
+            # _, img_encode = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 99])            
+            # try:
+            #     blob_client = blob_service_client.get_blob_client(container=self.AZURE_STORAGE_BLOB[0], blob=local_file_name)
+            #     blob_client.upload_blob(img_encode.tobytes(), overwrite=True)
+            # except:
+            #     print("error")
         except Exception as e:
             print('__uploadToAzure Excpetion -' + str(e))
             return
 
-    def __annotate(self, frame, response):
-        AnnotationParserInstance = AnnotationParser()
-        #TODO: Make the choice of the service configurable
-        listOfRectanglesToDisplay = AnnotationParserInstance.getCV2RectanglesFromProcessingService1(response)
-        for rectangle in listOfRectanglesToDisplay:
-            cv2.rectangle(frame, (rectangle(0), rectangle(1)), (rectangle(2), rectangle(3)), (0,0,255),4)
-        return
-    def __undistort(self, frame):
-        UndistortParserInstance = UndistortParser()
-        
-    def __sendFrameForProcessing(self, frame):
-            headers = {'Content-Type': 'application/octet-stream'}
-            try:
-                response = requests.post(self.imageProcessingEndpoint, headers = headers, params = self.imageProcessingParams, data = frame)
-            except Exception as e:
-                print('__sendFrameForProcessing Excpetion -' + str(e))
-                return "[]"
-
-            if self.verbose:
-                try:
-                    print("Response from external processing service: (" + str(response.status_code) + ") " + json.dumps(response.json()))
-                except Exception:
-                    print("Response from external processing service (status code): " + str(response.status_code))
-            print(response)
-            return []
-            #return json.dumps(response.json())
 
     def __displayTimeDifferenceInMs(self, endTime, startTime):
         return str(int((endTime-startTime) * 1000)) + " ms"
@@ -220,26 +200,53 @@ class CameraCapture(object):
                 self.vs = VideoStream(int(self.videoPath))
                 self.vs.setSize(4032,3040)
             else:
-                self.vs = VideoStream(self.videoPath)
+                #self.vs = VideoStream(self.videoPath)
+                #cap = cv2.VideoCapture(self.videoPath)
+                ##cap.set(cv2.CAP_PROP_FPS, 10)
+                ##self.vs = cap
+                # wrap it
+                self.vs = BufferLess(self.videoPath,id="rtsp")
+               
                 #self.vs.setFPS(15)
                 if self.useUSB ==True:
-                    self.vscam1=VideoStream(0)
-                    self.vscam1.setSize(4032,3040)
-                    self.vscam1.start()
-     
-                    self.vscam2=VideoStream(1)
-                    self.vscam2.setSize(4032,3040)
-                    self.vscam2.start()
+                    ##self.vscam1=BufferLess(0,10,4032,3040)
+                    print("init cam1")
+                    self.vscam1=ProcessFrame(BufferLess(0,id="0"),0.5,infrencerbuttom=self.infrencerbuttom)
+                    time.sleep(5.0)
+                    if (self.vscam1.start_processing() == False):
+                        print("error")
+                    
+                    print("init over cam1")
+                    #self.vscam2=BufferLess(1,10,4032,3040)
+                    print("init cam2")
+                    self.vscam2=ProcessFrame(BufferLess(1,id="0"),0.5,infrencerbuttom=self.infrencerbuttom)
+                    time.sleep(5.0)
+                    if (self.vscam2.start_processing() == False):
+                        print("error")
+                    
+                    #self.vscam2=BufferLess(1,id="1")
+                    #time.sleep(1)
+                    print("init over cam2")
+                    #self.vscam2= VideoStream(1)
+                    #self.vscam2.start()
     
-                    self.vscam3=VideoStream(2)
-                    self.vscam3.setSize(4032,3040)
-                    self.vscam3.start()
-                    self.vscam4=VideoStream(3)
-                    self.vscam4.setSize(4032,3040)
-                    self.vscam4.start()
+                    #self.vscam3=BufferLess(2,10,4032,3040)
+                    print("init cam3")
+                    self.vscam3=BufferLess(2,id="2")
+                    time.sleep(1)
+                    print("init over cam3")
+                    #self.vscam3 = VideoStream(2)
+                    #self.vscam3.start()
+                    #self.vscam4=BufferLess(3,10,4032,3040)
+                    print("init cam4")
+                    self.vscam4=BufferLess(3,id="3")
+                    time.sleep(1)
+                    print("init over cam4")
+                    #self.vscam4 = VideoStream(3)
+                    #self.vscam4.start()
                     
                     
-            self.vs.start()
+            ##self.vs.start()
             time.sleep(1.0)
             #needed to load at least one frame into the VideoStream class
             #self.capture = cv2.VideoCapture(int(self.videoPath))
@@ -293,37 +300,26 @@ class CameraCapture(object):
         
         
     def start(self):
-        frameCounter = 0
         infrenceCounter = 0
-        offsetCounter= 0
         perfForOneFrameInMs = None
+        cnt = 0
+        # Default imageProcessing interval in seconds
+        
         while True:
-            if self.showVideo or self.verbose:
-                startOverall = time.time()
-            if self.verbose:
-                startCapture = time.time()
-            offsetCounter += 1
-            frameCounter +=1
             if self.isWebcam:
-                
-                frame = self.vs.read()
-            else:
-                print("video")
-                frame = self.capture.read()[1]
-                if frameCounter == 1:
-                    if self.capture.get(cv2.CAP_PROP_FRAME_WIDTH) < self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT):
-                        self.autoRotate = True
-                if self.autoRotate:
-                    frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE) #The counterclockwise is random...It coudl well be clockwise. Is there a way to auto detect it?
+                ##frame = self.vs.read()
+                frame = self.vs.read()     
+                print("frame read")
+            #succes,frame = self.vs.read()           
             if self.useUSB ==True:
-                try:
-                    frame1 = self.vscam1.read()
-                except Exception as e:
-                    print("error in reading camera 1")
-                try:
-                    frame2 = self.vscam2.read()
-                except Exception as e:
-                    print("error in reading camera 2")
+                #try:
+                    #frame1 = self.vscam1.read()
+                #except Exception as e:
+                #    print("error in reading camera 1")
+                # try:
+                #     frame2 = self.vscam2.read()
+                # except Exception as e:
+                #     print("error in reading camera 2")
                 try:
                     frame3 = self.vscam3.read()
                 except Exception as e:
@@ -332,73 +328,20 @@ class CameraCapture(object):
                     frame4 = self.vscam4.read()
                 except Exception as e:
                     print("error in reading camera 4")
-            if self.verbose:
-                if frameCounter == 1:
-                    if not self.isWebcam:
-                        print("Original frame size: " + str(int(self.capture.get(cv2.CAP_PROP_FRAME_WIDTH))) + "x" + str(int(self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT))))
-                        print("Frame rate (FPS): " + str(int(self.capture.get(cv2.CAP_PROP_FPS))))
-                print("Frame number: " + str(frameCounter))
-                print("Time to capture (+ straighten up) a frame: " + self.__displayTimeDifferenceInMs(time.time(), startCapture))
-                startPreProcessing = time.time()
-            
             #Loop video
-            if not self.isWebcam:             
-                if frameCounter == self.capture.get(cv2.CAP_PROP_FRAME_COUNT):
-                    if self.loopVideo: 
-                        frameCounter = 0
-                        self.capture.set(cv2.CAP_PROP_POS_FRAMES, 0)
-                    else:
-                        break
-
             #Pre-process locally
+            print("frame starting preprocessing")
             if self.nbOfPreprocessingSteps == 1 and self.convertToGray:
                 preprocessedFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                
             
             if self.nbOfPreprocessingSteps == 1 and (self.resizeWidth != 0 or self.resizeHeight != 0):
                 preprocessedFrame = cv2.resize(frame, (self.resizeWidth, self.resizeHeight))
 
-            if self.nbOfPreprocessingSteps > 1:
-                preprocessedFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                preprocessedFrame = cv2.resize(preprocessedFrame, (self.resizeWidth,self.resizeHeight))
-            
-            if self.verbose:
-                print("Time to pre-process a frame: " + self.__displayTimeDifferenceInMs(time.time(), startPreProcessing))
-                startEncodingForProcessing = time.time()
+            print ("frame processed")
 
-            #Process externally
-            if self.imageProcessingEndpoint != "":
-
-                #Encode frame to send over HTTP
-                if self.nbOfPreprocessingSteps == 0:
-                    encodedFrame = cv2.imencode(".jpg", frame)[1].tostring()
-                else:
-                    encodedFrame = cv2.imencode(".jpg", preprocessedFrame)[1].tostring()
-
-                if self.verbose:
-                    print("Time to encode a frame for processing: " + self.__displayTimeDifferenceInMs(time.time(), startEncodingForProcessing))
-                    startProcessingExternally = time.time()
-                
-                #print("Frame uploaded to Azure Storage Blob")
-                #Send over HTTP for processing
-                if offsetCounter==100:
-                    #response = self.__sendFrameForProcessing(encodedFrame)
-                    #ONLY CAPTURE FRAME FROM INFRERNCE
-                    ###self.__uploadToAzure(frameCounter,frame)
-                    offsetCounter=0 
-                #response = self.__sendFrameForProcessing(encodedFrame)
-                if self.verbose:
-                    print("Time to process frame externally: " + self.__displayTimeDifferenceInMs(time.time(), startProcessingExternally))
-                ##    startSendingToEdgeHub = time.time()
-            #Display frames
             if self.showVideo:
                 try:
-                    # self.NB_OF_FRAMES_TO_SKIP = self.NB_OF_FRAMES_TO_SKIP -1
-                    # if self.NB_OF_FRAMES_TO_SKIP <= 0:
-                    #     self.NB_OF_FRAMES_TO_SKIP =8
-                        
-                    
-                    if self.verbose and (perfForOneFrameInMs is not None):
-                        cv2.putText(preprocessedFrame, "FPS " + str(round(1000/perfForOneFrameInMs, 2)),(10, 35),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255), 2)
                     genral_rotation = 358.5
                     roi1_rotation=360.1
                     roi2_rotation=359.8
@@ -443,53 +386,70 @@ class CameraCapture(object):
                     print("før combine")
                     print (self.Lane1State + " " + self.Lane2State + " " + self.Lane3State + " " + self.Lane4State)
                     numpy_horizontal_concat = np.concatenate((preroi1_img_ot, preroi2_img_ot, preroi3_img_ot, preroi4_img_ot), axis=1)
+                    self.numpy_horizontal_concat_rtsp= numpy_horizontal_concat
                     width, height, channels = numpy_horizontal_concat.shape
                     width = int(width/2)
                     height = int(height/2)
+                    if (self.numpy_horizontal_concat_usb is not None):
+                        numpy_horizontal_concat = np.concatenate((numpy_horizontal_concat,self.numpy_horizontal_concat_usb), axis=1)
+                        self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()# +"|"+state
                     if self.useUSB==True:
                         try:
-                            frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
+                            numpy_horizontal_concat = cv2.resize(numpy_horizontal_concat, dsize=(height*2, width*2))
+                        except:
+                            print("resize error")
+                            
+                        try:
+                            #frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
                             #frame1,self.Lane4State = self.process_lane_bottom(frame1,threshold)
-                            frame1_resized = cv2.resize(frame1, dsize=(height, width))
-                            frame2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
-                            #frame2,self.Lane4State = self.process_lane_bottom(frame2,threshold)
-                            frame2_resized = cv2.resize(frame2, dsize=(height, width))
+                            #frame1_resized = cv2.resize(frame1, dsize=(height, width))
+                            if(self.vscam1.frame_ready):
+                                frame1= self.vscam1.getframe()
+                                frame1_resized = cv2.resize(frame1, dsize=(height, width))
+                            else:
+                                frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
+                        except:
+                            print("frame1 error")
+                            frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
+                        try:
+                            # frame2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
+                            # frame2,self.Lane4State = self.process_lane_bottom(frame2,threshold)
+                            # frame2_resized = cv2.resize(frame2, dsize=(height, width))
+                            if(self.vscam2.frame_ready):
+                                frame2= self.vscam2.getframe()
+                                frame2_resized = cv2.resize(frame2, dsize=(height, width))
+                            else:
+                                frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
+                        except:
+                            print("frame2 error")
+                            frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
+                        try:
                             frame3 = cv2.cvtColor(frame3, cv2.COLOR_BGR2GRAY)
-                            #frame3,self.Lane4State = self.process_lane_bottom(frame3,threshold)
+                            frame3,self.Lane4State = self.process_lane_bottom(frame3,threshold)
                             frame3_resized = cv2.resize(frame3, dsize=(height, width))
+                        except:
+                            print("frame3 error")
+                            frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
+                        try:
                             frame4 = cv2.cvtColor(frame4, cv2.COLOR_BGR2GRAY)
-                            #frame4,self.Lane4State = self.process_lane_bottom(frame4,threshold)
+                            frame4,self.Lane4State = self.process_lane_bottom(frame4,threshold)
                             frame4_resized = cv2.resize(frame4, dsize=(height, width))
                         except Exception as e:
-                            print("Error in frame1: " + str(e))
+                            frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
+                            print("Error in frame4: " + str(e))
                     try:
                         numpy_horizontal_concat_usb_top = np.concatenate((frame1_resized, frame2_resized), axis=1)
                         numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
                         numpy_horizontal_concat_usb = np.concatenate((numpy_horizontal_concat_usb_top, numpy_horizontal_concat_usb_bottom), axis=0)
-                        numpy_horizontal_concat = np.concatenate((numpy_horizontal_concat, numpy_horizontal_concat_usb), axis=1)
+                        self.numpy_horizontal_concat_usb = numpy_horizontal_concat_usb
+                        numpy_horizontal_concat = np.concatenate((self.numpy_horizontal_concat_rtsp , numpy_horizontal_concat_usb), axis=1)
+                        self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()# +"|"+state
                     except Exception as e:
                         print("Error in concat: " + str(e))
-                    print("efter combine")
-                    self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()# +"|"+state
                 except Exception as e:
                     print("Could not display the video to a web browser.") 
                     print('Excpetion -' + str(e))
-                if self.verbose:
-                    if 'startDisplaying' in locals():
-                        print("Time to display frame: " + self.__displayTimeDifferenceInMs(time.time(), startDisplaying))
-                    elif 'startSendingToEdgeHub' in locals():
-                        print("Time to display frame: " + self.__displayTimeDifferenceInMs(time.time(), startSendingToEdgeHub))
-                    else:
-                        print("Time to display frame: " + self.__displayTimeDifferenceInMs(time.time(), startEncodingForProcessing))
-                perfForOneFrameInMs = int((time.time()-startOverall) * 1000)
-                if not self.isWebcam:
-                    waitTimeBetweenFrames = max(int(1000 / self.capture.get(cv2.CAP_PROP_FPS))-perfForOneFrameInMs, 1)
-                    print("Wait time between frames :" + str(waitTimeBetweenFrames))
-                    if cv2.waitKey(waitTimeBetweenFrames) & 0xFF == ord('q'):
-                        break
-            if self.verbose:
-                perfForOneFrameInMs = int((time.time()-startOverall) * 1000)
-                print("Total time for one frame: " + self.__displayTimeDifferenceInMs(time.time(), startOverall))
+                   
 
     def __exit__(self, exception_type, exception_value, traceback):
         if not self.isWebcam:
