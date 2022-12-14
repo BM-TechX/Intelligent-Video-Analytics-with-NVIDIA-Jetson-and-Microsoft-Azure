@@ -33,6 +33,8 @@ from ImageServer import ImageServer
 from datetime import datetime
 import ProcessFrame
 from ProcessFrame import ProcessFrame
+import ProcessFrameUSB
+from ProcessFrameUSB import ProcessFrameUSB
 import UndistortParser
 from UndistortParser import UndistortParser
 import torch_inference
@@ -144,6 +146,10 @@ class CameraCapture(object):
         self.Lane2State = None
         self.Lane3State = None
         self.Lane4State = None
+        self.previousUSBFrame1 = None
+        self.previousUSBFrame2 = None
+        self.previousUSBFrame3 = None
+        self.previousUSBFrame4 = None
         self.numpy_horizontal_concat_usb = None
         self.numpy_horizontal_concat_rtsp = None
         self.infrencerTop = Infrence(model_path='model_3.ckpt',config_path='config.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
@@ -155,20 +161,6 @@ class CameraCapture(object):
             self.nbOfPreprocessingSteps +=1
         if self.resizeWidth != 0 or self.resizeHeight != 0:
             self.nbOfPreprocessingSteps +=1
-        if self.verbose:
-            print("Initialising the camera capture with the following parameters: ")
-            print("   - Video path: " + self.videoPath)
-            print("   - Image processing endpoint: " + self.imageProcessingEndpoint)
-            print("   - Image processing params: " + json.dumps(self.imageProcessingParams))
-            print("   - Show video: " + str(self.showVideo))
-            print("   - Loop video: " + str(self.loopVideo))
-            print("   - Convert to gray: " + str(self.convertToGray))
-            print("   - Resize width: " + str(self.resizeWidth))
-            print("   - Resize height: " + str(self.resizeHeight))
-            #print("   - Annotate: " + str(self.annotate))
-            print("   - Send processing results to hub: " + str(self.sendToHubCallback is not None))
-            print()
-        
 
         
         if self.showVideo:
@@ -200,52 +192,13 @@ class CameraCapture(object):
                 self.vs = VideoStream(int(self.videoPath))
                 self.vs.setSize(4032,3040)
             else:
-                #self.vs = VideoStream(self.videoPath)
-                #cap = cv2.VideoCapture(self.videoPath)
-                ##cap.set(cv2.CAP_PROP_FPS, 10)
-                ##self.vs = cap
-                # wrap it
                 self.vs = BufferLess(self.videoPath,id="rtsp")
                
                 #self.vs.setFPS(15)
                 if self.useUSB ==True:
-                    ##self.vscam1=BufferLess(0,10,4032,3040)
-                    print("init cam1")
-                    self.vscam1=ProcessFrame(BufferLess(0,id="0"),0.5,infrencerbuttom=self.infrencerbuttom)
-                    time.sleep(5.0)
-                    if (self.vscam1.start_processing() == False):
-                        print("error")
-                    
-                    print("init over cam1")
-                    #self.vscam2=BufferLess(1,10,4032,3040)
-                    print("init cam2")
-                    self.vscam2=ProcessFrame(BufferLess(1,id="0"),0.5,infrencerbuttom=self.infrencerbuttom)
-                    time.sleep(5.0)
-                    if (self.vscam2.start_processing() == False):
-                        print("error")
-                    
-                    #self.vscam2=BufferLess(1,id="1")
-                    #time.sleep(1)
-                    print("init over cam2")
-                    #self.vscam2= VideoStream(1)
-                    #self.vscam2.start()
-    
-                    #self.vscam3=BufferLess(2,10,4032,3040)
-                    print("init cam3")
-                    self.vscam3=BufferLess(2,id="2")
-                    time.sleep(1)
-                    print("init over cam3")
-                    #self.vscam3 = VideoStream(2)
-                    #self.vscam3.start()
-                    #self.vscam4=BufferLess(3,10,4032,3040)
-                    print("init cam4")
-                    self.vscam4=BufferLess(3,id="3")
-                    time.sleep(1)
-                    print("init over cam4")
-                    #self.vscam4 = VideoStream(3)
-                    #self.vscam4.start()
-                    
-                    
+                    self.vscam1=ProcessFrameUSB(threshold=0.5,infrencerbuttom=self.infrencerbuttom)
+                    self.vscam1.start_processing()
+
             ##self.vs.start()
             time.sleep(1.0)
             #needed to load at least one frame into the VideoStream class
@@ -307,38 +260,23 @@ class CameraCapture(object):
         
         while True:
             if self.isWebcam:
-                ##frame = self.vs.read()
-                frame = self.vs.read()     
-                print("frame read")
-            #succes,frame = self.vs.read()           
-            if self.useUSB ==True:
-                #try:
-                    #frame1 = self.vscam1.read()
-                #except Exception as e:
-                #    print("error in reading camera 1")
-                # try:
-                #     frame2 = self.vscam2.read()
-                # except Exception as e:
-                #     print("error in reading camera 2")
-                try:
-                    frame3 = self.vscam3.read()
-                except Exception as e:
-                    print("error in reading camera 3")
-                try:
-                    frame4 = self.vscam4.read()
-                except Exception as e:
-                    print("error in reading camera 4")
-            #Loop video
-            #Pre-process locally
-            print("frame starting preprocessing")
-            if self.nbOfPreprocessingSteps == 1 and self.convertToGray:
-                preprocessedFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 
-            
-            if self.nbOfPreprocessingSteps == 1 and (self.resizeWidth != 0 or self.resizeHeight != 0):
-                preprocessedFrame = cv2.resize(frame, (self.resizeWidth, self.resizeHeight))
+                frame = self.vs.read() 
+            #Pre-process locally
+            try:
+                print("frame starting preprocessing")
+                if self.nbOfPreprocessingSteps == 1 and self.convertToGray:
+                    preprocessedFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                    
+                
+                if self.nbOfPreprocessingSteps == 1 and (self.resizeWidth != 0 or self.resizeHeight != 0):
+                    preprocessedFrame = cv2.resize(frame, (self.resizeWidth, self.resizeHeight))
 
-            print ("frame processed")
+                print ("frame processed")
+            except:
+                print("frame size is 0")
+                time.sleep(1.0)
+                
 
             if self.showVideo:
                 try:
@@ -371,16 +309,7 @@ class CameraCapture(object):
                     preroi3_img_ot,self.Lane3State = self.process_lane(preroi3,threshold)
                     # ###########LANE 4
                     preroi4_img_ot,self.Lane4State = self.process_lane(preroi4,threshold)
-                    # preroi1_gray = cv2.cvtColor(preroi1, cv2.COLOR_BGR2GRAY)
-                    # preroi1_img_ot,predictions =self.infrencerTop.getInfrence(preroi1_gray)
-                    # preroi2_gray = cv2.cvtColor(preroi2, cv2.COLOR_BGR2GRAY)
-                    # preroi2_img_ot,predictions =self.infrencerTop.getInfrence(preroi2_gray)
-                    # preroi3_gray = cv2.cvtColor(preroi3, cv2.COLOR_BGR2GRAY)
-                    # preroi3_img_ot,predictions =self.infrencerTop.getInfrence(preroi3_gray)
-                    # preroi4_gray = cv2.cvtColor(preroi4, cv2.COLOR_BGR2GRAY)
-                    # preroi4_img_ot,predictions =self.infrencerTop.getInfrence(preroi4_gray)
-                    
-                    #LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
+                    #
 
                     #####################COMBINE
                     print("før combine")
@@ -392,48 +321,64 @@ class CameraCapture(object):
                     height = int(height/2)
                     if (self.numpy_horizontal_concat_usb is not None):
                         numpy_horizontal_concat = np.concatenate((numpy_horizontal_concat,self.numpy_horizontal_concat_usb), axis=1)
-                        self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()# +"|"+state
+                        self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
+                    else:
+                        self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
                     if self.useUSB==True:
                         try:
                             numpy_horizontal_concat = cv2.resize(numpy_horizontal_concat, dsize=(height*2, width*2))
                         except:
                             print("resize error")
-                            
                         try:
-                            #frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
-                            #frame1,self.Lane4State = self.process_lane_bottom(frame1,threshold)
-                            #frame1_resized = cv2.resize(frame1, dsize=(height, width))
-                            if(self.vscam1.frame_ready):
-                                frame1= self.vscam1.getframe()
+                            if(self.vscam1.frame1_ready):
+                                frame1=self.vscam1.getframe("0")
                                 frame1_resized = cv2.resize(frame1, dsize=(height, width))
+                                self.prevousFrame1 = frame1_resized
+                            elif (self.prevousFrame1 is not None):
+                                frame1_resized = self.prevousFrame1
                             else:
                                 frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
                         except:
                             print("frame1 error")
                             frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
                         try:
-                            # frame2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
-                            # frame2,self.Lane4State = self.process_lane_bottom(frame2,threshold)
-                            # frame2_resized = cv2.resize(frame2, dsize=(height, width))
-                            if(self.vscam2.frame_ready):
-                                frame2= self.vscam2.getframe()
+       
+                            if(self.vscam1.frame2_ready):
+                                frame2 = self.vscam1.getframe("1")
                                 frame2_resized = cv2.resize(frame2, dsize=(height, width))
+                                self.previousUSBFrame2 = frame2_resized
+                            elif (self.previousUSBFrame2 is not None):
+                                frame2_resized = self.previousUSBFrame2
                             else:
-                                frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
+                                frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
                         except:
                             print("frame2 error")
                             frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
                         try:
-                            frame3 = cv2.cvtColor(frame3, cv2.COLOR_BGR2GRAY)
-                            frame3,self.Lane4State = self.process_lane_bottom(frame3,threshold)
-                            frame3_resized = cv2.resize(frame3, dsize=(height, width))
+
+                            if(self.vscam1.frame3_ready):
+                                frame3 = self.vscam1.getframe("2")
+                                frame3_resized = cv2.resize(frame3, dsize=(height, width))
+                                self.previousUSBFrame3 = frame3_resized
+                            elif (self.previousUSBFrame3 is not None):
+                                frame3_resized = self.previousUSBFrame3
+                            else:
+                                frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
+
                         except:
                             print("frame3 error")
                             frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
                         try:
-                            frame4 = cv2.cvtColor(frame4, cv2.COLOR_BGR2GRAY)
-                            frame4,self.Lane4State = self.process_lane_bottom(frame4,threshold)
-                            frame4_resized = cv2.resize(frame4, dsize=(height, width))
+          
+                            if(self.vscam1.frame4_ready):
+                                frame4= self.vscam1.getframe("3")
+                                frame4_resized = cv2.resize(frame4, dsize=(height, width))
+                                self.previousUSBFrame4 = frame4_resized
+                            elif (self.previousUSBFrame4 is not None):
+                                frame4_resized = self.previousUSBFrame4
+                            else:
+                                frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
+
                         except Exception as e:
                             frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
                             print("Error in frame4: " + str(e))
@@ -450,7 +395,7 @@ class CameraCapture(object):
                     print("Could not display the video to a web browser.") 
                     print('Excpetion -' + str(e))
                    
-
+    
     def __exit__(self, exception_type, exception_value, traceback):
         if not self.isWebcam:
             self.capture.release()

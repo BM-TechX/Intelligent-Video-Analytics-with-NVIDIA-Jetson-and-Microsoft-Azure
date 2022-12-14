@@ -50,7 +50,7 @@ RUN pip3 install imutils
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/* \
     && apt-get -y autoremove
-
+RUN pip3 install azure-data-tables
 ADD /app/ .
 
 # Expose the port

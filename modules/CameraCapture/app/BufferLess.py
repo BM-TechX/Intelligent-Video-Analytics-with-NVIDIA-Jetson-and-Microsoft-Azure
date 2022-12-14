@@ -26,6 +26,8 @@ class BufferLess:
         self.t.daemon = True
         self.id = id
         self.t.start()
+        self.frame1 = None
+        self.frame1_ready = False
 
     # grab frames as soon as they are available
     def _reader(self):
@@ -44,6 +46,7 @@ class BufferLess:
         with self.lock:
             _, frame = self.cap.retrieve()
         return frame
+    
     
     def read_gray(self):
         with self.lock:

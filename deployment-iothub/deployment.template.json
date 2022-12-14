@@ -132,7 +132,7 @@
                           "roi4a" : {"value":"$roi4a"}
                         },
                         "settings": {
-                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v37",
+                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:$CONTAINER_REGISTRY_TAG",
                           "createOptions": {
                             "HostConfig": {
                               "runtime": "nvidia",
@@ -182,7 +182,7 @@
                           "roi4a" : {"value":"$roi4a"}
                         },
                         "settings": {
-                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v37",
+                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:$CONTAINER_REGISTRY_TAG",
                           "createOptions": {
                             "HostConfig": {
                               "runtime": "nvidia",
@@ -232,7 +232,7 @@
                           "roi4a" : {"value":"$roi4a"}
                         },
                         "settings": {
-                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v37",
+                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:$CONTAINER_REGISTRY_TAG",
                           "createOptions": {
                             "HostConfig": {
                               "runtime": "nvidia",
@@ -282,7 +282,7 @@
                           "roi4a" : {"value":"$roi4a"}
                         },
                         "settings": {
-                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:v37",
+                          "image": "$CONTAINER_REGISTRY_NAME/cameracapture:$CONTAINER_REGISTRY_TAG",
                           "createOptions": {
                             "HostConfig": {
                               "runtime": "nvidia",

@@ -12,13 +12,14 @@ import threading
 # This class reads all the video frames in a separate thread and always has the keeps only the latest frame in its queue to be grabbed by another thread
 # bufferless VideoCapture
 class ProcessFrame(threading.Thread):
-    def __init__(self,camera,threshold=0.5,infrencerbuttom = None):
+    def __init__(self,camera,threshold=0.5,infrencerbuttom = None, id="notdefined"):
         self.camera = camera
         self.frame = None
         self.frame_ready = False
         self.LaneState = None
         self.threshold = threshold
         self.infrencerbuttom = infrencerbuttom
+        self.thread = None
 
     # grab frames as soon as they are available
     def get_process_lane(self,rs,regioninner,rotation,frame):
@@ -29,21 +30,9 @@ class ProcessFrame(threading.Thread):
         frame_cropped_rotated_inner = frame_cropped_rotated[int(regioninner[1]):int(regioninner[1]+regioninner[3]), int(regioninner[0]):int(regioninner[0]+regioninner[2])]
         return frame_cropped_rotated_inner
     
-    # def process_lane(self,frame,threshold):
-    #     preroi_img = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
-    #     preroi_img_ot,predictions =self.infrencerTop.getInfrence(preroi_img)
-    #     LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
-    #     if(predictions.pred_score>threshold):
-    #         try:
-    #             self.__uploadToAzure(str(datetime.date)+".jpg",frame=preroi_img)
-    #             state="ALARM"
-    #         except Exception as e:
-    #                 print("something went wrong while uploading to azure")
-    #     cv2.putText(preroi_img_ot, LaneState, (15, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
-    #     return preroi_img_ot,LaneState
-    def process_lane_bottom(self,frame,threshold):
+    def process_lane(self,frame,threshold):
         preroi_img = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
-        preroi_img_ot,predictions =self.infrencerbuttom.getInfrence(preroi_img)
+        preroi_img_ot,predictions =self.infrencerTop.getInfrence(preroi_img)
         LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
         if(predictions.pred_score>threshold):
             try:
@@ -53,7 +42,7 @@ class ProcessFrame(threading.Thread):
                     print("something went wrong while uploading to azure")
         cv2.putText(preroi_img_ot, LaneState, (15, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
         return preroi_img_ot,LaneState
-    
+
     def processing(self):
         while True:
             try:
@@ -63,7 +52,7 @@ class ProcessFrame(threading.Thread):
                 self.frame = frane_pred
                 self.frame_ready = True
             except Exception as e:
-                print("something went wrong while reading frame")
+                print("something went wrong while reading frame from camera : " + id)
     def getframe(self):
         if(self.frame_ready):
             self.frame_ready = False
@@ -78,6 +67,9 @@ class ProcessFrame(threading.Thread):
         else:
             thread1 = threading.Thread(target=self.processing)
             thread1.start()
+            self.thread = thread1
             return True
      
-   
+    def stop_processing(self):
+        self.thread.terminate()
+        return True
