@@ -57,3 +57,6 @@ class BufferLess:
                 except:
                     print("Error converting to gray")
         return frame
+    def stop(self):
+        self.cap.release()
+        return True

@@ -24,8 +24,6 @@ import os
 from azure.storage.blob import BlobServiceClient, PublicAccess
 import VideoStream
 from VideoStream import VideoStream
-import FreshestFrame
-from FreshestFrame import FreshestFrame
 import BufferLess
 from BufferLess import BufferLess
 import ImageServer
@@ -42,8 +40,9 @@ from torch_inference import Infrence
 import string
 import random
 import imutils
-
-
+import UploadToAzure
+from UploadToAzure import UploadToAzure
+from datetime import datetime
 class CameraCapture(object):
 
     def __IsInt(self,string):
@@ -152,6 +151,9 @@ class CameraCapture(object):
         self.previousUSBFrame4 = None
         self.numpy_horizontal_concat_usb = None
         self.numpy_horizontal_concat_rtsp = None
+        self.table="Fiberline"
+        self.connectionstring = "DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net"
+
         self.infrencerTop = Infrence(model_path='model_3.ckpt',config_path='config.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
         if self.useUSB == True:
             self.infrencerbuttom = Infrence(model_path='model_bottom.ckpt',config_path='config_bot.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
@@ -161,27 +163,41 @@ class CameraCapture(object):
             self.nbOfPreprocessingSteps +=1
         if self.resizeWidth != 0 or self.resizeHeight != 0:
             self.nbOfPreprocessingSteps +=1
-
+            
+        #############################Azure Storage############################################
+        self.upload = UploadToAzure(self.connectionstring,self.table)
+        try :
+            self.upload.connectToAzure()
+            self.upload.createTable(self.table)
+            if(self.upload.test_con()):
+                print("Connected to Azure")
+            else:
+                self.upload.intiateTable(self.table)
+        except Exception as e:
+            print("Error initCamera " + str(e))
+        ######################################################################################
         
         if self.showVideo:
             self.imageServer = ImageServer(5012, self)
             self.imageServer.start()
-    def __uploadToAzure(self, counter, frame):
+    def __uploadToAzure(self, filename, frame):
         try:
             print("uploading to azure")
-            # blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net")
-            # local_file_name = str(counter) +  ".jpg"
-            # _, img_encode = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 99])            
-            # try:
-            #     blob_client = blob_service_client.get_blob_client(container=self.AZURE_STORAGE_BLOB[0], blob=local_file_name)
-            #     blob_client.upload_blob(img_encode.tobytes(), overwrite=True)
-            # except:
-            #     print("error")
+            blob_service_client = BlobServiceClient.from_connection_string(self.connectionstring)
+            local_file_name = filename +  ".jpg"
+            _, img_encode = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 99])            
+            try:
+                blob_client = blob_service_client.get_blob_client(container=self.AZURE_STORAGE_BLOB[0], blob=local_file_name)
+                blob_client.upload_blob(img_encode.tobytes(), overwrite=True)
+            except Exception as e:
+                print("error" + str(e))
         except Exception as e:
             print('__uploadToAzure Excpetion -' + str(e))
             return
 
-
+    def restartrtsp(self):
+        self.vs.stop()
+        self.vs = BufferLess(self.videoPath,id="rtsp")
     def __displayTimeDifferenceInMs(self, endTime, startTime):
         return str(int((endTime-startTime) * 1000)) + " ms"
 
@@ -196,7 +212,7 @@ class CameraCapture(object):
                
                 #self.vs.setFPS(15)
                 if self.useUSB ==True:
-                    self.vscam1=ProcessFrameUSB(threshold=0.5,infrencerbuttom=self.infrencerbuttom)
+                    self.vscam1=ProcessFrameUSB(threshold=0.5,infrencerbuttom=self.infrencerbuttom,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
                     self.vscam1.start_processing()
 
             ##self.vs.start()
@@ -217,7 +233,29 @@ class CameraCapture(object):
         font = cv2.FONT_HERSHEY_SIMPLEX
         cv2.putText(frame, text, position, font, font_scale, color, thickness, cv2.LINE_AA)
         return frame
-    
+
+    def azUp(self,predictions,id,rowkey,url):
+            try:
+               
+                #now.month, now.day, now.year, now.hour, now.minute, now.secon
+                entity={
+                    'PartitionKey': id,
+                    'RowKey': rowkey,
+                    'Prediction': predictions.pred_label,
+                    'Score': str(predictions.pred_score),
+                    'anomaly_map': str(predictions.anomaly_map),
+                    'pred_mask': str(predictions.pred_mask),
+                    'url': url
+                    #'Timestamp': str(datetime.datetime.now())
+                }
+                if(self.upload.test_con()):
+                    self.upload.uploadtoTable(entity)
+                else:
+                    self.upload.intiateTable(self.table)
+                    self.upload.uploadtoTable(entity)
+            except Exception as e:
+                print("Error connecting to Azure " + str(e))
+
     def get_process_lane(self,rs,regioninner,rotation,frame):
         region1= rs[0].split(",")
         roi1=[int(region1[0]),int(region1[1]),int(region1[2]),int(region1[3])]
@@ -225,31 +263,25 @@ class CameraCapture(object):
         frame_cropped_rotated=imutils.rotate(frame_cropped,rotation)
         frame_cropped_rotated_inner = frame_cropped_rotated[int(regioninner[1]):int(regioninner[1]+regioninner[3]), int(regioninner[0]):int(regioninner[0]+regioninner[2])]
         return frame_cropped_rotated_inner
-    def process_lane(self,frame,threshold):
+    def process_lane(self,frame,threshold,id):
         preroi_img = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
         preroi_img_ot,predictions =self.infrencerTop.getInfrence(preroi_img)
         LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
+        now = datetime.now()
+        rowkey = str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(now.second)
+        url = ""
         if(predictions.pred_score>threshold):
             try:
-                self.__uploadToAzure(str(datetime.date)+".jpg",frame=preroi_img)
+                self.__uploadToAzure(filename=rowkey+id,frame=preroi_img)
+                url = "https://camtagstoreaiem.blob.core.windows.net/fiberdefects/"+rowkey+id+ ".jpg"
                 state="ALARM"
             except Exception as e:
                     print("something went wrong while uploading to azure")
-        cv2.putText(preroi_img_ot, LaneState, (15, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
-        return preroi_img_ot,LaneState
-    def process_lane_bottom(self,frame,threshold):
-        preroi_img = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
-        preroi_img_ot,predictions =self.infrencerbuttom.getInfrence(preroi_img)
-        LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
-        if(predictions.pred_score>threshold):
-            try:
-                self.__uploadToAzure(str(datetime.date)+".jpg",frame=preroi_img)
-                state="ALARM"
-            except Exception as e:
-                    print("something went wrong while uploading to azure")
-        cv2.putText(preroi_img_ot, LaneState, (15, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
-        return preroi_img_ot,LaneState
         
+        self.azUp(predictions,id,rowkey,url)
+        cv2.putText(preroi_img_ot, LaneState, (15, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
+        return preroi_img_ot,LaneState
+
         
         
     def start(self):
@@ -257,10 +289,10 @@ class CameraCapture(object):
         perfForOneFrameInMs = None
         cnt = 0
         # Default imageProcessing interval in seconds
+        count = 0
         
         while True:
             if self.isWebcam:
-                
                 frame = self.vs.read() 
             #Pre-process locally
             try:
@@ -274,6 +306,15 @@ class CameraCapture(object):
 
                 print ("frame processed")
             except:
+                count = count + 1
+                if count > 10:
+                    print("trying to restart rtsp")
+                    try:
+                        self.restartrtsp()
+                        time.sleep(3.0)
+                    except:
+                        print("rtsp restart failed")
+                        time.sleep(1.0)
                 print("frame size is 0")
                 time.sleep(1.0)
                 
@@ -289,7 +330,7 @@ class CameraCapture(object):
                     roi2a = [15,100,316,1750]
                     roi3a = [30,100,320,1750]
                     roi4a = [30,100,325,1750]
-                    print("roi4a :" + self.roi4a[0])
+   
                     
                     preprocessedFrame = self.UndistortParserInstance.undistortImage(preprocessedFrame)
                     print("Frame undistorted")
@@ -302,13 +343,13 @@ class CameraCapture(object):
                     threshold = 0.5
                     state = "NORMAL"
                     # #########LANE 1
-                    preroi1_img_ot,self.Lane1State = self.process_lane(preroi1,threshold)
+                    preroi1_img_ot,self.Lane1State = self.process_lane(preroi1,threshold,"Lane1Top")
                     # #########LANE 2
-                    preroi2_img_ot,self.Lane2State = self.process_lane(preroi2,threshold)
+                    preroi2_img_ot,self.Lane2State = self.process_lane(preroi2,threshold,"Lane2Top")
                     # ###########LANE 3
-                    preroi3_img_ot,self.Lane3State = self.process_lane(preroi3,threshold)
+                    preroi3_img_ot,self.Lane3State = self.process_lane(preroi3,threshold,"Lane3Top")
                     # ###########LANE 4
-                    preroi4_img_ot,self.Lane4State = self.process_lane(preroi4,threshold)
+                    preroi4_img_ot,self.Lane4State = self.process_lane(preroi4,threshold,"Lane4Top")
                     #
 
                     #####################COMBINE
@@ -330,25 +371,28 @@ class CameraCapture(object):
                         except:
                             print("resize error")
                         try:
+                            #frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
+                            #frame1,self.Lane4State = self.process_lane_bottom(frame1,threshold)
+                            #frame1_resized = cv2.resize(frame1, dsize=(height, width))
                             if(self.vscam1.frame1_ready):
                                 frame1=self.vscam1.getframe("0")
                                 frame1_resized = cv2.resize(frame1, dsize=(height, width))
-                                self.prevousFrame1 = frame1_resized
-                            elif (self.prevousFrame1 is not None):
-                                frame1_resized = self.prevousFrame1
+                                self.previousUSBFrame1 = frame1_resized
+                            elif (self.previousUSBFrame1 is not None):
+                                frame1_resized = self.previousUSBFrame1
                             else:
                                 frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
                         except:
                             print("frame1 error")
                             frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
                         try:
-       
+  
                             if(self.vscam1.frame2_ready):
                                 frame2 = self.vscam1.getframe("1")
                                 frame2_resized = cv2.resize(frame2, dsize=(height, width))
                                 self.previousUSBFrame2 = frame2_resized
                             elif (self.previousUSBFrame2 is not None):
-                                frame2_resized = self.previousUSBFrame2
+                                frame1_resized = self.previousUSBFrame2
                             else:
                                 frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
                         except:
@@ -369,7 +413,9 @@ class CameraCapture(object):
                             print("frame3 error")
                             frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
                         try:
-          
+                            # frame4 = cv2.cvtColor(frame4, cv2.COLOR_BGR2GRAY)
+                            # frame4,self.Lane4State = self.process_lane_bottom(frame4,threshold)
+                            # frame4_resized = cv2.resize(frame4, dsize=(height, width))
                             if(self.vscam1.frame4_ready):
                                 frame4= self.vscam1.getframe("3")
                                 frame4_resized = cv2.resize(frame4, dsize=(height, width))
