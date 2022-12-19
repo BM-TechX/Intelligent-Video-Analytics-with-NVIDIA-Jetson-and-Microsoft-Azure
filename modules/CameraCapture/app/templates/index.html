@@ -84,7 +84,9 @@
           ws.send("next");
 
       };
-
+      ws.datareceived = function(msg) {
+        console.log("data received");
+      }
       ws.onmessage = function(msg) {
 
           img.src = 'data:image/png;base64, ' + msg.data;

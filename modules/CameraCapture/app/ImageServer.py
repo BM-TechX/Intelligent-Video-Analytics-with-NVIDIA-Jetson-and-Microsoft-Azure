@@ -22,10 +22,12 @@ class ImageStreamHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         self.clients.append(self)
         print("Image Server Connection::opened")
-
+    def on_data(self, data):
+        self.write_message(data, binary=True)
     def on_message(self, msg):
         if msg == 'next':
             frame = self.camera.get_display_frame()
+            message = self.camera.get_LaneState()
             if frame != None:
                 encoded = base64.b64encode(frame)
                 self.write_message(encoded, binary=False)

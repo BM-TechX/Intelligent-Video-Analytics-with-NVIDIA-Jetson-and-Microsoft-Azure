@@ -2,13 +2,16 @@
     ViewData["Title"] = "Home Page";
 }
 @*Header Section*@
-<div class="jumbotron">
-    <h2>Raw Files</h2>
-    <h5></h5>
-</div>
 
 <div class="text-center">
-    <h1 class="display-4">Lets start categorising!</h1>
+    <h1 class="display-4">Search Anom</h1>
+
+<form asp-controller="Home" asp-action="Index" method="get">
+    <p>
+        <input type="text" name="SearchString" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
 </div>
 @if (Model != null && Model.Count > 0)
 {
@@ -17,7 +20,7 @@
         <div class="imageBlock">
             <!--<b><a href="@item.AbsoluteUri">link</a></b>-->
             <a href="@item" target="_blank"><img class="thumb" src="@item" alt="images" /></a><br />
-            <div class="deleteDiv"><img class="deleteIcon" src="~/Images/deleteImage.png" title="Delete Image" onclick="deleteImage('@item');" /></div>
+           <!-- <div class="deleteDiv"><img class="deleteIcon" src="~/Images/deleteImage.png" title="Delete Image" onclick="deleteImage('@item');" /></div>-->
         </div>
     }
 

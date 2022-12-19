@@ -25,7 +25,7 @@ class ProcessFrameUSB(threading.Thread):
         self.camera1 = None
         self.camera2 = None
         self.camera3 = None
-        self.camera3 = None
+        self.camera4 = None
         self.frame1 = None
         self.frame1_ready = False
         self.frame2 = None
@@ -38,11 +38,33 @@ class ProcessFrameUSB(threading.Thread):
         self.table = table
         self.threshold = threshold
         self.infrencerbuttom = infrencerbuttom
+        self.thread1 = None
         self.height = height
         self.witdh = witdh
         self.connectionstring = "DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net"
         self.AZURE_STORAGE_BLOB = AZURE_STORAGE_BLOB
         self.upload = UploadToAzure(self.connectionstring,self.table)
+        cam1= None
+        cam2= None
+        cam3= None
+        cam4= None
+        #######figure out which usb camera is associated with which lane
+        for i in range(0, 14):
+            vcap = cv2.VideoCapture("/dev/video"+str(i))
+            if vcap.isOpened():
+                print("camera opened :" + str(i) )
+                if(cam1 == None):
+                    cam1= "/dev/video"+str(i)
+                elif(cam2 == None):
+                    cam2= "/dev/video"+str(i)
+                elif(cam3 == None):
+                    cam3= "/dev/video"+str(i)
+                elif(cam4 == None):
+                    cam4= "/dev/video"+str(i)
+                vcap.release()
+            else:
+                vcap.release()
+
         try :
             self.upload.connectToAzure()
             self.upload.createTable(self.table)
@@ -53,32 +75,36 @@ class ProcessFrameUSB(threading.Thread):
         except Exception as e:
             print("Error initCamera " + str(e))
         try:
-            self.camera1 = cv2.VideoCapture('/dev/video0')
+            self.camera1 = cv2.VideoCapture(cam1)
             self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
             self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+            self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
             #self.camera1 = BufferLess(0)
-            time.sleep(5.0)      
+            time.sleep(2.0)      
         except Exception as e:
             print("Error initCamera 0 " + e)
         try:
-            self.camera2 = cv2.VideoCapture('/dev/video1')
+            self.camera2 = cv2.VideoCapture(cam2)
             self.camera2.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
             self.camera2.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-            time.sleep(5.0)
+            self.camera2.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            time.sleep(2.0)
         except:
             print("Error initCamera 1 " +e)
         try:
-            self.camera3 = cv2.VideoCapture('/dev/video2')
+            self.camera3 = cv2.VideoCapture(cam3)
             self.camera3.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
             self.camera3.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-            time.sleep(5.0)
+            self.camera3.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            time.sleep(2.0)
         except:
             print("Error initCamera 2 " +e)
         try:
-            self.camera4 = cv2.VideoCapture('/dev/video3')
+            self.camera4 = cv2.VideoCapture(cam4)
             self.camera4.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
             self.camera4.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-            time.sleep(5.0)
+            self.camera4.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            time.sleep(2.0)
         except:
             print("Error initCamera 3 " +e)
         
@@ -253,6 +279,17 @@ class ProcessFrameUSB(threading.Thread):
         else:
             thread1 = threading.Thread(target=self.processing)
             thread1.start()
+            self.thread1 = thread1
             return True
-     
+    def stop_processing(self):
+        try:
+            self.thread1.terminate()
+            self.camera1.release()
+            self.camera2.release()
+            self.camera3.release()
+            self.camera4.release()
+        except:
+            print("Error stopping processing")
+            return False
+        return True
    

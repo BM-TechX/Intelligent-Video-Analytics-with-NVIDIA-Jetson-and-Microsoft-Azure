@@ -290,6 +290,8 @@ class CameraCapture(object):
         cnt = 0
         # Default imageProcessing interval in seconds
         count = 0
+        usberror = 0
+        usbreuse = 0
         
         while True:
             if self.isWebcam:
@@ -307,7 +309,7 @@ class CameraCapture(object):
                 print ("frame processed")
             except:
                 count = count + 1
-                if count > 10:
+                if count > 4:
                     print("trying to restart rtsp")
                     try:
                         self.restartrtsp()
@@ -366,6 +368,22 @@ class CameraCapture(object):
                     else:
                         self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
                     if self.useUSB==True:
+                        if (usberror > 50):
+                            try:
+                                self.vscam1.stop_processing()
+                                self.vscam1=ProcessFrameUSB(threshold=0.5,infrencerbuttom=self.infrencerbuttom,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
+                                self.vscam1.start_processing()
+                            except:
+                                print("usb restart failed")
+                            usberror=0
+                        if (usbreuse > 400):
+                            try:
+                                self.vscam1.stop_processing()
+                                self.vscam1=ProcessFrameUSB(threshold=0.5,infrencerbuttom=self.infrencerbuttom,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
+                                self.vscam1.start_processing()
+                            except:
+                                print("usb restart failed")
+                            usbreuse=0
                         try:
                             numpy_horizontal_concat = cv2.resize(numpy_horizontal_concat, dsize=(height*2, width*2))
                         except:
@@ -380,8 +398,10 @@ class CameraCapture(object):
                                 self.previousUSBFrame1 = frame1_resized
                             elif (self.previousUSBFrame1 is not None):
                                 frame1_resized = self.previousUSBFrame1
+                                usbreuse=usbreuse+1
                             else:
                                 frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
+                                usberror=usberror+1
                         except:
                             print("frame1 error")
                             frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
@@ -392,9 +412,11 @@ class CameraCapture(object):
                                 frame2_resized = cv2.resize(frame2, dsize=(height, width))
                                 self.previousUSBFrame2 = frame2_resized
                             elif (self.previousUSBFrame2 is not None):
-                                frame1_resized = self.previousUSBFrame2
+                                frame2_resized = self.previousUSBFrame2
+                                usbreuse=usbreuse+1
                             else:
                                 frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
+                                usberror=usberror+1
                         except:
                             print("frame2 error")
                             frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
@@ -406,8 +428,10 @@ class CameraCapture(object):
                                 self.previousUSBFrame3 = frame3_resized
                             elif (self.previousUSBFrame3 is not None):
                                 frame3_resized = self.previousUSBFrame3
+                                usbreuse=usbreuse+1
                             else:
                                 frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
+                                usberror=usberror+1
 
                         except:
                             print("frame3 error")
@@ -422,11 +446,14 @@ class CameraCapture(object):
                                 self.previousUSBFrame4 = frame4_resized
                             elif (self.previousUSBFrame4 is not None):
                                 frame4_resized = self.previousUSBFrame4
+                                usbreuse=usbreuse+1
                             else:
                                 frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
+                                usberror=usberror+1
 
                         except Exception as e:
                             frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
+                            usberror=usberror+1
                             print("Error in frame4: " + str(e))
                     try:
                         numpy_horizontal_concat_usb_top = np.concatenate((frame1_resized, frame2_resized), axis=1)
