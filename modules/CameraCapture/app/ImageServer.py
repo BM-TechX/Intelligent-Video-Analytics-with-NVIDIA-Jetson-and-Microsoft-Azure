@@ -29,8 +29,11 @@ class ImageStreamHandler(tornado.websocket.WebSocketHandler):
             frame = self.camera.get_display_frame()
             message = self.camera.get_LaneState()
             if frame != None:
+                #entity = {'frame': frame, 'message': str(message)}
+                #entity = tornado.escape.json_encode(entity)
                 encoded = base64.b64encode(frame)
                 self.write_message(encoded, binary=False)
+                #self.write_message(entity, binary=True)
 
     def on_close(self):
         self.clients.remove(self)

@@ -51,12 +51,31 @@ class ProcessFrame(threading.Thread):
         self.Lane2State=None
         self.Lane3State=None
         self.Lane4State=None
-            
+    def azUp(self,predictions,id,rowkey,url):
+        try:
+        
+            #now.month, now.day, now.year, now.hour, now.minute, now.secon
+            entity={
+                'PartitionKey': id,
+                'RowKey': rowkey,
+                'Prediction': predictions.pred_label,
+                'Score': str(predictions.pred_score),
+                'anomaly_map': str(predictions.anomaly_map),
+                'pred_mask': str(predictions.pred_mask),
+                'url': url
+                #'Timestamp': str(datetime.datetime.now())
+            }
+            if(self.upload.test_con()):
+                self.upload.uploadtoTable(entity)
+            else:
+                self.upload.intiateTable(self.table)
+                self.upload.uploadtoTable(entity)
+        except Exception as e:
+            print("Error connecting to Azure " + str(e))
     def put_text(self, frame, text, position, color, font_scale, thickness):
         font = cv2.FONT_HERSHEY_SIMPLEX
         cv2.putText(frame, text, position, font, font_scale, color, thickness, cv2.LINE_AA)
         return frame
-    
     def get_process_lane(self,rs,regioninner,rotation,frame):
         region1= rs[0].split(",")
         roi1=[int(region1[0]),int(region1[1]),int(region1[2]),int(region1[3])]
@@ -76,7 +95,6 @@ class ProcessFrame(threading.Thread):
                     print("something went wrong while uploading to azure")
         cv2.putText(preroi_img_ot, LaneState, (15, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
         return preroi_img_ot,LaneState
-
     def getframe(self):
         if(self.frame_ready):
             self.frame_ready = False
@@ -123,8 +141,7 @@ class ProcessFrame(threading.Thread):
                     print("frame size is 0")
                     time.sleep(1.0)
             except Exception as e:
-                print("Error grab 0 " + str(e))
-          
+                print("Error grab 0 " + str(e))       
     def start_processing(self):
         if self.infrencerTop is None:
             print("Infrencer is not initialized")
@@ -133,8 +150,7 @@ class ProcessFrame(threading.Thread):
             thread1 = threading.Thread(target=self.processing)
             thread1.start()
             self.thread = thread1
-            return True
-     
+            return True    
     def stop_processing(self):
         self.thread.terminate()
         return True
