@@ -93,6 +93,7 @@ class CameraCapture(object):
         self.vscam2= None
         self.vscam3 = None
         self.vscam4 = None
+        self.state = None
         if self.__IsInt(videoPath):
             #case of a usb camera (usually mounted at /dev/video* where * is an int)
             self.isWebcam = True
@@ -145,6 +146,10 @@ class CameraCapture(object):
         self.Lane2State = None
         self.Lane3State = None
         self.Lane4State = None
+        self.LaneStateUSB1 = None
+        self.LaneStateUSB2 = None
+        self.LaneStateUSB3 = None
+        self.LaneStateUSB4 = None
         self.previousUSBFrame1 = None
         self.previousUSBFrame2 = None
         self.previousUSBFrame3 = None
@@ -227,7 +232,15 @@ class CameraCapture(object):
     def get_display_frame(self):
         return self.displayFrame   
     def get_LaneState(self):
-        return self.Lane1State + self.Lane2State + self.Lane3State + self.Lane4State
+        
+        return "Lane1 : " + self.Lane1State \
+            + "<br> Lane2 :" + self.Lane2State \
+            + "<br> Lane3 :" + self.Lane3State \
+            + "<br> Lane3 :" + self.Lane4State \
+            + "<br> USB1 :" + self.LaneStateUSB1 \
+            + "<br> USB2 :" + self.LaneStateUSB2 \
+            + "<br> USB3 :" + self.LaneStateUSB3 \
+            + "<br> USB4 :" + self.LaneStateUSB4
     
     def put_text(self, frame, text, position, color, font_scale, thickness):
         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -393,7 +406,7 @@ class CameraCapture(object):
                             #frame1,self.Lane4State = self.process_lane_bottom(frame1,threshold)
                             #frame1_resized = cv2.resize(frame1, dsize=(height, width))
                             if(self.vscam1.frame1_ready):
-                                frame1=self.vscam1.getframe("0")
+                                self.LaneStateUSB1,frame1=self.vscam1.getframe("0")
                                 frame1_resized = cv2.resize(frame1, dsize=(height, width))
                                 self.previousUSBFrame1 = frame1_resized
                             elif (self.previousUSBFrame1 is not None):
@@ -401,6 +414,7 @@ class CameraCapture(object):
                                 usbreuse=usbreuse+1
                             else:
                                 frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
+                                self.LaneStateUSB1=None
                                 usberror=usberror+1
                         except:
                             print("frame1 error")
@@ -408,7 +422,7 @@ class CameraCapture(object):
                         try:
   
                             if(self.vscam1.frame2_ready):
-                                frame2 = self.vscam1.getframe("1")
+                                self.LaneStateUSB2,frame2 = self.vscam1.getframe("1")
                                 frame2_resized = cv2.resize(frame2, dsize=(height, width))
                                 self.previousUSBFrame2 = frame2_resized
                             elif (self.previousUSBFrame2 is not None):
@@ -416,6 +430,7 @@ class CameraCapture(object):
                                 usbreuse=usbreuse+1
                             else:
                                 frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
+                                self.LaneStateUSB2=None
                                 usberror=usberror+1
                         except:
                             print("frame2 error")
@@ -423,7 +438,7 @@ class CameraCapture(object):
                         try:
 
                             if(self.vscam1.frame3_ready):
-                                frame3 = self.vscam1.getframe("2")
+                                self.LaneStateUSB3,frame3 = self.vscam1.getframe("2")
                                 frame3_resized = cv2.resize(frame3, dsize=(height, width))
                                 self.previousUSBFrame3 = frame3_resized
                             elif (self.previousUSBFrame3 is not None):
@@ -431,6 +446,7 @@ class CameraCapture(object):
                                 usbreuse=usbreuse+1
                             else:
                                 frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
+                                self.LaneStateUSB3=None
                                 usberror=usberror+1
 
                         except:
@@ -441,7 +457,7 @@ class CameraCapture(object):
                             # frame4,self.Lane4State = self.process_lane_bottom(frame4,threshold)
                             # frame4_resized = cv2.resize(frame4, dsize=(height, width))
                             if(self.vscam1.frame4_ready):
-                                frame4= self.vscam1.getframe("3")
+                                self.LaneStateUSB4,frame4= self.vscam1.getframe("3")
                                 frame4_resized = cv2.resize(frame4, dsize=(height, width))
                                 self.previousUSBFrame4 = frame4_resized
                             elif (self.previousUSBFrame4 is not None):
@@ -449,6 +465,7 @@ class CameraCapture(object):
                                 usbreuse=usbreuse+1
                             else:
                                 frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
+                                self.LaneStateUSB4=None
                                 usberror=usberror+1
 
                         except Exception as e:
