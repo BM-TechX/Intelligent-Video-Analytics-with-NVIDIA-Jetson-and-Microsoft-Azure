@@ -1,6 +1,6 @@
 #FROM nvcr.io/nvidia/l4t-base:r35.1.0
 FROM hubber.azurecr.io/anomlib:v1
-RUN echo "BUILD MODULE: CameraCapture"
+#RUN echo "BUILD MODULE: CameraCapture"
 
 # Enforces cross-compilation through Quemu
 #RUN [ "cross-build-start" ]
@@ -16,8 +16,8 @@ RUN echo "BUILD MODULE: CameraCapture"
 #        libgtk2.0-dev \
 #        v4l-utils
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+RUN apt-get update 
+RUN apt-get install -y --no-install-recommends \
         libcurl4-openssl-dev \
         libboost-python-dev \
         libgtk2.0-dev \

@@ -141,6 +141,7 @@ class CameraCapture(object):
         self.UndistortParserInstance = UndistortParser()
         self.vs = None
         self.useUSB=True
+        self.useFile=True
         self.displayFrame = None
         self.Lane1State = None
         self.Lane2State = None
@@ -156,6 +157,8 @@ class CameraCapture(object):
         self.previousUSBFrame4 = None
         self.numpy_horizontal_concat_usb = None
         self.numpy_horizontal_concat_rtsp = None
+        self.ALARM=0
+        self.ALARMREPORTED=0
         self.table="Fiberline"
         self.connectionstring = "DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net"
 
@@ -232,16 +235,20 @@ class CameraCapture(object):
     def get_display_frame(self):
         return self.displayFrame   
     def get_LaneState(self):
+        if (self.ALARM>10):
+            self.ALARMREPORTED=10
+            self.ALARM=0
+        if (self.ALARMREPORTED>1):
+            self.ALARMREPORTED= self.ALARMREPORTED-1
+            return "ALARM"
+        else :
+            return "NORMAL"
         
-        return "Lane1 : " + self.Lane1State \
-            + "<br> Lane2 :" + self.Lane2State \
-            + "<br> Lane3 :" + self.Lane3State \
-            + "<br> Lane3 :" + self.Lane4State \
-            + "<br> USB1 :" + self.LaneStateUSB1 \
-            + "<br> USB2 :" + self.LaneStateUSB2 \
-            + "<br> USB3 :" + self.LaneStateUSB3 \
-            + "<br> USB4 :" + self.LaneStateUSB4
-    
+
+    def convertROIstringToTuple(self,roiString):
+        roi = roiString[0].split(',')
+        return (int(roi[0]),int(roi[1]),int(roi[2]),int(roi[3]))
+        
     def put_text(self, frame, text, position, color, font_scale, thickness):
         font = cv2.FONT_HERSHEY_SIMPLEX
         cv2.putText(frame, text, position, font, font_scale, color, thickness, cv2.LINE_AA)
@@ -281,19 +288,41 @@ class CameraCapture(object):
         preroi_img_ot,predictions =self.infrencerTop.getInfrence(preroi_img)
         LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
         now = datetime.now()
-        rowkey = str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(now.second)
+        rowkey = str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(now.second) + str(now.microsecond)
         url = ""
         if(predictions.pred_score>threshold):
             try:
                 self.__uploadToAzure(filename=rowkey+id,frame=preroi_img)
                 url = "https://camtagstoreaiem.blob.core.windows.net/fiberdefects/"+rowkey+id+ ".jpg"
-                state="ALARM"
+                self.ALARM = self.ALARM + 1
             except Exception as e:
                     print("something went wrong while uploading to azure")
         
         self.azUp(predictions,id,rowkey,url)
         cv2.putText(preroi_img_ot, LaneState, (15, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
         return preroi_img_ot,LaneState
+        
+    def read_json(self):
+        try:
+            print("Reading config file")
+            with open('config.json') as json_file:
+                data = json.load(json_file)
+                self.ROI1 = data['roi1']
+                self.ROI2 = data['roi2']
+                self.ROI3 = data['roi3']
+                self.ROI4 = data['roi4']
+                self.genral_rotation=data['genral_rotation']
+                self.roi1_rotation=data['roi1_rotation']
+                self.roi2_rotation=data['roi2_rotation']
+                self.roi3_rotation=data['roi3_rotation']
+                self.roi4_rotation=data['roi4_rotation']
+                self.roi1a=data['roi1a']
+                self.roi2a=data['roi2a']
+                self.roi3a=data['roi3a']
+                self.roi4a=data['roi4a']
+                return data
+        except Exception as e:
+            print("Error reading config file " + str(e))
 
         
         
@@ -336,17 +365,17 @@ class CameraCapture(object):
 
             if self.showVideo:
                 try:
-                    genral_rotation = 358.5
-                    roi1_rotation=360.1
-                    roi2_rotation=359.8
-                    roi3_rotation=359.25
-                    roi4_rotation=358.7
-                    roi1a = [9,100,303,1750]
-                    roi2a = [15,100,316,1750]
-                    roi3a = [30,100,320,1750]
-                    roi4a = [30,100,325,1750]
-   
-                    
+                    if(self.useFile):
+                        self.read_json()
+                    genral_rotation = float(self.genral_rotation[0])
+                    roi1_rotation=float(self.roi1_rotation[0])
+                    roi2_rotation=float(self.roi2_rotation[0])
+                    roi3_rotation=float(self.roi3_rotation[0])
+                    roi4_rotation=float(self.roi4_rotation[0])
+                    roi1a =self.convertROIstringToTuple(self.roi1a)
+                    roi2a =self.convertROIstringToTuple(self.roi2a) 
+                    roi3a =self.convertROIstringToTuple(self.roi3a)
+                    roi4a =self.convertROIstringToTuple(self.roi4a)
                     preprocessedFrame = self.UndistortParserInstance.undistortImage(preprocessedFrame)
                     print("Frame undistorted")
                     

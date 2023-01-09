@@ -162,7 +162,7 @@ if __name__ == '__main__':
         roi1a = os.getenv('roi1a', ""),
         roi2a = os.getenv('roi2a', ""),
         roi3a = os.getenv('roi3a', ""),
-        roi4a = os.getenv('roi4a', "")
+        roi4a = os.getenv('roi4a', ""),
         
 
     except ValueError as error:

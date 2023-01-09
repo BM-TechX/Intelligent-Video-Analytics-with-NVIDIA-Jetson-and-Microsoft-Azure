@@ -48,6 +48,11 @@ class ProcessFrameUSB(threading.Thread):
         self.connectionstring = "DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net"
         self.AZURE_STORAGE_BLOB = AZURE_STORAGE_BLOB
         self.upload = UploadToAzure(self.connectionstring,self.table)
+        self.ALARM=0
+        self.threadcam1 = None
+        self.threadcam2 = None
+        self.threadcam3 = None
+        self.threadcam4 = None
         cam1= None
         cam2= None
         cam3= None
@@ -210,13 +215,13 @@ class ProcessFrameUSB(threading.Thread):
         preroi_img_ot,predictions =self.infrencerbuttom.getInfrence(preroi_img)
         LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
         now = datetime.now()
-        rowkey = str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(now.second)
+        rowkey = str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(now.second) + str(now.microsecond)
         url = ""
         if(predictions.pred_score>threshold):
             try:
                 self.__uploadToAzure(filename=rowkey+id,frame=preroi_img)
                 url = "https://camtagstoreaiem.blob.core.windows.net/fiberdefects/"+rowkey+id+ ".jpg"
-                state="ALARM"
+                self.ALARM = self.ALARM + 1
             except Exception as e:
                     print("something went wrong while uploading to azure")
         
@@ -224,7 +229,47 @@ class ProcessFrameUSB(threading.Thread):
         cv2.putText(preroi_img_ot, LaneState, (15, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
         
         return preroi_img_ot,LaneState
-    
+    def processCAM1(self):
+        while True:
+            try:
+                _,frame1 = self.camera1.read()
+                frame_gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
+                frame_pred1,self.LaneState1 = self.process_lane_bottom(frame_gray1,self.threshold,"usb1")
+                self.frame1= frame_pred1
+                self.frame1_ready = True
+            except Exception as e:
+                print("Error grab 0 " + e)
+    def processCAM2(self):
+        while True:
+            try:
+                _,frame2 = self.camera2.read()
+                frame_gray2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
+                frame_pred2,self.LaneState2 = self.process_lane_bottom(frame_gray2,self.threshold,"usb2")
+                self.frame2 = frame_pred2
+                self.frame2_ready = True
+            except:
+                print("Error grab 1")
+    def processCAM3(self):
+        while True:
+            try:
+                _,frame3 = self.camera3.read()
+                frame_gray3 = cv2.cvtColor(frame3, cv2.COLOR_BGR2GRAY)
+                frame_pred3,self.LaneState3 = self.process_lane_bottom(frame_gray3,self.threshold,"usb3")
+                self.frame3 = frame_pred3
+                self.frame3_ready = True
+            except:
+                print("Error grab 2")
+    def processCAM4(self):
+        while True:
+            try:
+                _,frame4 = self.camera4.read()
+                frame_gray4 = cv2.cvtColor(frame4, cv2.COLOR_BGR2GRAY)
+                frame_pred4,self.LaneState4 = self.process_lane_bottom(frame_gray4,self.threshold,"usb4")
+                self.frame4 = frame_pred4
+                self.frame4_ready = True
+            except:
+                print("Error grab 3")
+            
     def processing(self):
         while True:
             try:
@@ -284,14 +329,27 @@ class ProcessFrameUSB(threading.Thread):
             thread1 = threading.Thread(target=self.processing)
             thread1.start()
             self.thread1 = thread1
+            # self.threadcam1 = threading.Thread(target=self.processCAM1)
+            # self.threadcam1.start()
+            # self.threadcam2 = threading.Thread(target=self.processCAM2)
+            # self.threadcam2.start()
+            # self.threadcam3 = threading.Thread(target=self.processCAM3)
+            # self.threadcam3.start()
+            # self.threadcam4 = threading.Thread(target=self.processCAM4)
+            # self.threadcam4.start()
+            
             return True
     def stop_processing(self):
         try:
             self.thread1.terminate()
-            self.camera1.release()
-            self.camera2.release()
-            self.camera3.release()
-            self.camera4.release()
+            # self.threadcam1.terminate()
+            # self.threadcam2.terminate()
+            # self.threadcam3.terminate()
+            # self.threadcam4.terminate()
+            # self.camera1.release()
+            # self.camera2.release()
+            # self.camera3.release()
+            # self.camera4.release()
         except:
             print("Error stopping processing")
             return False
