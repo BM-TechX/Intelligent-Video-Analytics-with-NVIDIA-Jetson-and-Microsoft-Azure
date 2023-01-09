@@ -1,0 +1,445 @@
+{
+  "modulesContent": {
+    "$edgeAgent": {
+      "properties.desired": {
+        "schemaVersion": "1.0",
+        "runtime": {
+          "type": "docker",
+          "settings": {
+            "minDockerVersion": "v1.25",
+            "loggingOptions": "",
+            "registryCredentials": {
+              "containerRegistry": {
+                "username": "hubber",
+                "password": "1CCaBBuCrq9SoufTQgljRsvMa3QDFn+E",
+                "address": "hubber.azurecr.io"
+              }
+            }
+          }
+        },
+        "systemModules": {
+          "edgeAgent": {
+            "type": "docker",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-agent:1.0",
+              "createOptions": "{}"
+            }
+          },
+          "edgeHub": {
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-hub:1.0",
+              "createOptions": "{\"HostConfig\":{\"PortBindings\":{\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}],\"443/tcp\":[{\"HostPort\":\"443\"}]}}}"
+            }
+          }
+        },
+        "modules": {
+          "azureblobstorageoniotedge": {
+            "version": "1.2",
+            "type": "docker",
+            "status": "stopped",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/azure-blob-storage:latest",
+              "createOptions": "{\"Env\":[\"LOCAL_STORAGE_ACCOUNT_NAME=camerataggingmodulelocal\",\"LOCAL_STORAGE_ACCOUNT_KEY=oSnubsRM57AlJYNXJ3usAA==\"],\"HostConfig\":{\"Binds\":[\"/data/containerdata:/blobroot\"],\"PortBindings\":{\"11002/tcp\":[{\"HostPort\":\"11002\"}]}}}"
+            }
+          },
+          "DeepStreamAnalytics": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "stopped",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/azure-stream-analytics/azureiotedge:1.0.9-linux-arm32v7",
+              "createOptions": "{}"
+            },
+            "env": {
+              "PlanId": {
+                "value": "stream-analytics-on-iot-edge"
+              }
+            }
+          },
+          "camera-capture": {
+            "version": "1",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "env": {
+              "VIDEO_PATH": {
+                "value": "rtsp://admin:S0lskin1234!@10.10.50.102:554"
+              },
+              "IMAGE_PROCESSING_ENDPOINT": {
+                "value": "$IMAGEPROCESSOR_ENDPOINT"
+              },
+              "RESIZE_WIDTH": {
+                "value": "0"
+              },
+              "RESIZE_HEIGHT": {
+                "value": "0"
+              },
+              "SHOW_VIDEO": {
+                "value": "True"
+              },
+              "FPS": {
+                "value": "10"
+              },
+              "AZURE_STORAGE_BLOB": {
+                "value": "fiberdefects"
+              },
+              "AZURE_STORAGE_CONNECTION_STRING": {
+                "value": "DefaultEndpointsProtocol"
+              },
+              "AZURE_STORAGE_CONTAINER": {
+                "value": "camerataggingmodulecloud"
+              },
+              "ROI1": {
+                "value": "1120,200,370,1750"
+              },
+              "ROI2": {
+                "value": "1600,200,370,1750"
+              },
+              "ROI3": {
+                "value": "2090,200,370,1750"
+              },
+              "ROI4": {
+                "value": "2600,200,370,1750"
+              },
+              "IMAGEWIDTH": {
+                "value": "1980"
+              },
+              "IMAGEHEIGHT": {
+                "value": "1080"
+              },
+              "genral_rotation": {
+                "value": "355"
+              },
+              "roi1_rotation": {
+                "value": "358.5"
+              },
+              "roi2_rotation": {
+                "value": "360"
+              },
+              "roi3_rotation": {
+                "value": "360"
+              },
+              "roi4_rotation": {
+                "value": "362.5"
+              },
+              "roi1a": {
+                "value": "9,100,303,1750"
+              },
+              "roi2a": {
+                "value": "15,100,316,1750"
+              },
+              "roi3a": {
+                "value": "30,100,320,1750"
+              },
+              "roi4a": {
+                "value": "30,100,325,1750"
+              }
+            },
+            "settings": {
+              "image": "hubber.azurecr.io/cameracapture:v44",
+              "createOptions": "{\"HostConfig\":{\"runtime\":\"nvidia\",\"PortBindings\":{\"5012/tcp\":[{\"HostPort\":\"5012\"}]},\"Binds\":[\"/dev/video1:/dev/video0\",\"/dev/video2:/dev/video1\",\"/dev/video3:/dev/video2\",\"/dev/video4:/dev/video3\",\"/dev/video5:/dev/video4\",\"/dev/video6:/dev/video5\",\"/dev/video7:/dev/video6\"],\"Devices\":[{\"PathOnHost\":\"/dev/video1\",\"PathInContainer\":\"/dev/video0\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video2\",\"PathInContainer\":\"/dev/video1\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video3\",\"PathInContainer\":\"/dev",
+              "createOptions01": "/video2\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video4\",\"PathInContainer\":\"/dev/video3\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video5\",\"PathInContainer\":\"/dev/video4\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video6\",\"PathInContainer\":\"/dev/video5\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video7\",\"PathInContainer\":\"/dev/video6\",\"CgroupPermissions\":\"mrw\"}]}}"
+            }
+          },
+          "camera-capture-ALT": {
+            "version": "1",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "env": {
+              "VIDEO_PATH": {
+                "value": "rtsp://admin:S0lskin1234!@10.10.50.102:554"
+              },
+              "IMAGE_PROCESSING_ENDPOINT": {
+                "value": "$IMAGEPROCESSOR_ENDPOINT"
+              },
+              "RESIZE_WIDTH": {
+                "value": "0"
+              },
+              "RESIZE_HEIGHT": {
+                "value": "0"
+              },
+              "SHOW_VIDEO": {
+                "value": "True"
+              },
+              "FPS": {
+                "value": "10"
+              },
+              "AZURE_STORAGE_BLOB": {
+                "value": "fiberdefects"
+              },
+              "AZURE_STORAGE_CONNECTION_STRING": {
+                "value": "DefaultEndpointsProtocol"
+              },
+              "AZURE_STORAGE_CONTAINER": {
+                "value": "camerataggingmodulecloud"
+              },
+              "ROI1": {
+                "value": "1120,200,370,1750"
+              },
+              "ROI2": {
+                "value": "1600,200,370,1750"
+              },
+              "ROI3": {
+                "value": "2090,200,370,1750"
+              },
+              "ROI4": {
+                "value": "2600,200,370,1750"
+              },
+              "IMAGEWIDTH": {
+                "value": "1980"
+              },
+              "IMAGEHEIGHT": {
+                "value": "1080"
+              },
+              "genral_rotation": {
+                "value": "355"
+              },
+              "roi1_rotation": {
+                "value": "358.5"
+              },
+              "roi2_rotation": {
+                "value": "360"
+              },
+              "roi3_rotation": {
+                "value": "360"
+              },
+              "roi4_rotation": {
+                "value": "362.5"
+              },
+              "roi1a": {
+                "value": "9,100,303,1750"
+              },
+              "roi2a": {
+                "value": "15,100,316,1750"
+              },
+              "roi3a": {
+                "value": "30,100,320,1750"
+              },
+              "roi4a": {
+                "value": "30,100,325,1750"
+              }
+            },
+            "settings": {
+              "image": "hubber.azurecr.io/cameracapture:v44",
+              "createOptions": "{\"HostConfig\":{\"runtime\":\"nvidia\",\"PortBindings\":{\"5012/tcp\":[{\"HostPort\":\"5012\"}]},\"Binds\":[\"/dev/video0:/dev/video0\",\"/dev/video2:/dev/video1\",\"/dev/video3:/dev/video2\",\"/dev/video4:/dev/video3\",\"/dev/video5:/dev/video4\",\"/dev/video6:/dev/video5\",\"/dev/video7:/dev/video6\"],\"Devices\":[{\"PathOnHost\":\"/dev/video0\",\"PathInContainer\":\"/dev/video0\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video2\",\"PathInContainer\":\"/dev/video1\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video3\",\"PathInContainer\":\"/dev",
+              "createOptions01": "/video2\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video4\",\"PathInContainer\":\"/dev/video3\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video5\",\"PathInContainer\":\"/dev/video4\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video6\",\"PathInContainer\":\"/dev/video5\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video7\",\"PathInContainer\":\"/dev/video6\",\"CgroupPermissions\":\"mrw\"}]}}"
+            }
+          },
+          "camera-capture-ALT_2": {
+            "version": "1",
+            "type": "docker",
+            "status": "stopped",
+            "restartPolicy": "always",
+            "env": {
+              "VIDEO_PATH": {
+                "value": "rtsp://admin:S0lskin1234!@10.10.50.102:554"
+              },
+              "IMAGE_PROCESSING_ENDPOINT": {
+                "value": "$IMAGEPROCESSOR_ENDPOINT"
+              },
+              "RESIZE_WIDTH": {
+                "value": "0"
+              },
+              "RESIZE_HEIGHT": {
+                "value": "0"
+              },
+              "SHOW_VIDEO": {
+                "value": "True"
+              },
+              "FPS": {
+                "value": "10"
+              },
+              "AZURE_STORAGE_BLOB": {
+                "value": "fiberdefects"
+              },
+              "AZURE_STORAGE_CONNECTION_STRING": {
+                "value": "DefaultEndpointsProtocol"
+              },
+              "AZURE_STORAGE_CONTAINER": {
+                "value": "camerataggingmodulecloud"
+              },
+              "ROI1": {
+                "value": "1120,200,370,1750"
+              },
+              "ROI2": {
+                "value": "1600,200,370,1750"
+              },
+              "ROI3": {
+                "value": "2090,200,370,1750"
+              },
+              "ROI4": {
+                "value": "2600,200,370,1750"
+              },
+              "IMAGEWIDTH": {
+                "value": "1980"
+              },
+              "IMAGEHEIGHT": {
+                "value": "1080"
+              },
+              "genral_rotation": {
+                "value": "355"
+              },
+              "roi1_rotation": {
+                "value": "358.5"
+              },
+              "roi2_rotation": {
+                "value": "360"
+              },
+              "roi3_rotation": {
+                "value": "360"
+              },
+              "roi4_rotation": {
+                "value": "362.5"
+              },
+              "roi1a": {
+                "value": "9,100,303,1750"
+              },
+              "roi2a": {
+                "value": "15,100,316,1750"
+              },
+              "roi3a": {
+                "value": "30,100,320,1750"
+              },
+              "roi4a": {
+                "value": "30,100,325,1750"
+              }
+            },
+            "settings": {
+              "image": "hubber.azurecr.io/cameracapture:v44",
+              "createOptions": "{\"HostConfig\":{\"runtime\":\"nvidia\",\"PortBindings\":{\"5012/tcp\":[{\"HostPort\":\"5012\"}]},\"Binds\":[\"/dev/video0:/dev/video0\",\"/dev/video3:/dev/video1\",\"/dev/video3:/dev/video2\",\"/dev/video4:/dev/video3\"],\"Devices\":[{\"PathOnHost\":\"/dev/video0\",\"PathInContainer\":\"/dev/video0\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video3\",\"PathInContainer\":\"/dev/video1\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video3\",\"PathInContainer\":\"/dev/video2\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video4\",\"PathInContain",
+              "createOptions01": "er\":\"/dev/video3\",\"CgroupPermissions\":\"mrw\"}]}}"
+            }
+          },
+          "camera-capture-ALT_3": {
+            "version": "1",
+            "type": "docker",
+            "status": "stopped",
+            "restartPolicy": "always",
+            "env": {
+              "VIDEO_PATH": {
+                "value": "rtsp://admin:S0lskin1234!@10.10.50.102:554"
+              },
+              "IMAGE_PROCESSING_ENDPOINT": {
+                "value": "$IMAGEPROCESSOR_ENDPOINT"
+              },
+              "RESIZE_WIDTH": {
+                "value": "0"
+              },
+              "RESIZE_HEIGHT": {
+                "value": "0"
+              },
+              "SHOW_VIDEO": {
+                "value": "True"
+              },
+              "FPS": {
+                "value": "10"
+              },
+              "AZURE_STORAGE_BLOB": {
+                "value": "fiberdefects"
+              },
+              "AZURE_STORAGE_CONNECTION_STRING": {
+                "value": "DefaultEndpointsProtocol"
+              },
+              "AZURE_STORAGE_CONTAINER": {
+                "value": "camerataggingmodulecloud"
+              },
+              "ROI1": {
+                "value": "1120,200,370,1750"
+              },
+              "ROI2": {
+                "value": "1600,200,370,1750"
+              },
+              "ROI3": {
+                "value": "2090,200,370,1750"
+              },
+              "ROI4": {
+                "value": "2600,200,370,1750"
+              },
+              "IMAGEWIDTH": {
+                "value": "1980"
+              },
+              "IMAGEHEIGHT": {
+                "value": "1080"
+              },
+              "genral_rotation": {
+                "value": "355"
+              },
+              "roi1_rotation": {
+                "value": "358.5"
+              },
+              "roi2_rotation": {
+                "value": "360"
+              },
+              "roi3_rotation": {
+                "value": "360"
+              },
+              "roi4_rotation": {
+                "value": "362.5"
+              },
+              "roi1a": {
+                "value": "9,100,303,1750"
+              },
+              "roi2a": {
+                "value": "15,100,316,1750"
+              },
+              "roi3a": {
+                "value": "30,100,320,1750"
+              },
+              "roi4a": {
+                "value": "30,100,325,1750"
+              }
+            },
+            "settings": {
+              "image": "hubber.azurecr.io/cameracapture:v44",
+              "createOptions": "{\"HostConfig\":{\"runtime\":\"nvidia\",\"PortBindings\":{\"5012/tcp\":[{\"HostPort\":\"5012\"}]},\"Binds\":[\"/dev/video1:/dev/video0\",\"/dev/video2:/dev/video1\",\"/dev/video3:/dev/video2\",\"/dev/video4:/dev/video3\"],\"Devices\":[{\"PathOnHost\":\"/dev/video1\",\"PathInContainer\":\"/dev/video0\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video2\",\"PathInContainer\":\"/dev/video1\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video3\",\"PathInContainer\":\"/dev/video2\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video4\",\"PathInContain",
+              "createOptions01": "er\":\"/dev/video3\",\"CgroupPermissions\":\"mrw\"}]}}"
+            }
+          }
+        }
+      }
+    },
+    "$edgeHub": {
+      "properties.desired": {
+        "schemaVersion": "1.0",
+        "routes": {
+          "NVIDIADeepStreamSDKToDeepStreamAnalytics": "FROM /messages/modules/NVIDIADeepStreamSDK/outputs/* INTO BrokeredEndpoint(\"/modules/DeepStreamAnalytics/inputs/DeepStreamInput\")",
+          "DeepStreamAnalyticsToIoTHub": "FROM /messages/modules/DeepStreamAnalytics/outputs/SummarizedDetections INTO $upstream",
+          "azureblobstorageoniotedgeToIoTHub": "FROM /messages/modules/azureblobstorageoniotedge/outputs/* INTO $upstream"
+        },
+        "storeAndForwardConfiguration": {
+          "timeToLiveSecs": 7200
+        }
+      }
+    },
+    "azureblobstorageoniotedge": {
+      "properties.desired": {
+        "deviceAutoDeleteProperties": {
+          "deleteOn": false,
+          "retainWhileUploading": true
+        },
+        "deviceToCloudUploadProperties": {
+          "uploadOn": true,
+          "uploadOrder": "OldestFirst",
+          "cloudStorageConnectionString": "camerataggingmodulecloud",
+          "storageContainersForUpload": {
+            "camerataggingmodulelocal": {
+              "target": "camerataggingmodulecloud"
+            }
+          },
+          "deleteAfterUpload": true
+        }
+      }
+    },
+    "DeepStreamAnalytics": {
+      "properties.desired": {
+        "ASAJobInfo": "https://acceleratededgesasstore.blob.core.windows.net/deepstreamanalytics/ASAEdgeJobs/585778d0-7865-474f-b97b-19b5d3959d2d/4a34bf79-efe2-4255-b858-473058e4c533/ASAEdgeJobDefinition.zip?sv=2018-03-28&sr=b&sig=k%2B6z4JklD1KUpggFQJlFLaFFCOGP4DxUH%2Ff5H77JCBc%3D&st=2020-11-02T15%3A00%3A47Z&se=2023-11-02T15%3A10%3A47Z&sp=r"
+      }
+    }
+  }
+}

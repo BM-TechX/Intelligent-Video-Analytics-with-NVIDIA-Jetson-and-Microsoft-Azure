@@ -1,4 +1,3 @@
-config/
 .env
 services/CUSTOM_VISION_AI/model.onnx_b1_gpu0_fp32.engine
 services/YOLOV3/yolov3.cfg

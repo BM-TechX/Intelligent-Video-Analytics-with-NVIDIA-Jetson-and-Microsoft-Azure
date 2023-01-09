@@ -1,0 +1,185 @@
+{
+  "modulesContent": {
+    "$edgeAgent": {
+      "properties.desired": {
+        "schemaVersion": "1.0",
+        "runtime": {
+          "type": "docker",
+          "settings": {
+            "minDockerVersion": "v1.25",
+            "loggingOptions": "",
+            "registryCredentials": {
+              "containerRegistry": {
+                "username": "hubber",
+                "password": "1CCaBBuCrq9SoufTQgljRsvMa3QDFn+E",
+                "address": "hubber.azurecr.io"
+              }
+            }
+          }
+        },
+        "systemModules": {
+          "edgeAgent": {
+            "type": "docker",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-agent:1.0",
+              "createOptions": "{}"
+            }
+          },
+          "edgeHub": {
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-hub:1.0",
+              "createOptions": "{\"HostConfig\":{\"PortBindings\":{\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}],\"443/tcp\":[{\"HostPort\":\"443\"}]}}}"
+            }
+          }
+        },
+        "modules": {
+          "deepstream": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "nvcr.io/nvidia/deepstream-l4t:5.0-20.07-iot",
+              "createOptions": "{\"Entrypoint\":[\"/usr/bin/deepstream-test5-app\",\"-c\",\"DSConfig-CustomVisionAI.txt\"],\"HostConfig\":{\"runtime\":\"nvidia\",\"NetworkMode\":\"host\",\"Binds\":[\"/data/misc/storage:/data/misc/storage\",\"/tmp/argus_socket:/tmp/argus_socket\",\"/tmp/.X11-unix/:/tmp/.X11-unix/\"],\"IpcMode\":\"host\"},\"NetworkingConfig\":{\"EndpointsConfig\":{\"host\":{}}},\"WorkingDir\":\"/data/misc/storage/Intelligent-Video-Analytics-with-NVIDIA-Jetson-and-Microsoft-Azure/services/DEEPSTREAM/configs\"}"
+            },
+            "env": {
+              "DISPLAY": {
+                "value": ":1"
+              }
+            }
+          },
+          "CameraTaggingModule": {
+            "version": "1.0.3",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "toolboc/camerataggingmodule:latest",
+              "createOptions": "{\"ExposedPorts\":{\"3000/tcp\":{},\"3002/tcp\":{},\"3003/tcp\":{}},\"HostConfig\":{\"PortBindings\":{\"3000/tcp\":[{\"HostPort\":\"3000\"}],\"3002/tcp\":[{\"HostPort\":\"3002\"}],\"3003/tcp\":[{\"HostPort\":\"3003\"}]}}}"
+            },
+            "env": {
+              "RTSP_IP": {
+                "value": "wowzaec2demo.streamlock.net"
+              },
+              "RTSP_PORT": {
+                "value": "554"
+              },
+              "RTSP_PATH": {
+                "value": "vod/mp4:BigBuckBunny_115k.mov"
+              },
+              "REACT_APP_SERVER_PORT": {
+                "value": "3003"
+              },
+              "REACT_APP_WEB_SOCKET_PORT": {
+                "value": "3002"
+              },
+              "REACT_APP_LOCAL_STORAGE_MODULE_NAME": {
+                "value": "azureblobstorageoniotedge"
+              },
+              "REACT_APP_LOCAL_STORAGE_PORT": {
+                "value": "11002"
+              },
+              "REACT_APP_LOCAL_STORAGE_ACCOUNT_NAME": {
+                "value": "camerataggingmodulelocal"
+              },
+              "REACT_APP_LOCAL_STORAGE_ACCOUNT_KEY": {
+                "value": "oSnubsRM57AlJYNXJ3usAA=="
+              }
+            }
+          },
+          "azureblobstorageoniotedge": {
+            "version": "1.2",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/azure-blob-storage:latest",
+              "createOptions": "{\"Env\":[\"LOCAL_STORAGE_ACCOUNT_NAME=camerataggingmodulelocal\",\"LOCAL_STORAGE_ACCOUNT_KEY=oSnubsRM57AlJYNXJ3usAA==\"],\"HostConfig\":{\"Binds\":[\"/data/containerdata:/blobroot\"],\"PortBindings\":{\"11002/tcp\":[{\"HostPort\":\"11002\"}]}}}"
+            }
+          },
+          "DeepStreamAnalytics": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/azure-stream-analytics/azureiotedge:1.0.6-linux-arm32v7",
+              "createOptions": "{}"
+            },
+            "env": {
+              "PlanId": {
+                "value": "stream-analytics-on-iot-edge"
+              }
+            }
+          },
+          "IoTCentralBridge": {
+            "settings": {
+              "image": "toolboc/iotcentralbridge:0.1.0-arm64v8",
+              "createOptions": "{\"HostConfig\":{\"PortBindings\":{\"9010/tcp\":[{\"HostPort\":\"9014\"}]},\"Binds\":[\"/data/misc:/data/misc\",\"/run/systemd:/run/systemd\",\"/var/run/docker.sock:/var/run/docker.sock\"],\"NetworkMode\":\"host\"},\"NetworkingConfig\":{\"EndpointsConfig\":{\"host\":{}}}}"
+            },
+            "type": "docker",
+            "env": {
+              "DEBUG_TELEMETRY": {
+                "value": "1"
+              },
+              "DEBUG_ROUTING_DATA": {
+                "value": "0"
+              },
+              "inferenceThrottle": {
+                "value": 2000
+              },
+              "FORCE_HEALTHCHECK": {
+                "value": "1"
+              }
+            },
+            "status": "running",
+            "restartPolicy": "always",
+            "version": "1.0"
+          }
+        }
+      }
+    },
+    "$edgeHub": {
+      "properties.desired": {
+        "schemaVersion": "1.0",
+        "routes": {
+          "deepstreamToDeepStreamAnalytics": "FROM /messages/modules/deepstream/outputs/* INTO BrokeredEndpoint(\"/modules/DeepStreamAnalytics/inputs/DeepStreamInput\")",
+          "DeepStreamAnalyticsToIoTHub": "FROM /messages/modules/DeepStreamAnalytics/outputs/SummarizedDetections INTO $upstream",
+          "azureblobstorageoniotedgeToIoTHub": "FROM /messages/modules/azureblobstorageoniotedge/outputs/* INTO $upstream",
+          "NVDSToIoTCBridge": "FROM /messages/modules/deepstream/outputs/* INTO BrokeredEndpoint(\"/modules/IoTCentralBridge/inputs/dsmessages\")",
+          "filterToIoTHub": "FROM /messages/modules/IoTCentralBridge/* INTO $upstream"
+        },
+        "storeAndForwardConfiguration": {
+          "timeToLiveSecs": 7200
+        }
+      }
+    },
+    "azureblobstorageoniotedge": {
+      "properties.desired": {
+        "deviceAutoDeleteProperties": {
+          "deleteOn": false,
+          "retainWhileUploading": true
+        },
+        "deviceToCloudUploadProperties": {
+          "uploadOn": true,
+          "uploadOrder": "OldestFirst",
+          "cloudStorageConnectionString": "camerataggingmodulecloud",
+          "storageContainersForUpload": {
+            "camerataggingmodulelocal": {
+              "target": "camerataggingmodulecloud"
+            }
+          },
+          "deleteAfterUpload": true
+        }
+      }
+    },
+    "DeepStreamAnalytics": {
+      "properties.desired": {
+        "ASAJobInfo": "https://acceleratededgesasstore.blob.core.windows.net/deepstreamanalytics/ASAEdgeJobs/14ab14a0-b605-429e-ba2e-5bf4ae5b0ba3/e476b018-353d-4fe6-ab10-d05815093e94/ASAEdgeJobDefinition.zip?sv=2018-03-28&sr=b&sig=V5raYdw%2FLPgdUj7MOShYnd91w38G7BHC4FJ7nG8NoGw%3D&st=2020-06-19T22%3A18%3A33Z&se=2023-06-19T22%3A28%3A33Z&sp=r"
+      }
+    }
+  }
+}
