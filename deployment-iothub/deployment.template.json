@@ -225,7 +225,7 @@
                     "camera-capture-ALT_2": {
                         "version": "1",
                         "type": "docker",
-                        "status": "running",
+                        "status": "stopped",
                         "restartPolicy": "always",
                         "env": {
                           "VIDEO_PATH": {"value": "rtsp://$USERNAME:$PASSWORD@$IPADDRESS:$PORT"},
@@ -275,7 +275,7 @@
                     "camera-capture-ALT_3": {
                         "version": "1",
                         "type": "docker",
-                        "status": "running",
+                        "status": "stopped",
                         "restartPolicy": "always",
                         "env": {
                           "VIDEO_PATH": {"value": "rtsp://$USERNAME:$PASSWORD@$IPADDRESS:$PORT"},

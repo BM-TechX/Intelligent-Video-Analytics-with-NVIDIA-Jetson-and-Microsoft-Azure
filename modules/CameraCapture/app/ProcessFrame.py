@@ -104,7 +104,7 @@ class ProcessFrame(threading.Thread):
     def processing(self):
         while True:
             try:
-                _,frame = self.camera.read()
+                frame = self.camera.read()
                 
                 try:
                     print("frame starting preprocessing")

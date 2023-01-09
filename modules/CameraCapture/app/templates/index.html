@@ -71,6 +71,7 @@
     <div class = "container">
       <!--Put the Object Detection Image here.-->
       <img id="currentImage" class = "img">
+      <p id="text"></p>
     </div>
     
     <script>
@@ -88,9 +89,14 @@
         console.log("data received");
       }
       ws.onmessage = function(msg) {
+        if (msg.data.startsWith('/')) {
+          // if the data is an ArrayBuffer, it is a frame from the camera
+          img.src = 'data:image/png;base64, ' + msg.data
 
-          img.src = 'data:image/png;base64, ' + msg.data;
-
+        } else {
+          // if the data is not an ArrayBuffer, it is text
+          text.textContent = msg.data;
+        }
       };
 
       img.onload = function() {

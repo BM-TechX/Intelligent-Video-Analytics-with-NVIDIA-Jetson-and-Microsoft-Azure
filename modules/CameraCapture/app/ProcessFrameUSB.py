@@ -35,6 +35,10 @@ class ProcessFrameUSB(threading.Thread):
         self.frame4 = None
         self.frame4_ready = False
         self.LaneState = None
+        self.LaneState1 = None
+        self.LaneState2 = None
+        self.LaneState3 = None
+        self.LaneState4 = None
         self.table = table
         self.threshold = threshold
         self.infrencerbuttom = infrencerbuttom
@@ -226,7 +230,7 @@ class ProcessFrameUSB(threading.Thread):
             try:
                 _,frame1 = self.camera1.read()
                 frame_gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
-                frame_pred1,self.LaneState = self.process_lane_bottom(frame_gray1,self.threshold,"usb1")
+                frame_pred1,self.LaneState1 = self.process_lane_bottom(frame_gray1,self.threshold,"usb1")
                 self.frame1= frame_pred1
                 self.frame1_ready = True
             except Exception as e:
@@ -234,7 +238,7 @@ class ProcessFrameUSB(threading.Thread):
             try:
                 _,frame2 = self.camera2.read()
                 frame_gray2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
-                frame_pred2,self.LaneState = self.process_lane_bottom(frame_gray2,self.threshold,"usb2")
+                frame_pred2,self.LaneState2 = self.process_lane_bottom(frame_gray2,self.threshold,"usb2")
                 self.frame2 = frame_pred2
                 self.frame2_ready = True
             except:
@@ -242,7 +246,7 @@ class ProcessFrameUSB(threading.Thread):
             try:
                 _,frame3 = self.camera3.read()
                 frame_gray3 = cv2.cvtColor(frame3, cv2.COLOR_BGR2GRAY)
-                frame_pred3,self.LaneState = self.process_lane_bottom(frame_gray3,self.threshold,"usb3")
+                frame_pred3,self.LaneState3 = self.process_lane_bottom(frame_gray3,self.threshold,"usb3")
                 self.frame3 = frame_pred3
                 self.frame3_ready = True
             except:
@@ -250,7 +254,7 @@ class ProcessFrameUSB(threading.Thread):
             try:
                 _,frame4 = self.camera4.read()
                 frame_gray4 = cv2.cvtColor(frame4, cv2.COLOR_BGR2GRAY)
-                frame_pred4,self.LaneState = self.process_lane_bottom(frame_gray4,self.threshold,"usb4")
+                frame_pred4,self.LaneState4 = self.process_lane_bottom(frame_gray4,self.threshold,"usb4")
                 self.frame4 = frame_pred4
                 self.frame4_ready = True
             except:
@@ -259,16 +263,16 @@ class ProcessFrameUSB(threading.Thread):
     def getframe(self,cameraid):
         if(self.frame1_ready and cameraid == "0"):
             self.frame1_ready = False
-            return self.frame1
+            return self.LaneState1,self.frame1
         elif (self.frame2_ready and cameraid == "1"):
             self.frame2_ready = False
-            return self.frame2
+            return self.LaneState2,self.frame2
         elif(self.frame3_ready and cameraid == "2"):
             self.frame3_ready = False
-            return self.frame3
+            return self.LaneState3,self.frame3
         elif(self.frame4_ready and cameraid == "3"):
             self.frame4_ready = False
-            return self.frame4
+            return self.LaneState4,self.frame4
         else:
             return None
                
