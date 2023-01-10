@@ -250,7 +250,6 @@ class CameraCapture(object):
             roi = roiString[0].split(',')
         else:
             roi = roiString.split(',')
-        print(roi)
         return (int(roi[0]),int(roi[1]),int(roi[2]),int(roi[3]))
     def convertROIstringToTuple2(self,roiString):
         roi = roiString.split(',')
@@ -282,8 +281,11 @@ class CameraCapture(object):
             except Exception as e:
                 print("Error connecting to Azure " + str(e))
 
-    def get_process_lane(self,rs,regioninner,rotation,frame):
-        region1= rs[0].split(",")
+    def get_process_lane(self,rs,regioninner,rotation,frame,read):
+        if read==0:
+            region1= rs[0].split(",")
+        else: 
+            region1= rs.split(",")
         roi1=[int(region1[0]),int(region1[1]),int(region1[2]),int(region1[3])]
         frame_cropped= frame[int(roi1[1]):int(roi1[1]+roi1[3]), int(roi1[0]):int(roi1[0]+roi1[2])]
         frame_cropped_rotated=imutils.rotate(frame_cropped,rotation)
@@ -390,10 +392,10 @@ class CameraCapture(object):
                     print("Frame undistorted")
                     
                     preprocessedFrame=imutils.rotate(preprocessedFrame,genral_rotation)
-                    preroi1 = self.get_process_lane(self.ROI1,roi1a,roi1_rotation,preprocessedFrame)
-                    preroi2 = self.get_process_lane(self.ROI2,roi2a,roi2_rotation,preprocessedFrame)
-                    preroi3 = self.get_process_lane(self.ROI3,roi3a,roi3_rotation,preprocessedFrame)
-                    preroi4 = self.get_process_lane(self.ROI4,roi4a,roi4_rotation,preprocessedFrame)
+                    preroi1 = self.get_process_lane(self.ROI1,roi1a,roi1_rotation,preprocessedFrame,read)
+                    preroi2 = self.get_process_lane(self.ROI2,roi2a,roi2_rotation,preprocessedFrame,read)
+                    preroi3 = self.get_process_lane(self.ROI3,roi3a,roi3_rotation,preprocessedFrame,read)
+                    preroi4 = self.get_process_lane(self.ROI4,roi4a,roi4_rotation,preprocessedFrame,read)
                     threshold = 0.5
                     state = "NORMAL"
                     # #########LANE 1
