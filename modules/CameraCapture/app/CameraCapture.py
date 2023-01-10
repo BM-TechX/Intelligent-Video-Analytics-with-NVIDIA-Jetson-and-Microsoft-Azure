@@ -379,6 +379,8 @@ class CameraCapture(object):
                     roi2_rotation=float(self.roi2_rotation)
                     roi3_rotation=float(self.roi3_rotation)
                     roi4_rotation=float(self.roi4_rotation)
+                    print("aftergeneral rotation")
+                    print("read",read)
                     roi1a =self.convertROIstringToTuple(self.roi1a,read)
                     roi2a =self.convertROIstringToTuple(self.roi2a,read) 
                     roi3a =self.convertROIstringToTuple(self.roi3a,read)
