@@ -1,0 +1,1 @@
+docker build -t hubber.azurecr.io/cameracapture:v44 -f arm64.Dockerfile .
