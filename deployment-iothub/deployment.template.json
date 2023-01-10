@@ -200,24 +200,7 @@
                               "PortBindings": {
                                 "5012/tcp": [ { "HostPort":"5012"}]
                               },
-                              "Binds": [
-                                "/dev/$USBHOST_ALT1:/dev/video0",
-                                "/dev/$USBHOST2:/dev/video1",
-                                "/dev/$USBHOST3:/dev/video2",
-                                "/dev/$USBHOST4:/dev/video3",
-                                "/dev/$USBHOST5:/dev/video4",
-                                "/dev/$USBHOST6:/dev/video5",
-                                "/dev/$USBHOST7:/dev/video6"
-                                ],
-                              "Devices":[
-                                {"PathOnHost":"/dev/$USBHOST_ALT1","PathInContainer":"/dev/video0","CgroupPermissions":"mrw"},
-                                {"PathOnHost":"/dev/$USBHOST2","PathInContainer":"/dev/video1","CgroupPermissions":"mrw"},
-                                {"PathOnHost":"/dev/$USBHOST3","PathInContainer":"/dev/video2","CgroupPermissions":"mrw"},
-                                {"PathOnHost":"/dev/$USBHOST4","PathInContainer":"/dev/video3","CgroupPermissions":"mrw"},
-                                {"PathOnHost":"/dev/$USBHOST5","PathInContainer":"/dev/video4","CgroupPermissions":"mrw"},
-                                {"PathOnHost":"/dev/$USBHOST6","PathInContainer":"/dev/video5","CgroupPermissions":"mrw"},
-                                {"PathOnHost":"/dev/$USBHOST7","PathInContainer":"/dev/video6","CgroupPermissions":"mrw"}
-                                ]
+                              "Binds": ["/dev/usb:/dev/usb"]
                             }
                           }
                         }
@@ -225,7 +208,7 @@
                     "camera-capture-ALT_2": {
                         "version": "1",
                         "type": "docker",
-                        "status": "stopped",
+                        "status": "running",
                         "restartPolicy": "always",
                         "env": {
                           "VIDEO_PATH": {"value": "rtsp://$USERNAME:$PASSWORD@$IPADDRESS:$PORT"},
@@ -275,7 +258,7 @@
                     "camera-capture-ALT_3": {
                         "version": "1",
                         "type": "docker",
-                        "status": "stopped",
+                        "status": "running",
                         "restartPolicy": "always",
                         "env": {
                           "VIDEO_PATH": {"value": "rtsp://$USERNAME:$PASSWORD@$IPADDRESS:$PORT"},

@@ -248,7 +248,9 @@ class CameraCapture(object):
     def convertROIstringToTuple(self,roiString):
         roi = roiString[0].split(',')
         return (int(roi[0]),int(roi[1]),int(roi[2]),int(roi[3]))
-        
+    def convertROIstringToTuple2(self,roiString):
+        roi = roiString.split(',')
+        return (int(roi[0]),int(roi[1]),int(roi[2]),int(roi[3]))
     def put_text(self, frame, text, position, color, font_scale, thickness):
         font = cv2.FONT_HERSHEY_SIMPLEX
         cv2.putText(frame, text, position, font, font_scale, color, thickness, cv2.LINE_AA)
@@ -367,15 +369,25 @@ class CameraCapture(object):
                 try:
                     if(self.useFile):
                         self.read_json()
-                    genral_rotation = float(self.genral_rotation[0])
-                    roi1_rotation=float(self.roi1_rotation[0])
-                    roi2_rotation=float(self.roi2_rotation[0])
-                    roi3_rotation=float(self.roi3_rotation[0])
-                    roi4_rotation=float(self.roi4_rotation[0])
-                    roi1a =self.convertROIstringToTuple(self.roi1a)
-                    roi2a =self.convertROIstringToTuple(self.roi2a) 
-                    roi3a =self.convertROIstringToTuple(self.roi3a)
-                    roi4a =self.convertROIstringToTuple(self.roi4a)
+                        genral_rotation = float(self.genral_rotation)
+                        roi1_rotation=float(self.roi1_rotation)
+                        roi2_rotation=float(self.roi2_rotation)
+                        roi3_rotation=float(self.roi3_rotation)
+                        roi4_rotation=float(self.roi4_rotation)
+                        roi1a =self.convertROIstringToTuple2(self.roi1a)
+                        roi2a =self.convertROIstringToTuple2(self.roi2a) 
+                        roi3a =self.convertROIstringToTuple2(self.roi3a)
+                        roi4a =self.convertROIstringToTuple2(self.roi4a)
+                    else:
+                        genral_rotation = float(self.genral_rotation[0])
+                        roi1_rotation=float(self.roi1_rotation[0])
+                        roi2_rotation=float(self.roi2_rotation[0])
+                        roi3_rotation=float(self.roi3_rotation[0])
+                        roi4_rotation=float(self.roi4_rotation[0])
+                        roi1a =self.convertROIstringToTuple(self.roi1a)
+                        roi2a =self.convertROIstringToTuple(self.roi2a) 
+                        roi3a =self.convertROIstringToTuple(self.roi3a)
+                        roi4a =self.convertROIstringToTuple(self.roi4a)
                     preprocessedFrame = self.UndistortParserInstance.undistortImage(preprocessedFrame)
                     print("Frame undistorted")
                     
