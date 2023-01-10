@@ -250,6 +250,7 @@ class CameraCapture(object):
             roi = roiString[0].split(',')
         else:
             roi = roiString.split(',')
+        print(roi)
         return (int(roi[0]),int(roi[1]),int(roi[2]),int(roi[3]))
     def convertROIstringToTuple2(self,roiString):
         roi = roiString.split(',')
