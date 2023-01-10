@@ -279,7 +279,7 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame1= frame_pred1
                 self.frame1_ready = True
             except Exception as e:
-                print("Error grab 0 " + e)
+                print("Error grab 0 " + str(e))
             try:
                 _,frame2 = self.camera2.read()
                 frame_gray2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
