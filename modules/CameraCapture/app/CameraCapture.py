@@ -140,7 +140,7 @@ class CameraCapture(object):
         self.roi4a=roi4a
         self.UndistortParserInstance = UndistortParser()
         self.vs = None
-        self.useUSB=True
+        self.useUSB=False
         self.useFile=True
         self.displayFrame = None
         self.Lane1State = None
