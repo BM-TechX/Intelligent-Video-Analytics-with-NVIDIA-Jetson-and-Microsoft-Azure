@@ -60,6 +60,7 @@ class ProcessFrameUSB(threading.Thread):
         #######figure out which usb camera is associated with which lane
         for i in range(0, 10):
             vcap = cv2.VideoCapture("/dev/video"+str(i))
+            time.wait(4)
             if vcap.isOpened():
                 print("camera opened :" + str(i) )
                 if(cam1 == None):
