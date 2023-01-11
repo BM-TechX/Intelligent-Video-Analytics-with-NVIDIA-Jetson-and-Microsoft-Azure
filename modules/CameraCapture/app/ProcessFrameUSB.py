@@ -58,7 +58,7 @@ class ProcessFrameUSB(threading.Thread):
         cam3= None
         cam4= None
         #######figure out which usb camera is associated with which lane
-        for i in range(0, 14):
+        for i in range(0, 10):
             vcap = cv2.VideoCapture("/dev/video"+str(i))
             if vcap.isOpened():
                 print("camera opened :" + str(i) )
@@ -91,7 +91,7 @@ class ProcessFrameUSB(threading.Thread):
             #self.camera1 = BufferLess(0)
             time.sleep(2.0)      
         except Exception as e:
-            print("Error initCamera 0 " + e)
+            print("Error initCamera 0 " + str(e))
         try:
             self.camera2 = cv2.VideoCapture(cam2)
             self.camera2.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
@@ -99,7 +99,7 @@ class ProcessFrameUSB(threading.Thread):
             self.camera2.set(cv2.CAP_PROP_BUFFERSIZE, 1)
             time.sleep(2.0)
         except:
-            print("Error initCamera 1 " +e)
+            print("Error initCamera 1 " +str(e))
         try:
             self.camera3 = cv2.VideoCapture(cam3)
             self.camera3.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
@@ -107,7 +107,7 @@ class ProcessFrameUSB(threading.Thread):
             self.camera3.set(cv2.CAP_PROP_BUFFERSIZE, 1)
             time.sleep(2.0)
         except:
-            print("Error initCamera 2 " +e)
+            print("Error initCamera 2 " +str(e))
         try:
             self.camera4 = cv2.VideoCapture(cam4)
             self.camera4.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
@@ -115,7 +115,7 @@ class ProcessFrameUSB(threading.Thread):
             self.camera4.set(cv2.CAP_PROP_BUFFERSIZE, 1)
             time.sleep(2.0)
         except:
-            print("Error initCamera 3 " +e)
+            print("Error initCamera 3 " +str(e))
         
     def __gstreamer_pipeline(
         camera_id,
