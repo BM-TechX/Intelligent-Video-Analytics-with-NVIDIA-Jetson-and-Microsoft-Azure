@@ -89,7 +89,7 @@
     <script>
       var img = document.getElementById("currentImage");
       var ws = new WebSocket("ws://" + location.host + "/stream");
-
+      var text = document.getElementById("text");
       ws.onopen = function() {
 
           console.log("connection was established");
@@ -108,7 +108,9 @@
         } 
         else {
           // if the data is not an ArrayBuffer, it is text
-          if (msg.data == "ALARM") {
+          if (msg.data.split('|')[0] == "ALARM") {
+            console.log("msg.data");
+             text.innerHTML = msg.data;
              myFunction(1)
           }
           else{

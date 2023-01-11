@@ -163,10 +163,10 @@ def get_configurable_parameters(
 
     else:
         project_path = project_path / "run"
-        warn(
-            "config.project.unique_dir is set to False. "
-            "This does not ensure that your results will be written in an empty directory and you may overwrite files."
-        )
+        # warn(
+        #     "config.project.unique_dir is set to False. "
+        #     "This does not ensure that your results will be written in an empty directory and you may overwrite files."
+        # )
 
     (project_path / "weights").mkdir(parents=True, exist_ok=True)
     (project_path / "images").mkdir(parents=True, exist_ok=True)

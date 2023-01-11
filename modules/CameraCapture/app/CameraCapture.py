@@ -240,9 +240,9 @@ class CameraCapture(object):
             self.ALARM=0
         if (self.ALARMREPORTED>1):
             self.ALARMREPORTED= self.ALARMREPORTED-1
-            return "ALARM"
+            return "ALARM" +"|"+ str(self.Lane1State) + str(self.Lane2State) + str(self.Lane3State) + str(self.Lane4State)
         else :
-            return "NORMAL"
+            return "NORMAL"+"|"+ str(self.Lane1State) + str(self.Lane2State) + str(self.Lane3State) + str(self.Lane4State)
         
 
     def convertROIstringToTuple(self,roiString,read):
