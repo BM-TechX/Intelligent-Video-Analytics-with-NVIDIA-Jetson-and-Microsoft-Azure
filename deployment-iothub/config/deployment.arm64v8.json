@@ -227,7 +227,8 @@
             },
             "settings": {
               "image": "hubber.azurecr.io/cameracapture:v44",
-              "createOptions": "{\"HostConfig\":{\"runtime\":\"nvidia\",\"PortBindings\":{\"5012/tcp\":[{\"HostPort\":\"5012\"}]},\"Binds\":[\"/dev/usb:/dev/usb\"]}}"
+              "createOptions": "{\"HostConfig\":{\"runtime\":\"nvidia\",\"PortBindings\":{\"5012/tcp\":[{\"HostPort\":\"5012\"}]},\"Binds\":[\"/dev/video1:/dev/video0\",\"/dev/video2:/dev/video1\",\"/dev/video3:/dev/video2\",\"/dev/video5:/dev/video4\",\"/dev/video6:/dev/video5\",\"/dev/video7:/dev/video6\"],\"Devices\":[{\"PathOnHost\":\"/dev/video1\",\"PathInContainer\":\"/dev/video0\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video2\",\"PathInContainer\":\"/dev/video1\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video3\",\"PathInContainer\":\"/dev/video2\",\"CgroupPermission",
+              "createOptions01": "s\":\"mrw\"},{\"PathOnHost\":\"/dev/video5\",\"PathInContainer\":\"/dev/video4\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video6\",\"PathInContainer\":\"/dev/video5\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video7\",\"PathInContainer\":\"/dev/video6\",\"CgroupPermissions\":\"mrw\"}]}}"
             }
           },
           "camera-capture-ALT_2": {
