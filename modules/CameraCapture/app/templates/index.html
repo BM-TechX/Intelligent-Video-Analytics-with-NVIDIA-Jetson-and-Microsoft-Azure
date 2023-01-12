@@ -104,6 +104,11 @@
       var noAnom = document.getElementById("noAnom");
       var statebox = document.getElementById("secondaryText");
       var timeisup = false;
+      stopBut.addEventListener("click", stop);
+      startBut.addEventListener("click", start);
+      turnoffalarm.addEventListener("click", turnoff);
+      noAnom.addEventListener("click", noannom);
+  
       function noannom() {
         console.log("noannom");
         statebox.innerHTML = "No Anommaly";
