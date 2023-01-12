@@ -147,7 +147,12 @@
       ws.onmessage = function(msg) {
         if (msg.data.startsWith('/')) {
           // if the data is an ArrayBuffer, it is a frame from the camera
-          img.src = 'data:image/png;base64, ' + msg.data
+          if (stopdetection == true) {
+            img.src="";
+          }
+          else{
+            img.src = 'data:image/png;base64, ' + msg.data;
+          }
 
         } 
         else {
