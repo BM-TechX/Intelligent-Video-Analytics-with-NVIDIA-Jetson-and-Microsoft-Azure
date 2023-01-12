@@ -140,7 +140,7 @@ class CameraCapture(object):
         self.roi4a=roi4a
         self.UndistortParserInstance = UndistortParser()
         self.vs = None
-        self.useUSB=True
+        self.useUSB=False
         self.useFile=True
         self.displayFrame = None
         self.Lane1State = None
@@ -240,7 +240,7 @@ class CameraCapture(object):
             self.ALARM=0
         if (self.ALARMREPORTED>1):
             self.ALARMREPORTED= self.ALARMREPORTED-1
-            return "ALARM" +"|"+ str(self.Lane1State) + str(self.Lane2State) + str(self.Lane3State) + str(self.Lane4State)
+            return "ALARM" +"|"+ "Lane1:"+str(self.Lane1State) + "Lane2:"+ str(self.Lane2State) + "Lane3:"+ str(self.Lane3State) + "Lane4"+ str(self.Lane4State)
         else :
             return "NORMAL"+"|"+ str(self.Lane1State) + str(self.Lane2State) + str(self.Lane3State) + str(self.Lane4State)
         
