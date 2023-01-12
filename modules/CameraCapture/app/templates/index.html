@@ -127,7 +127,7 @@
         stopdetection = false;
         startdetection=true;
         console.log("start");
-        statebox.innerHTML = "Detection Started";
+        statebox.innerHTML = "Detection Running";
         statebox.style.backgroundColor = "green";
       }
       function turnoff() {
@@ -181,9 +181,17 @@
       function myFunction(vars) {
         var x = document.getElementById("myDIV");
         if (vars == "1") {
-          x.style.display = "block";
-    
-          x.style.backgroundColor="red";
+          if(pausedetection == true){
+            x.style.display = "none";
+          }
+          else if (stopdetection == true)
+          {
+            x.style.display = "none";
+          }
+          else{
+            x.style.display = "block";
+            x.style.backgroundColor="red";
+          }
         } else {
           x.style.display = "none";
         }
