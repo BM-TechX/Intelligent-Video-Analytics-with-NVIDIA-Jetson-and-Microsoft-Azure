@@ -90,7 +90,7 @@
       <button id="Stop" style="background-color: red;" onclick="stop">Stop Detection</button>
       <button id="Start" style="background-color: green;" onclick="start">Start Detection</button>
       <button id="Turnoffalarm" style="background-color: yellow;" onclick="turnoff">STOP ALARM</button>
-      <button id="noAnom" style="background-color: blue;" onclick="">No Anommaly</button>
+      <button id="noAnom" style="background-color: blue;" onclick="noannom">No Anommaly</button>
     </div>
     
     
@@ -98,21 +98,24 @@
       var pausedetection = false;
       var stopdetection = false;
       var startdetection=true;
-
       var stopBut = document.getElementById("Stop");
       var startBut = document.getElementById("Start");
       var turnoffalarm = document.getElementById("Turnoffalarm");
       var noAnom = document.getElementById("noAnom");
       var statebox = document.getElementById("secondaryText");
       var timeisup = false;
-      stopBut.addEventListener("click", stop);
-      startBut.addEventListener("click", start);
+      function noannom() {
+        console.log("noannom");
+        statebox.innerHTML = "No Anommaly";
+        statebox.style.backgroundColor = "blue";
+      }
       function stop() {
         pausedetection = true;
         stopdetection = true;
         startdetection=false;
         console.log("stop");
         statebox.innerHTML = "Detection Stopped";
+        statebox.style.backgroundColor = "red";
       }
       function start() {
         pausedetection = false;
@@ -120,12 +123,13 @@
         startdetection=true;
         console.log("start");
         statebox.innerHTML = "Detection Started";
+        statebox.style.backgroundColor = "green";
       }
-      turnoffalarm.addEventListener("click", turnoff);
       function turnoff() {
         console.log("turnoff");
         statebox.innerHTML = "Alarm Stopped";
         myFunction(0);
+        statebox.style.backgroundColor = "yellow";
       }
       var img = document.getElementById("currentImage");
       var ws = new WebSocket("ws://" + location.host + "/stream");
