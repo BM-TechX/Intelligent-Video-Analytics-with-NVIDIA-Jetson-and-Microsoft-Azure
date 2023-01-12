@@ -150,6 +150,7 @@
         console.log("data received");
       }
       ws.onmessage = function(msg) {
+        console.log("message received");
         if (msg.data.startsWith('/')) {
           // if the data is an ArrayBuffer, it is a frame from the camera
           if (stopdetection == true) {
