@@ -153,12 +153,9 @@
         console.log("message received");
         if (msg.data.startsWith('/')) {
           // if the data is an ArrayBuffer, it is a frame from the camera
-          if (stopdetection == true) {
-            img.src='data:image/png;base64' + "000";
-          }
-          else{
+
             img.src = 'data:image/png;base64, ' + msg.data;
-          }
+          
 
         } 
         else {
