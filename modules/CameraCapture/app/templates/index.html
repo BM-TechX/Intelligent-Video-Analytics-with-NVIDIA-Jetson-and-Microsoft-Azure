@@ -72,6 +72,7 @@
       </div>
       <div class = "center">
         <h1 class = "primaryText" style = "justify-content: center;">Anommaly Detection</h1>
+        <div class = "secondaryText" style = "background-color: green";">.</div>
       </div>
       <div class = "right"></div>
     </div>
@@ -83,10 +84,48 @@
     </div>
     <div class="myDIV" id="myDIV">
       ALARM
-    </div>   
+    </div>  
+    <div style="position: relative;">
+      <button id="Stop" style="background-color: red;">Stop Detection</button>
+      <button id="Start" style="background-color: green;">Start Detection</button>
+      <button id="Turnoffalarm" style="background-color: yellow;">STOP ALARM</button>
+      <button id="noAnom" style="background-color: blue;">No Anommaly</button>
+    </div>
     
     
     <script>
+      var pausedetection = false;
+      var stopdetection = false;
+      var startdetection=true;
+
+      var stopBut = document.getElementById("Stop");
+      var startBut = document.getElementById("Start");
+      var turnoffalarm = document.getElementById("Turnoffalarm");
+      var noAnom = document.getElementById("noAnom");
+      var statebox = document.getElementById("secondaryText");
+      var timeisup = false;
+      stopBut.addEventListener("click", stop);
+      startBut.addEventListener("click", start);
+      function stop() {
+        pausedetection = true;
+        stopdetection = true;
+        startdetection=false;
+        console.log("stop");
+        statebox.innerHTML = "Detection Stopped";
+      }
+      function start() {
+        pausedetection = false;
+        stopdetection = false;
+        startdetection=true;
+        console.log("start");
+        statebox.innerHTML = "Detection Started";
+      }
+      turnoffalarm.addEventListener("click", turnoff);
+      function turnoff() {
+        console.log("turnoff");
+        statebox.innerHTML = "Alarm Stopped";
+        myFunction(0);
+      }
       var img = document.getElementById("currentImage");
       var ws = new WebSocket("ws://" + location.host + "/stream");
       var text = document.getElementById("text");
@@ -128,10 +167,10 @@
         var x = document.getElementById("myDIV");
         if (vars == "1") {
           x.style.display = "block";
+    
           x.style.backgroundColor="red";
         } else {
           x.style.display = "none";
-   
         }
       }
       function beep() {
