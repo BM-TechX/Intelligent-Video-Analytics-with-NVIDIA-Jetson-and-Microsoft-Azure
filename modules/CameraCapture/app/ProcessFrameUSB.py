@@ -53,10 +53,20 @@ class ProcessFrameUSB(threading.Thread):
         self.threadcam2 = None
         self.threadcam3 = None
         self.threadcam4 = None
-        cam1= None
-        cam2= None
-        cam3= None
-        cam4= None
+        self.cam1= None
+        self.cam2= None
+        self.cam3= None
+        self.cam4= None
+        
+        try :
+            self.upload.connectToAzure()
+            self.upload.createTable(self.table)
+            if(self.upload.test_con()):
+                print("Connected to Azure")
+            else:
+                self.upload.intiateTable(self.table)
+        except Exception as e:
+            print("Error initCamera " + str(e))
         #######figure out which usb camera is associated with which lane
         for i in range(0, 10):
             vcap = cv2.VideoCapture("/dev/video"+str(i))
@@ -75,15 +85,7 @@ class ProcessFrameUSB(threading.Thread):
             else:
                 vcap.release()
 
-        try :
-            self.upload.connectToAzure()
-            self.upload.createTable(self.table)
-            if(self.upload.test_con()):
-                print("Connected to Azure")
-            else:
-                self.upload.intiateTable(self.table)
-        except Exception as e:
-            print("Error initCamera " + str(e))
+ 
         try:
             self.camera1 = cv2.VideoCapture(cam1)
             self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
@@ -117,6 +119,17 @@ class ProcessFrameUSB(threading.Thread):
             time.sleep(2.0)
         except:
             print("Error initCamera 3 " +str(e))
+    def retryCamEstab(self,camid):
+        try:
+            cam = cv2.VideoCapture(camid)
+            cam.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
+            cam.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+            cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            time.sleep(2.0)
+            return cam
+        except Exception as e:
+            print("Error initCamera  " + str(camid) +str(e))
+            return None
         
     def __gstreamer_pipeline(
         camera_id,
@@ -240,6 +253,9 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame1_ready = True
             except Exception as e:
                 print("Error grab 0 " + e)
+                self.camera1.release()
+                self.camera1 = self.retryCamEstab(self,self.cam1)
+                
     def processCAM2(self):
         while True:
             try:
@@ -250,6 +266,8 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame2_ready = True
             except:
                 print("Error grab 1")
+                self.camera1.release()
+                self.camera1 = self.retryCamEstab(self.cam2)
     def processCAM3(self):
         while True:
             try:
@@ -260,6 +278,8 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame3_ready = True
             except:
                 print("Error grab 2")
+                self.camera1.release()
+                self.camera1 = self.retryCamEstab(self.cam3)
     def processCAM4(self):
         while True:
             try:
@@ -270,6 +290,8 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame4_ready = True
             except:
                 print("Error grab 3")
+                self.camera1.release()
+                self.camera1 = self.retryCamEstab(self.cam4)
             
     def processing(self):
         while True:

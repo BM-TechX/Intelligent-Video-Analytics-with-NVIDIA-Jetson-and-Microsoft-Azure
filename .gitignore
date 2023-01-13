@@ -19,3 +19,4 @@ AzureFunctions/Compare/obj/
 AzureFunctions/Compare/bin/
 AzureFunctions/Compare/Properties/
 AzureFunctions/Compare/wwwroot/ 
+deployment-iothub/config/deployment.arm64v8.json
