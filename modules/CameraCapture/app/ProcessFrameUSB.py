@@ -72,7 +72,7 @@ class ProcessFrameUSB(threading.Thread):
             vcap = cv2.VideoCapture("/dev/video"+str(i))
             print("trying to open camera :" + str(i) )
             if vcap.isOpened():
-                print("camera opened :" + str(i) )
+                print("camera opened :" + str(i) ,color="green")
                 if(self.cam1 == None):
                     self.cam1= "/dev/video"+str(i)
                 elif(self.cam2 == None):

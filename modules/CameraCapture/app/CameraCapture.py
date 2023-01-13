@@ -118,6 +118,7 @@ class CameraCapture(object):
         self.resizeWidth = resizeWidth
         self.resizeHeight = resizeHeight
         #self.annotate = (self.imageProcessingEndpoint != "") and self.showVideo & annotate
+        self.threshold=0.5
         self.nbOfPreprocessingSteps = 0
         self.autoRotate = False
         self.sendToHubCallback = sendToHubCallback
@@ -329,6 +330,7 @@ class CameraCapture(object):
                 self.roi3a=data['roi3a']
                 self.roi4a=data['roi4a']
                 self.useUSB = data['useUSB']
+                self.threshold=data['threshold']
                 return data
         except Exception as e:
             print("Error reading config file " + str(e))
@@ -515,6 +517,7 @@ class CameraCapture(object):
                             usberror=usberror+1
                             print("Error in frame4: " + str(e))
                     try:
+                        
                         numpy_horizontal_concat_usb_top = np.concatenate((frame1_resized, frame2_resized), axis=1)
                         numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
                         numpy_horizontal_concat_usb = np.concatenate((numpy_horizontal_concat_usb_top, numpy_horizontal_concat_usb_bottom), axis=0)
