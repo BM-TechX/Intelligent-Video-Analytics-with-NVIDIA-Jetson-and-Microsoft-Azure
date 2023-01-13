@@ -121,10 +121,12 @@ class ProcessFrameUSB(threading.Thread):
             print("Error initCamera 3 " +str(e))
     def retryCamEstab(self,camid):
         try:
+            print("retrying to connect to camera " + str(camid))
             cam = cv2.VideoCapture(camid)
             cam.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
             cam.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
             cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            print ("camera " + str(camid) + " connected")
             time.sleep(2.0)
             return cam
         except Exception as e:
