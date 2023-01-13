@@ -211,7 +211,7 @@ class ProcessFrameUSB(threading.Thread):
             print("Error connecting to Azure " + str(e))
     def __uploadToAzure(self, filename, frame):
         try:
-            print("uploading to azure")
+            print("uploading to azure:" + filename)
             blob_service_client = BlobServiceClient.from_connection_string(self.connectionstring)
             local_file_name = filename +  ".jpg"
             _, img_encode = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 99])            
