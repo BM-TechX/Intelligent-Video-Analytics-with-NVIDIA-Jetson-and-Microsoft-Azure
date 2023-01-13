@@ -73,21 +73,21 @@ class ProcessFrameUSB(threading.Thread):
             print("trying to open camera :" + str(i) )
             if vcap.isOpened():
                 print("camera opened :" + str(i) )
-                if(cam1 == None):
-                    cam1= "/dev/video"+str(i)
-                elif(cam2 == None):
-                    cam2= "/dev/video"+str(i)
-                elif(cam3 == None):
-                    cam3= "/dev/video"+str(i)
-                elif(cam4 == None):
-                    cam4= "/dev/video"+str(i)
+                if(self.cam1 == None):
+                    self.cam1= "/dev/video"+str(i)
+                elif(self.cam2 == None):
+                    self.cam2= "/dev/video"+str(i)
+                elif(self.cam3 == None):
+                    self.cam3= "/dev/video"+str(i)
+                elif(self.cam4 == None):
+                    self.cam4= "/dev/video"+str(i)
                 vcap.release()
             else:
                 vcap.release()
 
  
         try:
-            self.camera1 = cv2.VideoCapture(cam1)
+            self.camera1 = cv2.VideoCapture(self.cam1)
             self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
             self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
             self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
@@ -96,7 +96,7 @@ class ProcessFrameUSB(threading.Thread):
         except Exception as e:
             print("Error initCamera 0 " + str(e))
         try:
-            self.camera2 = cv2.VideoCapture(cam2)
+            self.camera2 = cv2.VideoCapture(self.cam2)
             self.camera2.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
             self.camera2.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
             self.camera2.set(cv2.CAP_PROP_BUFFERSIZE, 1)
@@ -104,7 +104,7 @@ class ProcessFrameUSB(threading.Thread):
         except:
             print("Error initCamera 1 " +str(e))
         try:
-            self.camera3 = cv2.VideoCapture(cam3)
+            self.camera3 = cv2.VideoCapture(self.cam3)
             self.camera3.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
             self.camera3.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
             self.camera3.set(cv2.CAP_PROP_BUFFERSIZE, 1)
@@ -112,7 +112,7 @@ class ProcessFrameUSB(threading.Thread):
         except:
             print("Error initCamera 2 " +str(e))
         try:
-            self.camera4 = cv2.VideoCapture(cam4)
+            self.camera4 = cv2.VideoCapture(self.cam4)
             self.camera4.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
             self.camera4.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
             self.camera4.set(cv2.CAP_PROP_BUFFERSIZE, 1)
