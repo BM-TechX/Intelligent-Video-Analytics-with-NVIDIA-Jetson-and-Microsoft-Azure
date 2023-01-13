@@ -413,7 +413,7 @@ class CameraCapture(object):
 
                     #####################COMBINE
                     print("før combine")
-                    print (self.Lane1State + " " + self.Lane2State + " " + self.Lane3State + " " + self.Lane4State)
+                    print ("RTSP" + self.Lane1State + " " + self.Lane2State + " " + self.Lane3State + " " + self.Lane4State)
                     numpy_horizontal_concat = np.concatenate((preroi1_img_ot, preroi2_img_ot, preroi3_img_ot, preroi4_img_ot), axis=1)
                     self.numpy_horizontal_concat_rtsp= numpy_horizontal_concat
                     width, height, channels = numpy_horizontal_concat.shape
@@ -517,7 +517,7 @@ class CameraCapture(object):
                             usberror=usberror+1
                             print("Error in frame4: " + str(e))
                     try:
-                        
+                        print("USB"+ self.LaneStateUSB1 + self.LaneStateUSB2 + self.LaneStateUSB3 + self.LaneStateUSB4)
                         numpy_horizontal_concat_usb_top = np.concatenate((frame1_resized, frame2_resized), axis=1)
                         numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
                         numpy_horizontal_concat_usb = np.concatenate((numpy_horizontal_concat_usb_top, numpy_horizontal_concat_usb_bottom), axis=0)
