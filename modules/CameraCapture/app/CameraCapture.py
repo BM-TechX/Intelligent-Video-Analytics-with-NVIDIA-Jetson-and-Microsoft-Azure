@@ -236,7 +236,7 @@ class CameraCapture(object):
     def get_display_frame(self):
         return self.displayFrame   
     def get_LaneState(self):
-        if (self.ALARM>10):
+        if (self.ALARM>10000):
             self.ALARMREPORTED=10
             self.ALARM=0
         if (self.ALARMREPORTED>1):

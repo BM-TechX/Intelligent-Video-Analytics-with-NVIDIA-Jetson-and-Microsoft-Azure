@@ -33,7 +33,7 @@ class UploadToAzure:
     def uploadtoTable(self,entity):
         try:
             self.client.create_entity(entity=entity)
-            print ("uploaded to table")
+            print ("uploaded to table" + entity.get("PartitionKey") + " " + entity.get("RowKey"))
             return True
         except Exception as e:
             print("error uploading to table " + str(e))
