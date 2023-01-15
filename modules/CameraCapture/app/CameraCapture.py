@@ -346,7 +346,10 @@ class CameraCapture(object):
         count = 0
         usberror = 0
         usbreuse = 0
-        
+        frame1_resized = np.zeros((100,100,3), dtype=np.uint8)
+        frame2_resized = np.zeros((100,100,3), dtype=np.uint8)
+        frame3_resized = np.zeros((100,100,3), dtype=np.uint8)
+        frame4_resized = np.zeros((100,100,3), dtype=np.uint8)
         while True:
             if self.isWebcam:
                 frame = self.vs.read() 
