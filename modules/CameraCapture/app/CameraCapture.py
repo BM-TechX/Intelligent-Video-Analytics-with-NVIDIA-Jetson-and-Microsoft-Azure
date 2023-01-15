@@ -302,6 +302,7 @@ class CameraCapture(object):
         url = ""
         if(predictions.pred_score>threshold):
             try:
+                
                 self.__uploadToAzure(filename=rowkey+id,frame=preroi_img)
                 url = "https://camtagstoreaiem.blob.core.windows.net/fiberdefects/"+rowkey+id+ ".jpg"
                 self.ALARM = self.ALARM + 1
@@ -330,7 +331,7 @@ class CameraCapture(object):
                 self.roi2a=data['roi2a']
                 self.roi3a=data['roi3a']
                 self.roi4a=data['roi4a']
-                self.useUSB = self.strtobool(data['useUSB'])
+                # self.useUSB = self.strtobool(data['useUSB'])
                 self.threshold=data['threshold']
                 return data
         except Exception as e:
