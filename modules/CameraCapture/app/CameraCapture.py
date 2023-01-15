@@ -292,6 +292,7 @@ class CameraCapture(object):
         frame_cropped_rotated=imutils.rotate(frame_cropped,rotation)
         frame_cropped_rotated_inner = frame_cropped_rotated[int(regioninner[1]):int(regioninner[1]+regioninner[3]), int(regioninner[0]):int(regioninner[0]+regioninner[2])]
         return frame_cropped_rotated_inner
+   
     def process_lane(self,frame,threshold,id):
         preroi_img = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
         preroi_img_ot,predictions =self.infrencerTop.getInfrence(preroi_img)
@@ -517,7 +518,6 @@ class CameraCapture(object):
                             usberror=usberror+1
                             print("Error in frame4: " + str(e))
                     try:
-                        print("USB"+ self.LaneStateUSB1 + self.LaneStateUSB2 + self.LaneStateUSB3 + self.LaneStateUSB4)
                         numpy_horizontal_concat_usb_top = np.concatenate((frame1_resized, frame2_resized), axis=1)
                         numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
                         numpy_horizontal_concat_usb = np.concatenate((numpy_horizontal_concat_usb_top, numpy_horizontal_concat_usb_bottom), axis=0)
