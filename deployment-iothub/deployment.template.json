@@ -201,20 +201,22 @@
                                 "5012/tcp": [ { "HostPort":"5012"}]
                               },
                               "Binds": [
-                                "/dev/$USBHOST1:/dev/video0",
-                                "/dev/$USBHOST2:/dev/video1",
-                                "/dev/$USBHOST3:/dev/video2",
-                                "/dev/$USBHOST5:/dev/video4",
-                                "/dev/$USBHOST6:/dev/video5",
-                                "/dev/$USBHOST7:/dev/video6"
+                                "/dev/$USBHOST0:/dev/video0",
+                                "/dev/$USBHOST1:/dev/video1",
+                                "/dev/$USBHOST2:/dev/video2",
+                                "/dev/$USBHOST3:/dev/video3",
+                                "/dev/$USBHOST4:/dev/video4",
+                                "/dev/$USBHOST5:/dev/video5",
+                                "/dev/$USBHOST6:/dev/video6"
                                 ],
                               "Devices":[
-                                {"PathOnHost":"/dev/$USBHOST1","PathInContainer":"/dev/video0","CgroupPermissions":"mrw"},
-                                {"PathOnHost":"/dev/$USBHOST2","PathInContainer":"/dev/video1","CgroupPermissions":"mrw"},
-                                {"PathOnHost":"/dev/$USBHOST3","PathInContainer":"/dev/video2","CgroupPermissions":"mrw"},
-                                {"PathOnHost":"/dev/$USBHOST5","PathInContainer":"/dev/video4","CgroupPermissions":"mrw"},
-                                {"PathOnHost":"/dev/$USBHOST6","PathInContainer":"/dev/video5","CgroupPermissions":"mrw"},
-                                {"PathOnHost":"/dev/$USBHOST7","PathInContainer":"/dev/video6","CgroupPermissions":"mrw"}
+                                {"PathOnHost":"/dev/$USBHOST0","PathInContainer":"/dev/video0","CgroupPermissions":"mrw"},
+                                {"PathOnHost":"/dev/$USBHOST1","PathInContainer":"/dev/video1","CgroupPermissions":"mrw"},
+                                {"PathOnHost":"/dev/$USBHOST2","PathInContainer":"/dev/video2","CgroupPermissions":"mrw"},
+                                {"PathOnHost":"/dev/$USBHOST3","PathInContainer":"/dev/video3","CgroupPermissions":"mrw"},
+                                {"PathOnHost":"/dev/$USBHOST4","PathInContainer":"/dev/video4","CgroupPermissions":"mrw"},
+                                {"PathOnHost":"/dev/$USBHOST5","PathInContainer":"/dev/video5","CgroupPermissions":"mrw"},
+                                {"PathOnHost":"/dev/$USBHOST6","PathInContainer":"/dev/video6","CgroupPermissions":"mrw"}
                                 ]
                             }
                           }

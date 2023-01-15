@@ -346,10 +346,7 @@ class CameraCapture(object):
         count = 0
         usberror = 0
         usbreuse = 0
-        frame1_resized = np.zeros((100,100,3), dtype=np.uint8)
-        frame2_resized = np.zeros((100,100,3), dtype=np.uint8)
-        frame3_resized = np.zeros((100,100,3), dtype=np.uint8)
-        frame4_resized = np.zeros((100,100,3), dtype=np.uint8)
+       
         while True:
             if self.isWebcam:
                 frame = self.vs.read() 
@@ -520,7 +517,7 @@ class CameraCapture(object):
                             frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
                             usberror=usberror+1
                             print("Error in frame4: " + str(e))
-                    try:
+                    try:                    
                         numpy_horizontal_concat_usb_top = np.concatenate((frame1_resized, frame2_resized), axis=1)
                         numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
                         numpy_horizontal_concat_usb = np.concatenate((numpy_horizontal_concat_usb_top, numpy_horizontal_concat_usb_bottom), axis=0)
