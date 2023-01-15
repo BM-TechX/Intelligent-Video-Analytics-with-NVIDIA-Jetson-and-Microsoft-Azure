@@ -434,6 +434,7 @@ class CameraCapture(object):
                     else:
                         self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
                     if self.useUSB==True:
+                        print("useUSb = true")
                         if (usberror > 50):
                             try:
                                 self.vscam1.stop_processing()
