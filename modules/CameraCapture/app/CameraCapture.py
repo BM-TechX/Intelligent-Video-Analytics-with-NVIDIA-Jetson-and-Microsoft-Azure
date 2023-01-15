@@ -529,15 +529,15 @@ class CameraCapture(object):
                             frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
                             usberror=usberror+1
                             print("Error in frame4: " + str(e))
-                    try:                    
-                        numpy_horizontal_concat_usb_top = np.concatenate((frame1_resized, frame2_resized), axis=1)
-                        numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
-                        numpy_horizontal_concat_usb = np.concatenate((numpy_horizontal_concat_usb_top, numpy_horizontal_concat_usb_bottom), axis=0)
-                        self.numpy_horizontal_concat_usb = numpy_horizontal_concat_usb
-                        numpy_horizontal_concat = np.concatenate((self.numpy_horizontal_concat_rtsp , numpy_horizontal_concat_usb), axis=1)
-                        self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()# +"|"+state
-                    except Exception as e:
-                        print("Error in concat: " + str(e))
+                        try:                    
+                            numpy_horizontal_concat_usb_top = np.concatenate((frame1_resized, frame2_resized), axis=1)
+                            numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
+                            numpy_horizontal_concat_usb = np.concatenate((numpy_horizontal_concat_usb_top, numpy_horizontal_concat_usb_bottom), axis=0)
+                            self.numpy_horizontal_concat_usb = numpy_horizontal_concat_usb
+                            numpy_horizontal_concat = np.concatenate((self.numpy_horizontal_concat_rtsp , numpy_horizontal_concat_usb), axis=1)
+                            self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()# +"|"+state
+                        except Exception as e:
+                            print("Error in concat: " + str(e))
                 except Exception as e:
                     print("Could not display the video to a web browser.") 
                     print('Excpetion -' + str(e))
