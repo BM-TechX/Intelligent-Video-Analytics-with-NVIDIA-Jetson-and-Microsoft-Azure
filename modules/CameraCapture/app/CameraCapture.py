@@ -330,13 +330,21 @@ class CameraCapture(object):
                 self.roi2a=data['roi2a']
                 self.roi3a=data['roi3a']
                 self.roi4a=data['roi4a']
-                self.useUSB = data['useUSB']
+                self.useUSB = self.strtobool(data['useUSB'])
                 self.threshold=data['threshold']
                 return data
         except Exception as e:
             print("Error reading config file " + str(e))
 
         
+    def strtobool (val):
+        val = val.lower()
+        if val in ('y', 'yes', 't', 'true', 'on', '1'):
+            return True
+        elif val in ('n', 'no', 'f', 'false', 'off', '0'):
+            return False
+        else:
+            raise ValueError("invalid truth value %r" % (val,))
         
     def start(self):
         infrenceCounter = 0
