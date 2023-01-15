@@ -303,7 +303,7 @@ class CameraCapture(object):
         if(predictions.pred_score>threshold):
             try:
                 dimensions = preroi_img_ot.shape
-                cv2.rectangle(preroi_img_ot, (0, 0), (dimensions[0],dimensions[1]), (255,0,0), 2)
+                cv2.rectangle(preroi_img_ot, (dimensions[0],dimensions[1]),(0, 0), (0,0,255), 2)
                 self.__uploadToAzure(filename=rowkey+id,frame=preroi_img)
                 url = "https://camtagstoreaiem.blob.core.windows.net/fiberdefects/"+rowkey+id+ ".jpg"
                 self.ALARM = self.ALARM + 1
