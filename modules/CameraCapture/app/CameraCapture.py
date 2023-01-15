@@ -332,7 +332,7 @@ class CameraCapture(object):
                 self.roi2a=data['roi2a']
                 self.roi3a=data['roi3a']
                 self.roi4a=data['roi4a']
-                print(data['useUSB']'])
+                print(data['useUSB'])
                 # self.useUSB = self.strtobool(data['useUSB'])
                 self.threshold=data['threshold']
                 return data
