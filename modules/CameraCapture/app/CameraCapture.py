@@ -454,13 +454,16 @@ class CameraCapture(object):
                                 self.LaneStateUSB1,frame1=self.vscam1.getframe("0")
                                 frame1_resized = cv2.resize(frame1, dsize=(height, width))
                                 self.previousUSBFrame1 = frame1_resized
+                                print("freshframe")
                             elif (self.previousUSBFrame1 is not None):
                                 frame1_resized = self.previousUSBFrame1
                                 usbreuse=usbreuse+1
+                                print("reuse usb1")
                             else:
                                 frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
                                 self.LaneStateUSB1=None
                                 usberror=usberror+1
+                                print("created zero")
                         except:
                             print("frame1 error")
                             frame1_resized = np.zeros((width,height,3), dtype=np.uint8)

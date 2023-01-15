@@ -205,7 +205,6 @@
                                 "/dev/$USBHOST1:/dev/video1",
                                 "/dev/$USBHOST2:/dev/video2",
                                 "/dev/$USBHOST3:/dev/video3",
-                                "/dev/$USBHOST4:/dev/video4",
                                 "/dev/$USBHOST5:/dev/video5",
                                 "/dev/$USBHOST6:/dev/video6"
                                 ],
@@ -214,7 +213,6 @@
                                 {"PathOnHost":"/dev/$USBHOST1","PathInContainer":"/dev/video1","CgroupPermissions":"mrw"},
                                 {"PathOnHost":"/dev/$USBHOST2","PathInContainer":"/dev/video2","CgroupPermissions":"mrw"},
                                 {"PathOnHost":"/dev/$USBHOST3","PathInContainer":"/dev/video3","CgroupPermissions":"mrw"},
-                                {"PathOnHost":"/dev/$USBHOST4","PathInContainer":"/dev/video4","CgroupPermissions":"mrw"},
                                 {"PathOnHost":"/dev/$USBHOST5","PathInContainer":"/dev/video5","CgroupPermissions":"mrw"},
                                 {"PathOnHost":"/dev/$USBHOST6","PathInContainer":"/dev/video6","CgroupPermissions":"mrw"}
                                 ]
