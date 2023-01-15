@@ -21,7 +21,16 @@ from datetime import datetime
 # This class reads all the video frames in a separate thread and always has the keeps only the latest frame in its queue to be grabbed by another thread
 # bufferless VideoCapture
 class ProcessFrameUSB(threading.Thread):
-    def __init__(self,threshold=0.5,infrencerbuttom = None,height=3040,witdh=4032,table="notSet",AZURE_STORAGE_BLOB=None):
+    	# 4032×3040@10fps; 
+        # 3840×2160@20fps; 
+        # 2592×1944@30fps; 
+        # 2560×1440@30fps; 
+        # 1920×1080@60fps; 
+        # 1600×1200@50fps; 
+        # 1280×960@100fps; 
+        # 1280×760@100fps; 
+        # 640×480@80fps
+    def __init__(self,threshold=0.5,infrencerbuttom = None,height=1080,witdh=1920,table="notSet",AZURE_STORAGE_BLOB=None):
         self.camera1 = None
         self.camera2 = None
         self.camera3 = None
