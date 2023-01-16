@@ -297,7 +297,7 @@ class CameraCapture(object):
    
     def process_lane(self,frame,threshold,id):
         preroi_img = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
-        preroi_img_ot,predictions =self.infrencerTop.getInfrence(preroi_img)
+        preroi_img_ot,predictions =self.infrencerTop.getInfrence(preroi_img,{"threshold":self.threshold})
         LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
         now = datetime.now()
         rowkey = str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(now.second) + str(now.microsecond)
@@ -308,7 +308,7 @@ class CameraCapture(object):
                 start_point = (0,0)
                 end_point = (width, height)
                 color = (0,0,255)
-                thickness = 5
+                thickness = 8
                 preroi_img_ot = cv2.rectangle(preroi_img_ot, start_point, end_point, color, thickness)
                 self.__uploadToAzure(filename=rowkey+id,frame=preroi_img)
                 url = "https://camtagstoreaiem.blob.core.windows.net/fiberdefects/"+rowkey+id+ ".jpg"

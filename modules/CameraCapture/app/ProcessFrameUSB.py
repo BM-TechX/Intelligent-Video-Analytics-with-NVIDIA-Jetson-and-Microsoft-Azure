@@ -248,7 +248,7 @@ class ProcessFrameUSB(threading.Thread):
                 start_point = (0,0)
                 end_point = (width, height)
                 color = (0,0,255)
-                thickness = 5
+                thickness = 8
                 preroi_img_ot = cv2.rectangle(preroi_img_ot, start_point, end_point, color, thickness)
                 self.__uploadToAzure(filename=rowkey+id,frame=preroi_img)
                 url = "https://camtagstoreaiem.blob.core.windows.net/fiberdefects/"+rowkey+id+ ".jpg"

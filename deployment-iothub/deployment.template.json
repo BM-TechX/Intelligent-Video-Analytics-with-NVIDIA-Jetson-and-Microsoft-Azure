@@ -197,6 +197,7 @@
                           "createOptions": {
                             "HostConfig": {
                               "runtime": "nvidia",
+                              "privileged": true,
                               "PortBindings": {
                                 "5012/tcp": [ { "HostPort":"5012"}]
                               },
