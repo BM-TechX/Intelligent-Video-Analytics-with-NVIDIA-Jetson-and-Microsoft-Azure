@@ -40,9 +40,9 @@ class Infrence:
 
         return inferencer, visualizer
 
-    def getInfrence(self, image, meta_data=None):
+    def getInfrence(self, image):
         # Perform inference
-        predictions = self.inferencer.predict(image=image, meta_data=meta_data)
+        predictions = self.inferencer.predict(image=image)
         print(predictions.pred_label)
         output = self.visualizer.visualize_image(predictions)
         return output,predictions

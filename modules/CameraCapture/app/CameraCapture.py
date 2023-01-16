@@ -297,7 +297,7 @@ class CameraCapture(object):
    
     def process_lane(self,frame,threshold,id):
         preroi_img = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
-        preroi_img_ot,predictions =self.infrencerTop.getInfrence(preroi_img,{"threshold":self.threshold})
+        preroi_img_ot,predictions =self.infrencerTop.getInfrence(preroi_img)
         LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
         now = datetime.now()
         rowkey = str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(now.second) + str(now.microsecond)
@@ -315,7 +315,8 @@ class CameraCapture(object):
                 self.ALARM = self.ALARM + 1
             except Exception as e:
                     print("something went wrong while uploading to azure")
-        
+        else:
+            LaneState = "Normal" + " " + str(round(predictions.pred_score,2))
         self.azUp(predictions,id,rowkey,url)
         cv2.putText(preroi_img_ot, LaneState, (15, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
         return preroi_img_ot,LaneState
