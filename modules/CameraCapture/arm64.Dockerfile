@@ -47,6 +47,7 @@ RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_bottom.ckpt
 RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/config_bot.yaml
 RUN pip3 install datetime
 RUN pip3 install imutils
+RUN apt-get install -y nano
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/* \
     && apt-get -y autoremove
