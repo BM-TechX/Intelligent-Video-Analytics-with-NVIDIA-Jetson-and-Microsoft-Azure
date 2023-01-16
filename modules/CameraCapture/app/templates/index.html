@@ -58,6 +58,10 @@
       margin-top: 20px;
       display: none;
     }
+    .checkbox {
+      width: 40px;
+      height:40px;
+    }
   </style>
   <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -77,11 +81,44 @@
       </div>
       <div class = "right"></div>
     </div>
-
+ 
     <div class = "container">
       <!--Put the Object Detection Image here.-->
       <img id="currentImage" class = "img">
     </div>
+    <table style="font-size:20;">
+      <tr>
+          <td>
+            <input type="checkbox" class="checkbox"  id="LaneTop1">LaneTop1</input>
+          </td>
+          <td>
+            <input type="checkbox" class="checkbox" id="LaneBot1USB1">LaneBot1USB1</input>
+          </td>
+      </tr>
+      <tr>
+        <td>
+          <input type="checkbox" class="checkbox" id="LaneTop2">LaneTop2</input>
+        </td>
+        <td>
+          <input type="checkbox" class="checkbox" id="LaneBot2USB2">LaneBot2USB2</input>
+        </td>
+      <tr>
+        <td>
+          <input type="checkbox" class="checkbox" id="LaneTop3">LaneTop3</input></br>
+        </td>
+        <td>
+          <input type="checkbox" class="checkbox" id="LaneBot3USB3">LabeBot3USB3</input>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type="checkbox" class="checkbox" id="LaneTop4">LaneTop4</input></br>
+        </td>
+        <td>
+          <input type="checkbox" class="checkbox" id="LaneBot3USB4">LabelBot4USB4</input>
+        </td>
+      <tr>
+    </table>
     <p id="text"></p>
     <div class="myDIV" id="myDIV">
       ALARM

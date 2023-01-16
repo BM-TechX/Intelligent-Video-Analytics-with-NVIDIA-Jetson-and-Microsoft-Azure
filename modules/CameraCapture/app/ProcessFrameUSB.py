@@ -77,7 +77,7 @@ class ProcessFrameUSB(threading.Thread):
         except Exception as e:
             print("Error initCamera " + str(e))
         #######figure out which usb camera is associated with which lane
-        for i in range(0, 10):
+        for i in range(0, 11):
             vcap = cv2.VideoCapture("/dev/video"+str(i))
             print("trying to open camera :" + str(i) )
             if vcap.isOpened():

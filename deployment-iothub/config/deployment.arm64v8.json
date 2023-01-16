@@ -64,7 +64,7 @@
           "camera-capture": {
             "version": "1",
             "type": "docker",
-            "status": "running",
+            "status": "stopped",
             "restartPolicy": "always",
             "env": {
               "VIDEO_PATH": {
@@ -227,14 +227,14 @@
             },
             "settings": {
               "image": "hubber.azurecr.io/cameracapture:v44",
-              "createOptions": "{\"HostConfig\":{\"runtime\":\"nvidia\",\"PortBindings\":{\"5012/tcp\":[{\"HostPort\":\"5012\"}]},\"Binds\":[\"/dev/video0:/dev/video0\",\"/dev/video1:/dev/video1\",\"/dev/video2:/dev/video2\",\"/dev/video3:/dev/video3\",\"/dev/video5:/dev/video5\",\"/dev/video6:/dev/video6\"],\"Devices\":[{\"PathOnHost\":\"/dev/video0\",\"PathInContainer\":\"/dev/video0\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video1\",\"PathInContainer\":\"/dev/video1\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video2\",\"PathInContainer\":\"/dev/video2\",\"CgroupPermission",
-              "createOptions01": "s\":\"mrw\"},{\"PathOnHost\":\"/dev/video3\",\"PathInContainer\":\"/dev/video3\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video5\",\"PathInContainer\":\"/dev/video5\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video6\",\"PathInContainer\":\"/dev/video6\",\"CgroupPermissions\":\"mrw\"}]}}"
+              "createOptions": "{\"HostConfig\":{\"runtime\":\"nvidia\",\"PortBindings\":{\"5012/tcp\":[{\"HostPort\":\"5012\"}]},\"Binds\":[\"/dev/video0:/dev/video0\",\"/dev/video2:/dev/video1\",\"/dev/video4:/dev/video2\",\"/dev/video6:/dev/video3\"],\"Devices\":[{\"PathOnHost\":\"/dev/video0\",\"PathInContainer\":\"/dev/video0\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video2\",\"PathInContainer\":\"/dev/video1\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video4\",\"PathInContainer\":\"/dev/video2\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video6\",\"PathInContain",
+              "createOptions01": "er\":\"/dev/video3\",\"CgroupPermissions\":\"mrw\"}]}}"
             }
           },
           "camera-capture-ALT_2": {
             "version": "1",
             "type": "docker",
-            "status": "running",
+            "status": "stopped",
             "restartPolicy": "always",
             "env": {
               "VIDEO_PATH": {
@@ -319,7 +319,7 @@
           "camera-capture-ALT_3": {
             "version": "1",
             "type": "docker",
-            "status": "running",
+            "status": "stopped",
             "restartPolicy": "always",
             "env": {
               "VIDEO_PATH": {

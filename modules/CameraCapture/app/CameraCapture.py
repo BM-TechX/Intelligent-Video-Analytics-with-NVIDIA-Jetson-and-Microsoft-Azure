@@ -162,7 +162,9 @@ class CameraCapture(object):
         self.ALARMREPORTED=0
         self.table="Fiberline"
         self.connectionstring = "DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net"
-
+        self.takePhotoFrequency=0
+        self.takePhoto=False             
+        self.threshold=0.9
         self.infrencerTop = Infrence(model_path='model_3.ckpt',config_path='config.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
         if self.useUSB == True:
             self.infrencerbuttom = Infrence(model_path='model_bottom.ckpt',config_path='config_bot.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
@@ -221,7 +223,7 @@ class CameraCapture(object):
                
                 #self.vs.setFPS(15)
                 if self.useUSB ==True:
-                    self.vscam1=ProcessFrameUSB(threshold=0.5,infrencerbuttom=self.infrencerbuttom,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
+                    self.vscam1=ProcessFrameUSB(threshold=self.threshold,infrencerbuttom=self.infrencerbuttom,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
                     self.vscam1.start_processing()
 
             ##self.vs.start()
@@ -236,8 +238,8 @@ class CameraCapture(object):
     def get_display_frame(self):
         return self.displayFrame   
     def get_LaneState(self):
-        if (self.ALARM>10000):
-            self.ALARMREPORTED=10
+        if (self.ALARM>100):
+            self.ALARMREPORTED=1000
             self.ALARM=0
         if (self.ALARMREPORTED>1):
             self.ALARMREPORTED= self.ALARMREPORTED-1
@@ -336,9 +338,10 @@ class CameraCapture(object):
                 self.roi2a=data['roi2a']
                 self.roi3a=data['roi3a']
                 self.roi4a=data['roi4a']
-                print(data['useUSB'])
+                self.takePhotoFrequency=int(data["takePhotoFrequency"])
+                self.takePhoto= data["takePhoto"]               
                 # self.useUSB = self.strtobool(data['useUSB'])
-                self.threshold=data['threshold']
+                self.threshold=float(data['threshold'])
                 return data
         except Exception as e:
             print("Error reading config file " + str(e))
@@ -415,7 +418,7 @@ class CameraCapture(object):
                     preroi2 = self.get_process_lane(self.ROI2,roi2a,roi2_rotation,preprocessedFrame,read)
                     preroi3 = self.get_process_lane(self.ROI3,roi3a,roi3_rotation,preprocessedFrame,read)
                     preroi4 = self.get_process_lane(self.ROI4,roi4a,roi4_rotation,preprocessedFrame,read)
-                    threshold = 0.5
+                    threshold = self.threshold
                     state = "NORMAL"
                     # #########LANE 1
                     preroi1_img_ot,self.Lane1State = self.process_lane(preroi1,threshold,"Lane1Top")
