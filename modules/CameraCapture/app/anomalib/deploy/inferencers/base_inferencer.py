@@ -48,7 +48,7 @@ class Inferencer(ABC):
     def post_process(
         self, predictions: Union[np.ndarray, Tensor], meta_data: Optional[Dict[str, Any]]
     ) -> Dict[str, Any]:
-        """Post-Process."""
+        """Post-Process.""" 
         raise NotImplementedError
 
     def predict(
