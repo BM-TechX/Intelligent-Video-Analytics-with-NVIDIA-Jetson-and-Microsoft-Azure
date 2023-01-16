@@ -318,7 +318,7 @@ class CameraCapture(object):
         else:
             LaneState = "Normal" + " " + str(round(predictions.pred_score,2))
         self.azUp(predictions,id,rowkey,url)
-        cv2.putText(preroi_img_ot, LaneState, (15, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
+        cv2.putText(preroi_img_ot, LaneState, (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
         return preroi_img_ot,LaneState
         
     def read_json(self):
