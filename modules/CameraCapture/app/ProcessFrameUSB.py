@@ -66,9 +66,7 @@ class ProcessFrameUSB(threading.Thread):
         self.cam2= None
         self.cam3= None
         self.cam4= None
-        self.uploadToAzure = True
-        try :
-            self.upload.connectToAzure()
+        self.uploadToAzure = 0
             self.upload.createTable(self.table)
             if(self.upload.test_con()):
                 print("Connected to Azure")
