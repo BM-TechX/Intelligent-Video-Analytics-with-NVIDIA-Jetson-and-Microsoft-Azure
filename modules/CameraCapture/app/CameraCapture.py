@@ -165,6 +165,7 @@ class CameraCapture(object):
         self.takePhotoFrequency=0
         self.takePhoto=False             
         self.threshold=0.9
+        self.uploadToAzure=False
         self.infrencerTop = Infrence(model_path='model_3.ckpt',config_path='config.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
         if self.useUSB == True:
             self.infrencerbuttom = Infrence(model_path='model_bottom.ckpt',config_path='config_bot.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
@@ -310,14 +311,16 @@ class CameraCapture(object):
                 color = (0,0,255)
                 thickness = 8
                 preroi_img_ot = cv2.rectangle(preroi_img_ot, start_point, end_point, color, thickness)
-                self.__uploadToAzure(filename=rowkey+id,frame=preroi_img)
-                url = "https://camtagstoreaiem.blob.core.windows.net/fiberdefects/"+rowkey+id+ ".jpg"
+                if(self.uploadToAzure==1):
+                    self.__uploadToAzure(filename=rowkey+id,frame=preroi_img)
+                    url = "https://camtagstoreaiem.blob.core.windows.net/fiberdefects/"+rowkey+id+ ".jpg"
                 self.ALARM = self.ALARM + 1
             except Exception as e:
                     print("something went wrong while uploading to azure")
         else:
             LaneState = "Normal" + " " + str(round(predictions.pred_score,2))
-        self.azUp(predictions,id,rowkey,url)
+        if(self.uploadToAzure==1):
+            self.azUp(predictions,id,rowkey,url)
         cv2.putText(preroi_img_ot, LaneState, (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
         return preroi_img_ot,LaneState
         
@@ -340,7 +343,8 @@ class CameraCapture(object):
                 self.roi3a=data['roi3a']
                 self.roi4a=data['roi4a']
                 self.takePhotoFrequency=int(data["takePhotoFrequency"])
-                self.takePhoto= data["takePhoto"]               
+                self.takePhoto= data["takePhoto"]
+                self.uploadToAzure= int(data["uploadToAzure"])        
                 # self.useUSB = self.strtobool(data['useUSB'])
                 self.threshold=float(data['threshold'])
                 return data
@@ -399,6 +403,7 @@ class CameraCapture(object):
                     read =0
                     if(self.useFile):
                         self.read_json()
+                        self.vscam1.uploadToAzure = self.uploadToAzure
                         read =1 
                     genral_rotation = float(self.genral_rotation)
                     roi1_rotation=float(self.roi1_rotation)
@@ -449,7 +454,7 @@ class CameraCapture(object):
                         if (usberror > 50):
                             try:
                                 self.vscam1.stop_processing()
-                                self.vscam1=ProcessFrameUSB(threshold=0.5,infrencerbuttom=self.infrencerbuttom,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
+                                self.vscam1=ProcessFrameUSB(threshold=self.threshold,infrencerbuttom=self.infrencerbuttom,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
                                 self.vscam1.start_processing()
                             except:
                                 print("usb restart failed")
@@ -457,7 +462,7 @@ class CameraCapture(object):
                         if (usbreuse > 400):
                             try:
                                 self.vscam1.stop_processing()
-                                self.vscam1=ProcessFrameUSB(threshold=0.5,infrencerbuttom=self.infrencerbuttom,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
+                                self.vscam1=ProcessFrameUSB(threshold=self.threshold,infrencerbuttom=self.infrencerbuttom,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
                                 self.vscam1.start_processing()
                             except:
                                 print("usb restart failed")

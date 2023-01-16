@@ -15,5 +15,6 @@
     "useUSB": "True",
     "threshold": "0.9",
     "takePhotoFrequency": "1",
-    "takePhoto": "True"
+    "takePhoto": "True",
+    "uploadToAzure": "0"
 }

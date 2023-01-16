@@ -66,7 +66,7 @@ class ProcessFrameUSB(threading.Thread):
         self.cam2= None
         self.cam3= None
         self.cam4= None
-        
+        self.uploadToAzure = True
         try :
             self.upload.connectToAzure()
             self.upload.createTable(self.table)
@@ -250,13 +250,14 @@ class ProcessFrameUSB(threading.Thread):
                 color = (0,0,255)
                 thickness = 8
                 preroi_img_ot = cv2.rectangle(preroi_img_ot, start_point, end_point, color, thickness)
-                self.__uploadToAzure(filename=rowkey+id,frame=preroi_img)
-                url = "https://camtagstoreaiem.blob.core.windows.net/fiberdefects/"+rowkey+id+ ".jpg"
+                if(self.uploadToAzure ==1):
+                    self.__uploadToAzure(filename=rowkey+id,frame=preroi_img)
+                    url = "https://camtagstoreaiem.blob.core.windows.net/fiberdefects/"+rowkey+id+ ".jpg"
                 self.ALARM = self.ALARM + 1
             except Exception as e:
                     print("something went wrong while uploading to azure")
-        
-        self.azUp(predictions,id,rowkey,url)
+        if(self.uploadToAzure==1):
+            self.azUp(predictions,id,rowkey,url)
         cv2.putText(preroi_img_ot, LaneState, (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 5, (255, 255, 255), 1)
         
         return preroi_img_ot,LaneState
