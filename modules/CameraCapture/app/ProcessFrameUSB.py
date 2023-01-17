@@ -256,9 +256,9 @@ class ProcessFrameUSB(threading.Thread):
                 self.ALARM = self.ALARM + 1
             except Exception as e:
                     print("something went wrong while uploading to azure")
-            cv2.putText(preroi_img_ot, LaneState, (30, 20), cv2.FONT_HERSHEY_SIMPLEX, 5, (0, 0, 255), 1)
+            cv2.putText(preroi_img_ot, LaneState, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 5, (0, 0, 255), 1)
         else:
-            cv2.putText(preroi_img_ot, LaneState, (30, 20), cv2.FONT_HERSHEY_SIMPLEX, 5, (255, 255, 255), 1)
+            cv2.putText(preroi_img_ot, LaneState, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 5, (255, 255, 255), 1)
         if(self.uploadToAzure==1):
             self.azUp(predictions,id,rowkey,url)
       
