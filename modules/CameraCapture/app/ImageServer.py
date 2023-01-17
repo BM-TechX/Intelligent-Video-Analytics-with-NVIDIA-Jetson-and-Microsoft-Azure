@@ -16,12 +16,12 @@ class ImageStreamHandler(tornado.websocket.WebSocketHandler):
             with open('config.json') as json_file:
                 data = json.load(json_file)
                 if (msg.split(",")[0]=="activeLanes"):
+                    
                     activelanes=  data['activeLanes'].split(",")
                     activeLanesar=[int(activelanes[0]),int(activelanes[1]),int(activelanes[2]),int(activelanes[3])]
                     activeLanesar[int(msg.split(",")[1])]=int(msg.split(",")[2])
                     data['activeLanes']=str(activeLanesar[0])+","+str(activeLanesar[1])+","+str(activeLanesar[2])+","+str(activeLanesar[3])
                 if(msg.split(",")[0]=="activeUSB"):
-                    data['activeUSB']=msg.split(",")[1]+","+msg.split(",")[2]+","+msg.split(",")[3]+","+msg.split(",")[4]
                     activeUSB=  data['activeUSB'].split(",")
                     activeUSBar=[int(activeUSB[0]),int(activeUSB[1]),int(activeUSB[2]),int(activeUSB[3])]
                     activeUSBar[int(msg.split(",")[1])]=int(msg.split(",")[2])
