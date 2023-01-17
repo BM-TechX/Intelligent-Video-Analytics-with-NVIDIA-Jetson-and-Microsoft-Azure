@@ -509,7 +509,6 @@ class CameraCapture(object):
                                     print("created zero")
                             else:
                                 frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                frame1_resized.fill(255)
                                 self.LaneStateUSB1=None
                                 print("USBlane1 not active")
                                 
@@ -531,7 +530,6 @@ class CameraCapture(object):
                                     usberror=usberror+1
                             else:
                                 frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                frame1_resized.fill(255)
                                 self.LaneStateUSB2=None
                                 print("USBlane2 not active")
                         except:
@@ -552,7 +550,6 @@ class CameraCapture(object):
                                     usberror=usberror+1
                             else:
                                 frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                frame3_resized.fill(255)
                                 self.LaneStateUSB3=None
                                 print("USBlane3 not active")
                         except:
@@ -573,7 +570,6 @@ class CameraCapture(object):
                                     usberror=usberror+1
                             else:
                                 frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                frame4_resized.fill(255)
                                 self.LaneStateUSB4=None
                                 print("USBlane4 not active")
 
