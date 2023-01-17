@@ -89,7 +89,7 @@
     <table style="font-size:20;">
       <tr>
           <td>
-            <input type="checkbox" class="checkbox"  id="LaneTop1">LaneTop1</input>
+            <input type="checkbox" class="checkbox" checked="true" onchange="sendtoBack(1)" id="LaneTop1">LaneTop1</input>
           </td>
           <td>
             <input type="checkbox" class="checkbox" id="LaneBot1USB1">LaneBot1USB1</input>
@@ -145,7 +145,23 @@
       startBut.addEventListener("click", start);
       turnoffalarm.addEventListener("click", turnoff);
       noAnom.addEventListener("click", noannom);
-  
+      function sendtoBack(values)
+      {
+        if (value==1)
+        {
+          var x = document.getElementById("LaneTop1");
+          if(x.checked==true)
+          {
+            ws.send("activeLanes,1,1");
+          }
+          else
+          {
+            ws.send("activeLanes,1,0");
+          }
+        }
+     
+        ws.send("next");
+      }
       function noannom() {
         console.log("noannom");
         statebox.innerHTML = "No Anommaly";

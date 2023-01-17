@@ -7,10 +7,30 @@ import tornado.websocket
 import threading
 import base64
 import os
+import json
 
 
 class ImageStreamHandler(tornado.websocket.WebSocketHandler):
-
+    def editconfig(self,msg):
+        try:
+            with open('config.json') as json_file:
+                data = json.load(json_file)
+                if (msg.split(",")[0]=="activeLanes"):
+                    activelanes=  data['activeLanes'].split(",")
+                    activeLanesar=[int(activelanes[0]),int(activelanes[1]),int(activelanes[2]),int(activelanes[3])]
+                    activeLanesar[int(msg.split(",")[1])]=int(msg.split(",")[2])
+                    data['activeLanes']=str(activeLanesar[0])+","+str(activeLanesar[1])+","+str(activeLanesar[2])+","+str(activeLanesar[3])
+                if(msg.split(",")[0]=="activeUSB"):
+                    data['activeUSB']=msg.split(",")[1]+","+msg.split(",")[2]+","+msg.split(",")[3]+","+msg.split(",")[4]
+                    activeUSB=  data['activeUSB'].split(",")
+                    activeUSBar=[int(activeUSB[0]),int(activeUSB[1]),int(activeUSB[2]),int(activeUSB[3])]
+                    activeUSBar[int(msg.split(",")[1])]=int(msg.split(",")[2])
+                    data['activeUSB']=str(activeUSBar[0])+","+str(activeUSBar[1])+","+str(activeUSBar[2])+","+str(activeUSBar[3])
+            with open('config.json', "w") as outfile:
+                outfile.write(data)
+        except Exception as e:
+            print("Error in editconfig: ",e)
+                   
     def initialize(self, camera):
         self.clients = []
         self.camera = camera
@@ -35,7 +55,10 @@ class ImageStreamHandler(tornado.websocket.WebSocketHandler):
                 self.write_message(encoded, binary=False)
                 self.write_message(self.camera.get_LaneState(), binary=False)
                 #self.write_message(''.join(random.choice(letters) for i in range(10)), binary=False)
-
+        if 'activeLanes' in msg:
+            self.editconfig(msg)
+        if 'activeUSB' in msg:
+            self.editconfig(msg)
                 #self.write_message(entity, binary=True)
     def data_received(self, dat):
         self.write_message(dat, binary=True)
