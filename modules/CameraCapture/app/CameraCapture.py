@@ -169,6 +169,7 @@ class CameraCapture(object):
         self.activeLanes=[1,1,1,1]
         self.activeUSBLanes=[1,1,1,1]
         self.infrencerTop = Infrence(model_path='model_4.ckpt',config_path='config.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
+        #test if we have a usb camera
         if self.useUSB == True:
             self.infrencerbuttom = Infrence(model_path='model_bottom.ckpt',config_path='config_bot.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
         
