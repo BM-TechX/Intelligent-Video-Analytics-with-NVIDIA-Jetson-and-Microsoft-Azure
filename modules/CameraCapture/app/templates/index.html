@@ -92,30 +92,30 @@
             <input type="checkbox" class="checkbox" checked="true" onchange=sendtoBack(1) id="LaneTop1">LaneTop1</input>
           </td>
           <td>
-            <input type="checkbox" class="checkbox" id="LaneBot1USB1">LaneBot1USB1</input>
+            <input type="checkbox" class="checkbox" checked="true" onchange=sendtoBack(2)  id="LaneBot1USB1">LaneBot1USB1</input>
           </td>
       </tr>
       <tr>
         <td>
-          <input type="checkbox" class="checkbox" id="LaneTop2">LaneTop2</input>
+          <input type="checkbox" class="checkbox" checked="true" onchange=sendtoBack(3) id="LaneTop2">LaneTop2</input>
         </td>
         <td>
-          <input type="checkbox" class="checkbox" id="LaneBot2USB2">LaneBot2USB2</input>
+          <input type="checkbox" class="checkbox"  checked="true" onchange=sendtoBack(4) id="LaneBot2USB2">LaneBot2USB2</input>
         </td>
       <tr>
         <td>
-          <input type="checkbox" class="checkbox" id="LaneTop3">LaneTop3</input></br>
+          <input type="checkbox" class="checkbox"  checked="true" onchange=sendtoBack(5) id="LaneTop3">LaneTop3</input></br>
         </td>
         <td>
-          <input type="checkbox" class="checkbox" id="LaneBot3USB3">LabeBot3USB3</input>
+          <input type="checkbox" class="checkbox" checked="true" onchange=sendtoBack(6) id="LaneBot3USB3">LabeBot3USB3</input>
         </td>
       </tr>
       <tr>
         <td>
-          <input type="checkbox" class="checkbox" id="LaneTop4">LaneTop4</input></br>
+          <input type="checkbox" class="checkbox" checked="true" onchange=sendtoBack(7) id="LaneTop4">LaneTop4</input></br>
         </td>
         <td>
-          <input type="checkbox" class="checkbox" id="LaneBot3USB4">LabelBot4USB4</input>
+          <input type="checkbox" class="checkbox" checked="true" onchange=sendtoBack(8) id="LaneBot3USB4">LabelBot4USB4</input>
         </td>
       <tr>
     </table>
@@ -147,19 +147,30 @@
       noAnom.addEventListener("click", noannom);
       function sendtoBack(cal)
       {
+        var x =null;
+        var id = null;
+        var typpe = null;
         console.log("sendtoBack");
         if (cal==1)
         {
-          var x = document.getElementById("LaneTop1");
-          if(x.checked==true)
-          {
-            ws.send("activeLanes,1,1");
-          }
-          else
-          {
-            ws.send("activeLanes,1,0");
-          }
+          x = document.getElementById("LaneTop1");
+          id="1";
+          typpe="activeLanes";
+
         }
+        else if (cal==2)
+        {
+
+        }
+        if(x.checked==true)
+        {
+          ws.send(typpe+","+id+",1");
+        }
+        else
+        {
+          ws.send(typpe+","+id+",0");
+        }
+        
       }
       function noannom() {
         console.log("noannom");
