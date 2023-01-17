@@ -167,7 +167,7 @@ class CameraCapture(object):
         self.threshold=0.9
         self.uploadToAzure=False
         self.activeLanes=[1,1,1,1]
-        self.activeUSB=[1,1,1,1]
+        self.activeUSBLanes=[1,1,1,1]
         self.infrencerTop = Infrence(model_path='model_3.ckpt',config_path='config.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
         if self.useUSB == True:
             self.infrencerbuttom = Infrence(model_path='model_bottom.ckpt',config_path='config_bot.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
@@ -352,7 +352,7 @@ class CameraCapture(object):
                 activelanes=  data['activeLanes'].split(",")
                 self.activeLanes=[int(activelanes[0]),int(activelanes[1]),int(activelanes[2]),int(activelanes[3])]
                 activeUSB=  data['activeUSB'].split(",")
-                self.activeUSB=[int(activeUSB[0]),int(activeUSB[1]),int(activeUSB[2]),int(activeUSB[3])]
+                self.activeUSBLanes=[int(activeUSB[0]),int(activeUSB[1]),int(activeUSB[2]),int(activeUSB[3])]
                 return data
         except Exception as e:
             print("Error reading config file " + str(e))
