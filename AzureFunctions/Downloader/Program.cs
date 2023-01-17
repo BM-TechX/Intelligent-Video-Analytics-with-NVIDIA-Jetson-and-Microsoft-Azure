@@ -33,7 +33,7 @@ try
             Console.WriteLine(blob.Properties.CreatedOn.ToString());
             Console.WriteLine(blob.Name);
         //}
-        if (blob.Name.Contains("Top"))
+        if (blob.Name.ToLower().Contains("usb"))
         {
             await DownloadToStream(blobContainer.GetBlobClient(blob.Name), blob.Name);
         }
