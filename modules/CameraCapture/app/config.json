@@ -1,12 +1,12 @@
 {
     "roi1": "950,200,370,1750",
     "roi2": "1455,200,370,1750",
-    "roi3": "1952,200,370,1750",
-    "roi4": "2465,200,345,1750",
+    "roi3": "1953,200,370,1750",
+    "roi4": "2465,200,342,1750",
     "genral_rotation": "360.9",
     "roi1_rotation": "358.9",
     "roi2_rotation": "359.0",
-    "roi3_rotation": "359.25",
+    "roi3_rotation": "359.5",
     "roi4_rotation": "359.4",
     "roi1a": "9,100,303,1750",
     "roi2a": "15,100,316,1750",
@@ -16,5 +16,6 @@
     "threshold": "0.9",
     "takePhotoFrequency": "1",
     "takePhoto": "True",
-    "uploadToAzure": "0"
+    "uploadToAzure": "0",
+    "activeLanes": "1,1,1,1"
 }

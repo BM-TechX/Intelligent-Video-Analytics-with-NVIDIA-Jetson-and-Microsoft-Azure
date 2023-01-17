@@ -67,10 +67,11 @@ namespace ImgViewer.Controllers
                 return View("Error");
             }
         }
-        public async Task<IActionResult> Index(string searchString = "")
+        public async Task<IActionResult> Index(string searchString = "",string numberTotake="1")
         {
             try
             {
+                var number = Convert.ToInt32((string)numberTotake);
                 List<Uri> allBlobs = new List<Uri>();
                 if (!string.IsNullOrEmpty(searchString))
                 {
@@ -88,12 +89,12 @@ namespace ImgViewer.Controllers
 
                     // Gets all Block Blobs in the blobContainerName and passes them to the view
 
-                    foreach (BlobItem blob in blobContainer.GetBlobs())
+                    foreach (BlobItem blob in blobContainer.GetBlobs(prefix:searchString).Take<BlobItem>(number))
                     {
                         if (blob.Properties.BlobType == BlobType.Block)
                             if (blob.Name.Contains(searchString))
                             {
-                                allBlobs.Add(blobContainer.GetBlobClient(blob.Name).Uri);
+                              allBlobs.Add(blobContainer.GetBlobClient(blob.Name).Uri);
                             }
                     }
 

@@ -166,6 +166,7 @@ class CameraCapture(object):
         self.takePhoto=False             
         self.threshold=0.9
         self.uploadToAzure=False
+        self.activeLanes=[1,1,1,1]
         self.infrencerTop = Infrence(model_path='model_3.ckpt',config_path='config.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
         if self.useUSB == True:
             self.infrencerbuttom = Infrence(model_path='model_bottom.ckpt',config_path='config_bot.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
@@ -347,6 +348,8 @@ class CameraCapture(object):
                 self.uploadToAzure= int(data["uploadToAzure"])        
                 # self.useUSB = self.strtobool(data['useUSB'])
                 self.threshold=float(data['threshold'])
+                activelanes=  data['activeLanes'].split(",")
+                self.activeLanes=[int(activelanes[0]),int(activelanes[1]),int(activelanes[2]),int(activelanes[3])]
                 return data
         except Exception as e:
             print("Error reading config file " + str(e))
@@ -360,7 +363,9 @@ class CameraCapture(object):
             return False
         else:
             raise ValueError("invalid truth value %r" % (val,))
-        
+    def img_combine(self):
+        numpy_horizontal_concat = np.concatenate((preroi1_img_ot, preroi2_img_ot, preroi3_img_ot, preroi4_img_ot), axis=1)
+ 
     def start(self):
         infrenceCounter = 0
         perfForOneFrameInMs = None
@@ -420,26 +425,40 @@ class CameraCapture(object):
                     print("Frame undistorted")
                     
                     preprocessedFrame=imutils.rotate(preprocessedFrame,genral_rotation)
-                    preroi1 = self.get_process_lane(self.ROI1,roi1a,roi1_rotation,preprocessedFrame,read)
-                    preroi2 = self.get_process_lane(self.ROI2,roi2a,roi2_rotation,preprocessedFrame,read)
-                    preroi3 = self.get_process_lane(self.ROI3,roi3a,roi3_rotation,preprocessedFrame,read)
-                    preroi4 = self.get_process_lane(self.ROI4,roi4a,roi4_rotation,preprocessedFrame,read)
                     threshold = self.threshold
+                    numpy_horizontal_concat = None
+                    if(self.activeLanes[0]==1):
+                        preroi1 = self.get_process_lane(self.ROI1,roi1a,roi1_rotation,preprocessedFrame,read)
+                        preroi1_img_ot,self.Lane1State = self.process_lane(preroi1,threshold,"Lane1Top")
+                        numpy_horizontal_concat = preroi1_img_ot
+                    if(self.activeLanes[1]==1):
+                        preroi2 = self.get_process_lane(self.ROI2,roi2a,roi2_rotation,preprocessedFrame,read)
+                        preroi2_img_ot,self.Lane2State = self.process_lane(preroi2,threshold,"Lane2Top")
+                        if(numpy_horizontal_concat is not None):
+                            numpy_horizontal_concat = np.concatenate((numpy_horizontal_concat, preroi2_img_ot), axis=1)
+                        else:
+                            numpy_horizontal_concat = preroi2_img_ot
+                    if(self.activeLanes[2]==1):
+                        preroi3 = self.get_process_lane(self.ROI3,roi3a,roi3_rotation,preprocessedFrame,read)
+                        preroi3_img_ot,self.Lane3State = self.process_lane(preroi3,threshold,"Lane3Top")
+                        if(numpy_horizontal_concat is not None):
+                            numpy_horizontal_concat = np.concatenate((numpy_horizontal_concat, preroi3_img_ot), axis=1)
+                        else:
+                            numpy_horizontal_concat = preroi3_img_ot
+                    if(self.activeLanes[3]==1):
+                        preroi4 = self.get_process_lane(self.ROI4,roi4a,roi4_rotation,preprocessedFrame,read)
+                        preroi4_img_ot,self.Lane4State = self.process_lane(preroi4,threshold,"Lane4Top")  
+                        if(numpy_horizontal_concat is not None):
+                            numpy_horizontal_concat = np.concatenate((numpy_horizontal_concat, preroi4_img_ot), axis=1)
+                        else:
+                            numpy_horizontal_concat = preroi4_img_ot
                     state = "NORMAL"
-                    # #########LANE 1
-                    preroi1_img_ot,self.Lane1State = self.process_lane(preroi1,threshold,"Lane1Top")
-                    # #########LANE 2
-                    preroi2_img_ot,self.Lane2State = self.process_lane(preroi2,threshold,"Lane2Top")
-                    # ###########LANE 3
-                    preroi3_img_ot,self.Lane3State = self.process_lane(preroi3,threshold,"Lane3Top")
-                    # ###########LANE 4
-                    preroi4_img_ot,self.Lane4State = self.process_lane(preroi4,threshold,"Lane4Top")
-                    #
-
-                    #####################COMBINE
-                    print("før combine")
+                    
+                    
+                    #####################COMBINE IMAGES#####################
                     print ("RTSP" + self.Lane1State + " " + self.Lane2State + " " + self.Lane3State + " " + self.Lane4State)
-                    numpy_horizontal_concat = np.concatenate((preroi1_img_ot, preroi2_img_ot, preroi3_img_ot, preroi4_img_ot), axis=1)
+                   
+                            
                     self.numpy_horizontal_concat_rtsp= numpy_horizontal_concat
                     width, height, channels = numpy_horizontal_concat.shape
                     width = int(width/2)
