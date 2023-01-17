@@ -549,7 +549,7 @@ class CameraCapture(object):
                                     self.LaneStateUSB3=None
                                     usberror=usberror+1
                             else:
-                                fram34_resized = np.zeros((width,height,3), dtype=np.uint8)
+                                frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
                                 self.LaneStateUSB3=None
                                 print("USBlane3 not active")
                         except:
