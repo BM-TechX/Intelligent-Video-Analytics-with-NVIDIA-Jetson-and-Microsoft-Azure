@@ -13,7 +13,7 @@
     "roi3a": "30,100,320,1750",
     "roi4a": "30,100,320,1750",
     "useUSB": "True",
-    "threshold": "0.9",
+    "threshold": "0.5",
     "takePhotoFrequency": "1",
     "takePhoto": "True",
     "uploadToAzure": "0",

@@ -160,11 +160,11 @@ class CameraCapture(object):
         self.numpy_horizontal_concat_rtsp = None
         self.ALARM=0
         self.ALARMREPORTED=0
-        self.table="Fiberline"
+        self.table="FiberlineTest"
         self.connectionstring = "DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net"
         self.takePhotoFrequency=0
         self.takePhoto=False             
-        self.threshold=0.9
+        self.threshold=0.5
         self.uploadToAzure=False
         self.activeLanes=[1,1,1,1]
         self.activeUSBLanes=[1,1,1,1]
@@ -316,7 +316,7 @@ class CameraCapture(object):
                 preroi_img_ot = cv2.rectangle(preroi_img_ot, start_point, end_point, color, thickness)
                 if(self.uploadToAzure==1):
                     self.__uploadToAzure(filename=rowkey+id,frame=preroi_img)
-                    url = "https://camtagstoreaiem.blob.core.windows.net/fiberdefects/"+rowkey+id+ ".jpg"
+                    url = "https://camtagstoreaiem.blob.core.windows.net/fiberdefectstest/"+rowkey+id+ ".jpg"
                 self.ALARM = self.ALARM + 1
             except Exception as e:
                     print("something went wrong while uploading to azure")
