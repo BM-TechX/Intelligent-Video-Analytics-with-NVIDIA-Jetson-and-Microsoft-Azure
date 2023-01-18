@@ -30,7 +30,7 @@ class ProcessFrameUSB(threading.Thread):
         # 1280×960@100fps; 
         # 1280×760@100fps; 
         # 640×480@80fps
-    def __init__(self,threshold=0.5,infrencerbuttom = None,height=1080,witdh=1920,table="notSet",AZURE_STORAGE_BLOB=None):
+    def __init__(self,threshold=1.0,infrencerbuttom = None,height=1080,witdh=1920,table="notSet",AZURE_STORAGE_BLOB=None):
         self.camera1 = None
         self.camera2 = None
         self.camera3 = None
