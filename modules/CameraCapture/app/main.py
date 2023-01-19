@@ -77,14 +77,6 @@ def main(
     '''
     try:
         print("\nPython %s\n" % sys.version)
-        print("Camera Capture Azure IoT Edge Module. Press Ctrl-C to exit.")
-        try:
-            global hubManager
-            hubManager = HubManager(
-                10000, verbose)
-        except Exception as iothub_error:
-            print("Unexpected error %s from IoTHub" % iothub_error)
-            return
         with CameraCapture(videoPath, imageProcessingEndpoint, imageProcessingParams, showVideo, verbose, loopVideo, convertToGray, resizeWidth, resizeHeight, annotate,fps,AZURE_STORAGE_BLOB,AZURE_STORAGE_CONNECTION_STRING,AZURE_STORAGE_CONTAINER,IMAGEWIDTH,IMAGEHEIGHT,
                            ROI1,ROI2,ROI3,ROI4,genral_rotation,roi1_rotation,roi2_rotation,roi3_rotation,roi4_rotation,roi1a,roi2a,roi3a,roi4a) as cameraCapture:
             cameraCapture.start()
