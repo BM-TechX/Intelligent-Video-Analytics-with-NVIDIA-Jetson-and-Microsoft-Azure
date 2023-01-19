@@ -15,7 +15,7 @@ import time
 #                           IoTHubMessage, IoTHubMessageDispositionResult,
 #                           IoTHubTransportProvider)
 
-# from azure.iot.device import IoTHubModuleClient, Message
+from azure.iot.device import IoTHubModuleClient, Message
 
 import CameraCapture
 from CameraCapture import CameraCapture
@@ -25,13 +25,13 @@ from CameraCapture import CameraCapture
 SEND_CALLBACKS = 0
 
 
-# def send_to_Hub_callback(strMessage):
-#     message = Message(bytearray(strMessage, 'utf8'))
-#     hubManager.send_message_to_output(message, "output1")
+def send_to_Hub_callback(strMessage):
+    message = Message(bytearray(strMessage, 'utf8'))
+    hubManager.send_message_to_output(message, "output1")
 
-# # Callback received when the message that we're forwarding is processed.
+# Callback received when the message that we're forwarding is processed.
 
-# class HubManager(object):
+class HubManager(object):
 
     def __init__(
             self,
@@ -115,7 +115,7 @@ def main(
         except Exception as iothub_error:
             print("Unexpected error %s from IoTHub" % iothub_error)
             return
-        with CameraCapture(videoPath, imageProcessingEndpoint, imageProcessingParams, showVideo, verbose, loopVideo, convertToGray, resizeWidth, resizeHeight, annotate,fps,AZURE_STORAGE_BLOB,AZURE_STORAGE_CONNECTION_STRING,AZURE_STORAGE_CONTAINER,IMAGEWIDTH,IMAGEHEIGHT,
+        with CameraCapture(videoPath, imageProcessingEndpoint, imageProcessingParams, showVideo, verbose, loopVideo, convertToGray, resizeWidth, resizeHeight, annotate, send_to_Hub_callback,fps,AZURE_STORAGE_BLOB,AZURE_STORAGE_CONNECTION_STRING,AZURE_STORAGE_CONTAINER,IMAGEWIDTH,IMAGEHEIGHT,
                            ROI1,ROI2,ROI3,ROI4,genral_rotation,roi1_rotation,roi2_rotation,roi3_rotation,roi4_rotation,roi1a,roi2a,roi3a,roi4a) as cameraCapture:
             cameraCapture.start()
     except KeyboardInterrupt:
@@ -192,7 +192,8 @@ if __name__ == '__main__':
         roi1a = "9,100,303,1750",
         roi2a = "15,100,316,1750",
         roi3a = "30,100,320,1750",
-        roi4a = "30,100,325,1750",
+        roi4a = "30,100,325,1750"
+        
     except ValueError as error:
         print(error)
         sys.exit(1)
