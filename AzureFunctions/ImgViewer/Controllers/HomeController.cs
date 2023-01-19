@@ -12,7 +12,7 @@ namespace ImgViewer.Controllers
     public class HomeController : Controller
     {
 
-        const string blobContainerName = "fiberdefects";
+        const string blobContainerName = "fiberdefectstest";
         const string connectionstring = @"DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net";
         static BlobContainerClient blobContainer;
 

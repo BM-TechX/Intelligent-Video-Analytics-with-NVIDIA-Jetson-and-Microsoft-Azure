@@ -60,6 +60,7 @@ class ImageStreamHandler(tornado.websocket.WebSocketHandler):
             self.editconfig(msg)
         if 'activeUSB' in msg:
             self.editconfig(msg)
+                            
                 #self.write_message(entity, binary=True)
     def data_received(self, dat):
         self.write_message(dat, binary=True)
