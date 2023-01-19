@@ -141,27 +141,8 @@ class ProcessFrameUSB(threading.Thread):
         except Exception as e:
             print("Error initCamera  " + str(camid) +str(e))
             return None
-    def rediscover(self):
-        if (self.camera1.isOpened() == False):
-            self.cam1= None
-        self.camera4
-         for i in range(0, 11):
-            vcap = cv2.VideoCapture("/dev/video"+str(i))
-            print("trying to open camera :" + str(i) )
-            if vcap.isOpened():
-                print("camera opened :" + str(i))
-                if(self.cam1 == None):
-                    self.cam1= "/dev/video"+str(i)
-                elif(self.cam2 == None):
-                    self.cam2= "/dev/video"+str(i)
-                elif(self.cam3 == None):
-                    self.cam3= "/dev/video"+str(i)
-                elif(self.cam4 == None):
-                    self.cam4= "/dev/video"+str(i)
-                vcap.release()
-            else:
-                vcap.release()
-
+    
+    def __gstreamer_pipeline(
         camera_id,
         capture_width=1920,
         capture_height=1080,
