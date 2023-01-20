@@ -51,6 +51,8 @@ RUN pip3 install imutils
 RUN apt-get install -y nano
 RUN apt install -y ffmpeg
 RUN apt-get install -y libsm6 libxext6 libxrender-dev
+RUN apt-get install -y python3-opencv
+
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/* \
     && apt-get -y autoremove
