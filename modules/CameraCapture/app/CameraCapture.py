@@ -235,17 +235,13 @@ class CameraCapture(object):
                     print("connecting to rtsp")
                     time.sleep(4.0)
                     self.vs = BufferLess(self.videoPath,id="rtsp",setFPS=8)
-                    time.sleep(4.0)
+                    time.sleep(10.0)
                     print("trying to get frame")
                     frame = self.vs.read()
-                    if (self.vs.cap.isOpened()==False):
-                        print("rtsp not opened")
-                        self.vs = BufferLess(self.videoPath,id="rtsp")
-                    time.sleep(4.0)
                 except Exception as e:
                     print("error" + str(e))
                     time.sleep(1.0)
-                    self.retyr(1)
+         
                
                 #self.vs.setFPS(15)
                 if self.useUSB ==True:
