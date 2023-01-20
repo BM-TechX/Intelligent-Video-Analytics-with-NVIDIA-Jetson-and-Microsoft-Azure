@@ -14,8 +14,7 @@ import threading
 # bufferless VideoCapture
 class BufferLess:
     def __init__(self, name,setFPS=0,setWidth=0,setHeight=0,id=""):
-        self.cap = cv2.VideoCapture(name)
-        self.cap.set(cv2.VideoWriter_fourcc,) cv2.VideoWriter_fourcc(*'H264')
+        self.cap = cv2.VideoCapture('rtsp://10.10.50.102:554/Streaming/Channels/101')
         if (setFPS > 0):
             self.cap.set(cv2.CAP_PROP_FPS, setFPS)
         if (setWidth > 0):
