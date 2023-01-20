@@ -28,7 +28,7 @@ class BufferLess:
         self.t.start()
         self.frame1 = None
         self.frame1_ready = False
-
+    
     # grab frames as soon as they are available
     def _reader(self):
         while True:
