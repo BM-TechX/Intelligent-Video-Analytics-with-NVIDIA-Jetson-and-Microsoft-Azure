@@ -119,7 +119,7 @@ class CameraCapture(object):
         self.resizeHeight = resizeHeight
         #self.annotate = (self.imageProcessingEndpoint != "") and self.showVideo & annotate
         self.threshold=0.5
-        self.nbOfPreprocessingSteps = 0
+        self.nbOfPreprocessingSteps = 1
         self.autoRotate = False
         self.fps = fps
         self.AZURE_STORAGE_BLOB = AZURE_STORAGE_BLOB
