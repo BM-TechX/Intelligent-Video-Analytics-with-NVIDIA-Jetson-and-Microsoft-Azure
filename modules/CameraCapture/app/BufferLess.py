@@ -31,6 +31,14 @@ class BufferLess:
     
     # grab frames as soon as they are available
     def _reader(self):
+        print("Starting reader thread")
+        print ("doing some initial grabs")
+        try:
+            self.cap.read()
+            self.cap.read()
+            self.cap.read()
+        except:
+            print("Error grabbing initial frames")
         while True:
             with self.lock:
                 #print("frameCAP" +self.id)
