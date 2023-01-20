@@ -441,7 +441,13 @@ class CameraCapture(object):
                     roi2a =self.convertROIstringToTuple(self.roi2a,read) 
                     roi3a =self.convertROIstringToTuple(self.roi3a,read)
                     roi4a =self.convertROIstringToTuple(self.roi4a,read)
-                    preprocessedFrame = self.UndistortParserInstance.undistortImage(preprocessedFrame)
+                    if preprocessedFrame is not None:
+                        print("frame is not none")
+                        preprocessedFrame = self.UndistortParserInstance.undistortImage(preprocessedFrame)
+                    else:
+                        print("restarting RTSP")
+                        self.restartrtsp()
+                        time.sleep(3.0)
                     print("Frame undistorted")
                     
                     preprocessedFrame=imutils.rotate(preprocessedFrame,genral_rotation)
