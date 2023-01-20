@@ -127,7 +127,7 @@ if __name__ == '__main__':
         # roi2a = os.getenv('roi2a', ""),
         # roi3a = os.getenv('roi3a', ""),
         # roi4a = os.getenv('roi4a', ""),
-        VIDEO_PATH = "rtsp://admin:S0lskin1234!@10.10.50.102:554",
+        videoPath = "rtsp://admin:S0lskin1234!@10.10.50.102:554",
         IMAGE_PROCESSING_ENDPOINT = "",
         IMAGE_PROCESSING_PARAMS = os.getenv('IMAGE_PROCESSING_PARAMS', "")
         SHOW_VIDEO = True,
