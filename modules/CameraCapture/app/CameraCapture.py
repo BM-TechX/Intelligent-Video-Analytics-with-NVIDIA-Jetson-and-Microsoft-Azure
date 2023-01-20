@@ -271,10 +271,12 @@ class CameraCapture(object):
         
 
     def convertROIstringToTuple(self,roiString,read):
+        print(roiString+"|"+str(read))
         if (read==0):
             roi = roiString[0].split(',')
         else:
             roi = roiString.split(',')
+        print("roi" + str(roi))
         return (int(roi[0]),int(roi[1]),int(roi[2]),int(roi[3]))
     def convertROIstringToTuple2(self,roiString):
         roi = roiString.split(',')
@@ -430,10 +432,15 @@ class CameraCapture(object):
                     if(self.useFile):
                         self.read_json()
                         self.vscam1.uploadToAzure = self.uploadToAzure
+                    print("general rotaion")
                     genral_rotation = float(self.genral_rotation)
+                
                     roi1_rotation=float(self.roi1_rotation)
+                 
                     roi2_rotation=float(self.roi2_rotation)
+              
                     roi3_rotation=float(self.roi3_rotation)
+          
                     roi4_rotation=float(self.roi4_rotation)
                     print("aftergeneral rotation")
                     print("read",read)
