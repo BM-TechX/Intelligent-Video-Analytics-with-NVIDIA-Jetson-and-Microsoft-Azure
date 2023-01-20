@@ -232,9 +232,11 @@ class CameraCapture(object):
                 self.vs.setSize(4032,3040)
             else:
                 try:
+                    time.sleep(4.0)
                     self.vs = BufferLess(self.videoPath,id="rtsp")
                     time.sleep(4.0)
                     self.restartrtsp()
+                    time.sleep(4.0)
                 except Exception as e:
                     print("error" + str(e))
                     time.sleep(1.0)
