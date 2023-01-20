@@ -262,7 +262,7 @@ class CameraCapture(object):
             self.vs = BufferLess(self.videoPath,id="rtsp")
         except Exception as e:
             print("error" + str(e))
-            retry(count+1)
+            self.retyr(count+1)
         
         
     def get_display_frame(self):
