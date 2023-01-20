@@ -127,17 +127,17 @@ if __name__ == '__main__':
         # roi2a = os.getenv('roi2a', ""),
         # roi3a = os.getenv('roi3a', ""),
         # roi4a = os.getenv('roi4a', ""),
-        VIDEO_PATH = "rtsp://admin:S0lskin1234!@10.10.50.102:554",
+        VIDEO_PATH = "rtsp://admin:S0lskin1234!@10.10.50.102:554"
         IMAGE_PROCESSING_ENDPOINT = "",
         IMAGE_PROCESSING_PARAMS = os.getenv('IMAGE_PROCESSING_PARAMS', "")
         SHOW_VIDEO = True,
         VERBOSE = False,
         LOOP_VIDEO = __convertStringToBool(os.getenv('LOOP_VIDEO', 'True'))
         CONVERT_TO_GRAY = __convertStringToBool(
-            os.getenv('CONVERT_TO_GRAY', 'False')),
-        RESIZE_WIDTH = 0,
-        RESIZE_HEIGHT = 0,
-        FPS = 10,
+            os.getenv('CONVERT_TO_GRAY', 'False'))
+        RESIZE_WIDTH = 0
+        RESIZE_HEIGHT = 0
+        FPS = 10
         AZURE_STORAGE_BLOB = "fiberdefectstest",
         AZURE_STORAGE_CONNECTION_STRING ="DefaultEndpointsProtocol",
         AZURE_STORAGE_CONTAINER = "camerataggingmodulecloud",
