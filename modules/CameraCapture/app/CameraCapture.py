@@ -412,14 +412,7 @@ class CameraCapture(object):
             #Pre-process locally
             try:
                 print("frame starting preprocessing")
-                self.nbOfPreprocessingSteps = 1
-                if self.nbOfPreprocessingSteps == 1 and self.convertToGray:
-                    preprocessedFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                    
-                
-                if self.nbOfPreprocessingSteps == 1 and (self.resizeWidth != 0 or self.resizeHeight != 0):
-                    preprocessedFrame = cv2.resize(frame, (self.resizeWidth, self.resizeHeight))
-
+                preprocessedFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 print ("frame processed")
             except:
                 count = count + 1
