@@ -271,12 +271,10 @@ class CameraCapture(object):
         
 
     def convertROIstringToTuple(self,roiString,read):
-        print(roiString+"|"+str(read))
         if (read==0):
             roi = roiString[0].split(',')
         else:
             roi = roiString.split(',')
-        print("roi" + str(roi))
         return (int(roi[0]),int(roi[1]),int(roi[2]),int(roi[3]))
     def convertROIstringToTuple2(self,roiString):
         roi = roiString.split(',')
@@ -448,10 +446,9 @@ class CameraCapture(object):
                     roi2a =self.convertROIstringToTuple(self.roi2a,read) 
                     roi3a =self.convertROIstringToTuple(self.roi3a,read)
                     roi4a =self.convertROIstringToTuple(self.roi4a,read)
-                    if preprocessedFrame is not None:
-                        print("frame is not none")
+                    try:
                         preprocessedFrame = self.UndistortParserInstance.undistortImage(preprocessedFrame)
-                    else:
+                    except:
                         print("restarting RTSP")
                         self.restartrtsp()
                         time.sleep(3.0)
