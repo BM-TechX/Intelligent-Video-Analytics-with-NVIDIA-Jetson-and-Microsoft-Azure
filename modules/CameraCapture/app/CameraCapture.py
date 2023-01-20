@@ -222,7 +222,12 @@ class CameraCapture(object):
                 self.vs = VideoStream(int(self.videoPath))
                 self.vs.setSize(4032,3040)
             else:
-                self.vs = BufferLess(self.videoPath,id="rtsp")
+                try:
+                    self.vs = BufferLess(self.videoPath,id="rtsp")
+                except Exception as e:
+                    print("error" + str(e))
+                    time.sleep(1.0)
+                    self.retyr(1)
                
                 #self.vs.setFPS(15)
                 if self.useUSB ==True:
@@ -237,7 +242,18 @@ class CameraCapture(object):
             #In the case of a video file, we want to analyze all the frames of the video thus are not using VideoStream class
             self.capture = cv2.VideoCapture(self.videoPath)
         return self
-
+    def retyr(self,count):
+        time.sleep(2.0)
+        if(count>10):
+            return
+        try:
+            self.vs.stop()
+            self.vs = BufferLess(self.videoPath,id="rtsp")
+        except Exception as e:
+            print("error" + str(e))
+            retry(count+1)
+        
+        
     def get_display_frame(self):
         return self.displayFrame   
     def get_LaneState(self):
