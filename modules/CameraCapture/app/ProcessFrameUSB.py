@@ -102,7 +102,7 @@ class ProcessFrameUSB(threading.Thread):
             # self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
             # #self.camera1 = BufferLess(0)
             # time.sleep(2.0)      
-            self.camera1 = self.setCamera("")
+            self.camera1 = self.setCamera(self.cam1)
         except Exception as e:
             print("Error initCamera 0 " + str(e))
         try:
@@ -135,9 +135,14 @@ class ProcessFrameUSB(threading.Thread):
         #VENDOR_ID = 0xVENDOR 
         #PRODUCT_ID = 0xPRODUCT 
         # Find the USB camera using the vendor and product ID 
-        dev = usb.core.find(idSerial=camid)
+        try:
+            dev = usb.core.find(idSerial="M8aS1")
+            cam = cv2.VideoCapture(dev)
+        except:
+            print("Error initCamera " + str(e))
+            cam = cv2.VideoCapture(camid)
 
-        cam = cv2.VideoCapture(camid)
+        
         cam.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
         cam.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
         cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
