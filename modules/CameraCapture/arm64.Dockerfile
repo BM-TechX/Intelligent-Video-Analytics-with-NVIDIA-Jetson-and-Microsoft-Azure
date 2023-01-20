@@ -49,7 +49,7 @@ RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/config_bot.yaml
 RUN pip3 install datetime
 RUN pip3 install imutils
 RUN apt-get install -y nano
-RUN apt install -y FFmpeg
+RUN apt install ffmpeg
 RUN apt-get install -y libsm6 libxext6 libxrender-dev
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/* \
