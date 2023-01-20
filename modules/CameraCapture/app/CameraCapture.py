@@ -210,6 +210,7 @@ class CameraCapture(object):
             return
 
     def restartrtsp(self):
+        print(restarting rtsp)
         self.vs.stop()
         self.vs = BufferLess(self.videoPath,id="rtsp")
     def __displayTimeDifferenceInMs(self, endTime, startTime):
@@ -400,6 +401,7 @@ class CameraCapture(object):
             #Pre-process locally
             try:
                 print("frame starting preprocessing")
+                self.nbOfPreprocessingSteps = 1
                 if self.nbOfPreprocessingSteps == 1 and self.convertToGray:
                     preprocessedFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                     
@@ -428,7 +430,6 @@ class CameraCapture(object):
                     if(self.useFile):
                         self.read_json()
                         self.vscam1.uploadToAzure = self.uploadToAzure
-                        read =1 
                     genral_rotation = float(self.genral_rotation)
                     roi1_rotation=float(self.roi1_rotation)
                     roi2_rotation=float(self.roi2_rotation)
