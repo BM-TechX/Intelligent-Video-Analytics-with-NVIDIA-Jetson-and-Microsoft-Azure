@@ -14,7 +14,7 @@ import threading
 # bufferless VideoCapture
 class BufferLess:
     def __init__(self, name,setFPS=0,setWidth=0,setHeight=0,id=""):
-        self.cap = cv2.VideoCapture('rtsp://admin:S0lskin1234!@10.10.50.102:554')
+        self.cap = cv2.VideoCapture('rtsp://admin@10.10.50.102:554')
         if (setFPS > 0):
             self.cap.set(cv2.CAP_PROP_FPS, setFPS)
         if (setWidth > 0):
@@ -34,7 +34,11 @@ class BufferLess:
         while True:
             with self.lock:
                 #print("frameCAP" +self.id)
-                ret = self.cap.grab()
+                try:
+                    ret = self.cap.grab()
+                except:
+                    print("Error grabbing frame")
+                    ret = self.cap.grab()
             if not ret:
                 break
     
