@@ -235,7 +235,9 @@ class CameraCapture(object):
                     time.sleep(4.0)
                     self.vs = BufferLess(self.videoPath,id="rtsp")
                     time.sleep(4.0)
-                    self.restartrtsp()
+                    if (self.vs.cap.isOpened()==False):
+                        print("rtsp not opened")
+                        self.vs = BufferLess(self.videoPath,id="rtsp")
                     time.sleep(4.0)
                 except Exception as e:
                     print("error" + str(e))
