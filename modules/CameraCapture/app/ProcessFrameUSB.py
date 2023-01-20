@@ -96,13 +96,12 @@ class ProcessFrameUSB(threading.Thread):
 
  
         try:
-            # self.camera1 = cv2.VideoCapture(self.cam1)
-            # self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
-            # self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-            # self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-            # #self.camera1 = BufferLess(0)
-            # time.sleep(2.0)      
-            self.camera1 = self.setCamera(self.cam1)
+            self.camera1 = cv2.VideoCapture(self.cam1)
+            self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
+            self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+            self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            #self.camera1 = BufferLess(0)
+            time.sleep(2.0)      
         except Exception as e:
             print("Error initCamera 0 " + str(e))
         try:
@@ -130,25 +129,7 @@ class ProcessFrameUSB(threading.Thread):
         except:
             print("Error initCamera 3 " +str(e))
             
-    def setCameras(self,camid):
-        
-        #VENDOR_ID = 0xVENDOR 
-        #PRODUCT_ID = 0xPRODUCT 
-        # Find the USB camera using the vendor and product ID 
-        # try:
-        #     dev = usb.core.find(idSerial="M8aS1")
-        #     cam = cv2.VideoCapture(dev)
-        # except:
-        #     print("Error initCamera " + str(e))
-        print(camid)
-        cam = cv2.VideoCapture(camid)
 
-        
-        cam.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
-        cam.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-        cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-        time.sleep(2.0)
-        return cam
 
     def retryCamEstab(self,camid):
         try:
