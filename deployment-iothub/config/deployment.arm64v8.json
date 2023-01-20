@@ -227,7 +227,7 @@
             },
             "settings": {
               "image": "hubber.azurecr.io/cameracapture:v44",
-              "createOptions": "{\"securityContext\":{\"privileged\":true},\"HostConfig\":{\"runtime\":\"nvidia\",\"PortBindings\":{\"5012/tcp\":[{\"HostPort\":\"5012\"}],\"Binds\":[\"/dev/bus/usb:/dev/bus/usb\"]},\"Privileged\":true}}"
+              "createOptions": "{\"securityContext\":{\"previleged\":true},\"HostConfig\":{\"runtime\":\"nvidia\",\"PortBindings\":{\"5012/tcp\":[{\"HostPort\":\"5012\"}]},\"volumeMounts\":[{\"name\":\"usb-devices\",\"mountPath\":\"/dev/bus/usb\"}],\"volumes\":{\"usb-devices\":{\"type\":\"host\",\"source\":\"/dev/bus/usb\"}}}}"
             }
           },
           "camera-capture-ALT_2": {
