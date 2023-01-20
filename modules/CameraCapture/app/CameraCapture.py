@@ -459,10 +459,9 @@ class CameraCapture(object):
                     roi4a =self.convertROIstringToTuple(self.roi4a,read)
                     try:
                         preprocessedFrame = self.UndistortParserInstance.undistortImage(preprocessedFrame)
-                    except:
-                        print("restarting RTSP")
-                        self.restartrtsp()
-                        time.sleep(3.0)
+                    except Exception as e:
+                        print("Error undistorting frame " + str(e))
+
                     print("Frame undistorted")
                     
                     preprocessedFrame=imutils.rotate(preprocessedFrame,genral_rotation)
