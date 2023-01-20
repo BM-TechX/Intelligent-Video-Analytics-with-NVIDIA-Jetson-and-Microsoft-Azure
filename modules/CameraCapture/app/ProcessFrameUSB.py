@@ -135,12 +135,13 @@ class ProcessFrameUSB(threading.Thread):
         #VENDOR_ID = 0xVENDOR 
         #PRODUCT_ID = 0xPRODUCT 
         # Find the USB camera using the vendor and product ID 
-        try:
-            dev = usb.core.find(idSerial="M8aS1")
-            cam = cv2.VideoCapture(dev)
-        except:
-            print("Error initCamera " + str(e))
-            cam = cv2.VideoCapture(camid)
+        # try:
+        #     dev = usb.core.find(idSerial="M8aS1")
+        #     cam = cv2.VideoCapture(dev)
+        # except:
+        #     print("Error initCamera " + str(e))
+        print camid
+        cam = cv2.VideoCapture(camid)
 
         
         cam.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
