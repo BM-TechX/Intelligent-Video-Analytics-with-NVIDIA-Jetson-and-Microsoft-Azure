@@ -65,7 +65,6 @@ class CameraCapture(object):
             resizeWidth = 0,
             resizeHeight = 0,
             annotate = False,
-            sendToHubCallback = None,
             fps=0,
             AZURE_STORAGE_BLOB="",
             AZURE_STORAGE_CONNECTION_STRING="",
@@ -121,7 +120,6 @@ class CameraCapture(object):
         self.threshold=0.5
         self.nbOfPreprocessingSteps = 0
         self.autoRotate = False
-        self.sendToHubCallback = sendToHubCallback
         self.fps = fps
         self.AZURE_STORAGE_BLOB = AZURE_STORAGE_BLOB
         self.AZURE_STORAGE_CONNECTION_STRING = AZURE_STORAGE_CONNECTION_STRING

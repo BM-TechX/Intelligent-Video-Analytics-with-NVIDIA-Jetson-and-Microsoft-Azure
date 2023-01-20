@@ -15,7 +15,6 @@ import time
 #                           IoTHubMessage, IoTHubMessageDispositionResult,
 #                           IoTHubTransportProvider)
 
-from azure.iot.device import IoTHubModuleClient, Message
 
 import CameraCapture
 from CameraCapture import CameraCapture
@@ -25,36 +24,7 @@ from CameraCapture import CameraCapture
 SEND_CALLBACKS = 0
 
 
-def send_to_Hub_callback(strMessage):
-    message = Message(bytearray(strMessage, 'utf8'))
-    hubManager.send_message_to_output(message, "output1")
-
 # Callback received when the message that we're forwarding is processed.
-
-class HubManager(object):
-
-    def __init__(
-            self,
-            messageTimeout,
-            verbose):
-        '''
-        Communicate with the Edge Hub
-
-        :param int messageTimeout: the maximum time in milliseconds until a message times out. The timeout period starts at IoTHubClient.send_event_async. By default, messages do not expire.
-        :param IoTHubTransportProvider protocol: Choose HTTP, AMQP or MQTT as transport protocol.  Currently only MQTT is supported.
-        :param bool verbose: set to true to get detailed logs on messages
-        '''
-        self.messageTimeout = messageTimeout
-        self.client = IoTHubModuleClient.create_from_edge_environment()
-        #self.client.set_option("messageTimeout", self.messageTimeout)
-        #self.client.set_option("product_info", "edge-camera-capture")
-        #if verbose:
-        #    self.client.set_option("logtrace", 1)  # enables MQTT logging
-
-    def send_message_to_output(self, event, outputQueueName):
-        self.client.send_message_to_output(event, outputQueueName)
-        global SEND_CALLBACKS
-        SEND_CALLBACKS += 1
 
 def main(
         videoPath,
@@ -107,15 +77,9 @@ def main(
     '''
     try:
         print("\nPython %s\n" % sys.version)
-        print("Camera Capture Azure IoT Edge Module. Press Ctrl-C to exit.")
-        try:
-            global hubManager
-            hubManager = HubManager(
-                10000, verbose)
-        except Exception as iothub_error:
-            print("Unexpected error %s from IoTHub" % iothub_error)
-            return
-        with CameraCapture(videoPath, imageProcessingEndpoint, imageProcessingParams, showVideo, verbose, loopVideo, convertToGray, resizeWidth, resizeHeight, annotate, send_to_Hub_callback,fps,AZURE_STORAGE_BLOB,AZURE_STORAGE_CONNECTION_STRING,AZURE_STORAGE_CONTAINER,IMAGEWIDTH,IMAGEHEIGHT,
+        print(". Press Ctrl-C to exit.")
+       
+        with CameraCapture(videoPath, imageProcessingEndpoint, imageProcessingParams, showVideo, verbose, loopVideo, convertToGray, resizeWidth, resizeHeight, annotate,fps,AZURE_STORAGE_BLOB,AZURE_STORAGE_CONNECTION_STRING,AZURE_STORAGE_CONTAINER,IMAGEWIDTH,IMAGEHEIGHT,
                            ROI1,ROI2,ROI3,ROI4,genral_rotation,roi1_rotation,roi2_rotation,roi3_rotation,roi4_rotation,roi1a,roi2a,roi3a,roi4a) as cameraCapture:
             cameraCapture.start()
     except KeyboardInterrupt:
