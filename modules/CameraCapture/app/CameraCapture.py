@@ -232,9 +232,12 @@ class CameraCapture(object):
                 self.vs.setSize(4032,3040)
             else:
                 try:
+                    print("connecting to rtsp")
                     time.sleep(4.0)
                     self.vs = BufferLess(self.videoPath,id="rtsp")
                     time.sleep(4.0)
+                    print("trying to get frame")
+                    frame = self.vs.read()
                     if (self.vs.cap.isOpened()==False):
                         print("rtsp not opened")
                         self.vs = BufferLess(self.videoPath,id="rtsp")
