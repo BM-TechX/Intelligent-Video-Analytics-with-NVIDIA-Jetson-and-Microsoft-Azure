@@ -428,7 +428,7 @@ class CameraCapture(object):
 
             if self.showVideo:
                 try:
-                    read =0
+                    read =1
                     if(self.useFile):
                         self.read_json()
                         self.vscam1.uploadToAzure = self.uploadToAzure
