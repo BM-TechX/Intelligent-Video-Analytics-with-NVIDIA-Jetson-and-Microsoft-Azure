@@ -234,7 +234,7 @@ class CameraCapture(object):
                 try:
                     print("connecting to rtsp")
                     time.sleep(4.0)
-                    self.vs = BufferLess(self.videoPath,id="rtsp")
+                    self.vs = BufferLess(self.videoPath,id="rtsp",setFPS=8)
                     time.sleep(4.0)
                     print("trying to get frame")
                     frame = self.vs.read()
