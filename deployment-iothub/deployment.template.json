@@ -195,26 +195,19 @@
                         "settings": {
                           "image": "$CONTAINER_REGISTRY_NAME/cameracapture:$CONTAINER_REGISTRY_TAG",
                           "createOptions": {
+                            "securityContext" :{
+                                "privileged": true
+                            },
                             "HostConfig": {
                               "runtime": "nvidia",
-                              "privileged": true,
                               "PortBindings": {
-                                "5012/tcp": [ { "HostPort":"5012"}]
+                                "5012/tcp": [ { "HostPort":"5012"}],
+                                "Binds": ["/dev/bus/usb:/dev/bus/usb"]
                               },
-                              "Binds": [
-                                "/dev/$USB200:/dev/video0",
-                                "/dev/$USB201:/dev/video1",
-                                "/dev/$USB202:/dev/video2",
-                                "/dev/$USB203:/dev/video3"
-                                ],
-                              "Devices":[
-                                {"PathOnHost":"/dev/$USB200","PathInContainer":"/dev/video0","CgroupPermissions":"mrw"},
-                                {"PathOnHost":"/dev/$USB201","PathInContainer":"/dev/video1","CgroupPermissions":"mrw"},
-                                {"PathOnHost":"/dev/$USB202","PathInContainer":"/dev/video2","CgroupPermissions":"mrw"},
-                                {"PathOnHost":"/dev/$USB203","PathInContainer":"/dev/video3","CgroupPermissions":"mrw"}
-                                ]
-                            }
+                              "Privileged": true
                           }
+                        }      
+                        
                         }
                     },
                     "camera-capture-ALT_2": {
