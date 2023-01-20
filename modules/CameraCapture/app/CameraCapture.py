@@ -210,9 +210,17 @@ class CameraCapture(object):
             return
 
     def restartrtsp(self):
-        print("restarting rtsp")
-        self.vs.stop()
-        self.vs = BufferLess(self.videoPath,id="rtsp")
+        try:
+            print("stopping rtsp")
+            self.vs.stop()
+            time.sleep(1.0)
+            print("trying to restart rtsp")
+            self.vs = BufferLess(self.videoPath,id="rtsp")
+        except Exception as e:
+            print("error" + str(e))
+            time.sleep(1.0)
+            self.retyr(1)
+            
     def __displayTimeDifferenceInMs(self, endTime, startTime):
         return str(int((endTime-startTime) * 1000)) + " ms"
 
