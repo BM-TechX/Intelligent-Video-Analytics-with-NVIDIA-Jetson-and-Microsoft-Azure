@@ -93,6 +93,7 @@ class CameraCapture(object):
         self.vscam3 = None
         self.vscam4 = None
         self.state = None
+        print(videoPath)
         if self.__IsInt(videoPath):
             #case of a usb camera (usually mounted at /dev/video* where * is an int)
             self.isWebcam = True
