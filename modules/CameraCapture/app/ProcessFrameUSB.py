@@ -140,7 +140,7 @@ class ProcessFrameUSB(threading.Thread):
         #     cam = cv2.VideoCapture(dev)
         # except:
         #     print("Error initCamera " + str(e))
-        print camid
+        print(camid)
         cam = cv2.VideoCapture(camid)
 
         
