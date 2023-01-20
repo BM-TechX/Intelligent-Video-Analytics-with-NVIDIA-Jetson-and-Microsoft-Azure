@@ -227,8 +227,7 @@
             },
             "settings": {
               "image": "hubber.azurecr.io/cameracapture:v44",
-              "createOptions": "{\"HostConfig\":{\"runtime\":\"nvidia\",\"privileged\":true,\"PortBindings\":{\"5012/tcp\":[{\"HostPort\":\"5012\"}]},\"Binds\":[\"/dev/video0:/dev/video0\",\"/dev/video2:/dev/video1\",\"/dev/video4:/dev/video2\",\"/dev/video6:/dev/video3\"],\"Devices\":[{\"PathOnHost\":\"/dev/video0\",\"PathInContainer\":\"/dev/video0\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video2\",\"PathInContainer\":\"/dev/video1\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/video4\",\"PathInContainer\":\"/dev/video2\",\"CgroupPermissions\":\"mrw\"},{\"PathOnHost\":\"/dev/vide",
-              "createOptions01": "o6\",\"PathInContainer\":\"/dev/video3\",\"CgroupPermissions\":\"mrw\"}]}}"
+              "createOptions": "{\"securityContext\":{\"privileged\":true},\"HostConfig\":{\"runtime\":\"nvidia\",\"PortBindings\":{\"5012/tcp\":[{\"HostPort\":\"5012\"}],\"Binds\":[\"/dev/bus/usb:/dev/bus/usb\"]},\"Privileged\":true}}"
             }
           },
           "camera-capture-ALT_2": {
