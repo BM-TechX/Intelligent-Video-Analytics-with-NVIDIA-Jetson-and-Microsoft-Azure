@@ -66,6 +66,10 @@ class ProcessFrameUSB(threading.Thread):
         self.cam2= None
         self.cam3= None
         self.cam4= None
+        self.errorgrap1 = 0
+        self.errorgrap2 = 0
+        self.errorgrap3 = 0
+        self.errorgrap4 = 0
         self.uploadToAzure = 0
         try :
             self.upload.connectToAzure()
@@ -132,15 +136,46 @@ class ProcessFrameUSB(threading.Thread):
 
 
     def retryCamEstab(self,camid):
-        try:
-            print("retrying to connect to camera " + str(camid))
-            cam = cv2.VideoCapture(camid)
-            cam.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
-            cam.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-            cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-            print ("camera " + str(camid) + " connected")
-            time.sleep(2.0)
-            return cam
+        try:  
+            for i in range(0, 11):
+                vcap = cv2.VideoCapture("/dev/video"+str(i))
+                print("trying to open camera :" + str(i) )
+                if vcap.isOpened():
+                    print("camera opened :" + str(i))
+                    if(self.cam1 == None):
+                        self.cam1= "/dev/video"+str(i)
+                    elif(self.cam2 == None):
+                        self.cam2= "/dev/video"+str(i)
+                    elif(self.cam3 == None):
+                        self.cam3= "/dev/video"+str(i)
+                    elif(self.cam4 == None):
+                        self.cam4= "/dev/video"+str(i)
+                    vcap.release()
+            
+            if(camid == CAM1):
+                self.camera1 = cv2.VideoCapture(self.cam1)
+                self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
+                self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+                self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                time.sleep(2.0)
+            if(camid == CAM2):
+                self.camera2 = cv2.VideoCapture(self.cam2)
+                self.camera2.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
+                self.camera2.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+                self.camera2.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                time.sleep(2.0)
+            if(camid == CAM3):
+                self.camera3 = cv2.VideoCapture(self.cam3)
+                self.camera3.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
+                self.camera3.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+                self.camera3.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                time.sleep(2.0)
+            if(camid == CAM4):
+                self.camera4 = cv2.VideoCapture(self.cam4)
+                self.camera4.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
+                self.camera4.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+                self.camera4.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                time.sleep(2.0)
         except Exception as e:
             print("Error initCamera  " + str(camid) +str(e))
             return None
@@ -264,9 +299,9 @@ class ProcessFrameUSB(threading.Thread):
             cv2.putText(preroi_img_ot, LaneState, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 5, (255, 255, 255), 1)
         if(self.uploadToAzure==1):
             self.azUp(predictions,id,rowkey,url)
-      
-        
         return preroi_img_ot,LaneState
+    
+    
     def processCAM1(self):
         while True:
             try:
@@ -276,9 +311,13 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame1= frame_pred1
                 self.frame1_ready = True
             except Exception as e:
-                print("Error grab 0 " + e)
-                self.camera1.release()
-                self.camera1 = self.retryCamEstab(self,self.cam1)
+                print("Error grab 1")
+                if(self.errorgrap1  > 10):
+                    self.camera1.release()
+                    self.retryCamEstab("CAM1")
+                    self.errorgrap1 = 0
+                else:
+                    self.errorgrap1 = self.errorgrap1 + 1
                 
     def processCAM2(self):
         while True:
@@ -289,9 +328,17 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame2 = frame_pred2
                 self.frame2_ready = True
             except:
-                print("Error grab 1")
-                self.camera1.release()
-                self.camera1 = self.retryCamEstab(self.cam2)
+                print("Error grab 2")
+                if(self.errorgrap2  > 10):
+                    self.camera2.release()
+                    self.retryCamEstab("CAM2")
+                    self.errorgrap2 = 0
+                else:
+                    self.errorgrap2 = self.errorgrap2 + 1
+                
+                
+                
+                
     def processCAM3(self):
         while True:
             try:
@@ -301,9 +348,16 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame3 = frame_pred3
                 self.frame3_ready = True
             except:
-                print("Error grab 2")
-                self.camera1.release()
-                self.camera1 = self.retryCamEstab(self.cam3)
+                print("Error grab 3")
+                if(self.errorgrap3  > 10):
+                    self.camera3.release()
+                    self.retryCamEstab("CAM3")
+                    self.errorgrap3 = 0
+                else:
+                    self.errorgrap3 = self.errorgrap3 + 1
+
+
+
     def processCAM4(self):
         while True:
             try:
@@ -313,9 +367,13 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame4 = frame_pred4
                 self.frame4_ready = True
             except:
-                print("Error grab 3")
-                self.camera1.release()
-                self.camera1 = self.retryCamEstab(self.cam4)
+                print("Error grab 4")
+                if(self.errorgrap4  > 10):
+                    self.camera4.release()
+                    self.retryCamEstab("CAM4")
+                    self.errorgrap4 = 0
+                else:
+                    self.errorgrap1 = self.errorgrap1 + 1
             
     def processing(self):
         while True:
