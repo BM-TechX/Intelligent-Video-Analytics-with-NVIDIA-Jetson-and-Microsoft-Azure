@@ -133,49 +133,66 @@ class ProcessFrameUSB(threading.Thread):
         except:
             print("Error initCamera 3 " +str(e))
             
-
-
-    def retryCamEstab(self,camid):
-        try:  
-            for i in range(0, 11):
-                vcap = cv2.VideoCapture("/dev/video"+str(i))
-                print("trying to open camera :" + str(i) )
-                if vcap.isOpened():
-                    print("camera opened :" + str(i))
-                    if(self.cam1 == None):
-                        self.cam1= "/dev/video"+str(i)
-                    elif(self.cam2 == None):
-                        self.cam2= "/dev/video"+str(i)
-                    elif(self.cam3 == None):
-                        self.cam3= "/dev/video"+str(i)
-                    elif(self.cam4 == None):
-                        self.cam4= "/dev/video"+str(i)
-                    vcap.release()
-            
-            if(camid == CAM1):
+    def containsCheck(self,str1):
+        if (self.cam1 == 'dev/video'+str1):
+            return True
+        elif(self.cam2 == 'dev/video'+str1):
+            return True
+        elif(self.cam3 == 'dev/video'+str1):
+            return True
+        elif(self.cam4 == 'dev/video'+str1):
+            return True
+        else:
+            return False
+    def setcam(self,camid,str1):
+        try:
+            if(camid == "CAM1"):
+                self.cam1 = str1
                 self.camera1 = cv2.VideoCapture(self.cam1)
                 self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
                 self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
                 self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-                time.sleep(2.0)
-            if(camid == CAM2):
+                return True
+            elif(camid == "CAM2"):
+                self.cam2 = str1
                 self.camera2 = cv2.VideoCapture(self.cam2)
                 self.camera2.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
                 self.camera2.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
                 self.camera2.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-                time.sleep(2.0)
-            if(camid == CAM3):
+                return True
+            elif(camid == "CAM3"):
+                self.cam3 = str1
                 self.camera3 = cv2.VideoCapture(self.cam3)
                 self.camera3.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
                 self.camera3.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
                 self.camera3.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-                time.sleep(2.0)
-            if(camid == CAM4):
+                return True
+            elif(camid == "CAM4"):
+                self.cam4 = str1
                 self.camera4 = cv2.VideoCapture(self.cam4)
                 self.camera4.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
                 self.camera4.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
                 self.camera4.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-                time.sleep(2.0)
+                return True
+        except Exception as e:
+            print("Error initCamera  " + str(camid) +str(e))
+            return False
+                                            
+    def retryCamEstab(self,camid):
+        try:
+            for i in range(0, 11):
+                if(self.containsCheck(str(i)) == False):
+                    vcap = cv2.VideoCapture("/dev/video"+str(i))
+                    print("trying to open camera :" + str(i) )
+                    if vcap.isOpened():
+                        vcap.release()
+                        self.setcam(camid,"/dev/video"+str(i))
+                        break
+                    else:
+                        vcap.release()
+             
+            
+            
         except Exception as e:
             print("Error initCamera  " + str(camid) +str(e))
             return None
@@ -314,6 +331,7 @@ class ProcessFrameUSB(threading.Thread):
                 print("Error grab 1")
                 if(self.errorgrap1  > 10):
                     self.camera1.release()
+                    self.cam1=None
                     self.retryCamEstab("CAM1")
                     self.errorgrap1 = 0
                 else:
@@ -331,6 +349,7 @@ class ProcessFrameUSB(threading.Thread):
                 print("Error grab 2")
                 if(self.errorgrap2  > 10):
                     self.camera2.release()
+                    self.cam2=None
                     self.retryCamEstab("CAM2")
                     self.errorgrap2 = 0
                 else:
@@ -351,6 +370,7 @@ class ProcessFrameUSB(threading.Thread):
                 print("Error grab 3")
                 if(self.errorgrap3  > 10):
                     self.camera3.release()
+                    self.cam3=None
                     self.retryCamEstab("CAM3")
                     self.errorgrap3 = 0
                 else:
@@ -370,6 +390,7 @@ class ProcessFrameUSB(threading.Thread):
                 print("Error grab 4")
                 if(self.errorgrap4  > 10):
                     self.camera4.release()
+                    self.cam4=None
                     self.retryCamEstab("CAM4")
                     self.errorgrap4 = 0
                 else:
