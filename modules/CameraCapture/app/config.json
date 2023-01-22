@@ -18,5 +18,6 @@
     "takePhoto": "True",
     "uploadToAzure": "0",
     "activeLanes": "1,1,1,1",
-    "activeUSB": "1,1,1,1"
+    "activeUSB": "1,1,1,1",
+    "timefrequency": "10"
 }

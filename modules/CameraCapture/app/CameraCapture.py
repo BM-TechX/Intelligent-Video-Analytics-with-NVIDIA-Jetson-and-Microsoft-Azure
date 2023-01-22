@@ -346,7 +346,8 @@ class CameraCapture(object):
         rowkey = str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(now.second) + str(now.microsecond)
         url = ""
         if(self.check_clock):
-            self.__uploadToAzure(filename=rowkey+id +"_GOOD",frame=preroi_img)
+            if(self.uploadToAzure==1):
+                self.__uploadToAzure(filename=rowkey+id +"_GOOD",frame=preroi_img)
            
         if(predictions.pred_score>threshold):
             try:
@@ -387,6 +388,7 @@ class CameraCapture(object):
                 self.roi2a=data['roi2a']
                 self.roi3a=data['roi3a']
                 self.roi4a=data['roi4a']
+                self.timefrequency=int(data['timefrequency'])
                 self.takePhotoFrequency=int(data["takePhotoFrequency"])
                 self.takePhoto= data["takePhoto"]
                 self.uploadToAzure= int(data["uploadToAzure"])        
