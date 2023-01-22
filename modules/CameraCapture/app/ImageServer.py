@@ -28,7 +28,7 @@ class ImageStreamHandler(tornado.websocket.WebSocketHandler):
                     data['activeUSB']=str(activeUSBar[0])+","+str(activeUSBar[1])+","+str(activeUSBar[2])+","+str(activeUSBar[3])
                     print(data['activeUSB'])
             with open('config.json', "w") as outfile:
-                json.dump(data,outfile)
+                json.dump(data,outfile,indent=4)
         except Exception as e:
             print("Error in editconfig: ",e)
                    
