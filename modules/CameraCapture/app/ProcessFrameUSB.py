@@ -146,7 +146,7 @@ class ProcessFrameUSB(threading.Thread):
             return False
     def setcam(self,camid,str1):
         try:
-            print("setcam " + camid + " " + str1")
+            print("setcam " + camid + " " + str1)
             if(camid == "CAM1"):
                 self.cam1 = str1
                 self.camera1 = cv2.VideoCapture(self.cam1)
