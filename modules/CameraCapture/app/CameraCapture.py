@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from cmath import log
 
 #Imports
-from datetime import datetime
+from datetime import datetime, timedelta
 import sklearn
 import numpy as np
 import sys
@@ -93,6 +93,7 @@ class CameraCapture(object):
         self.vscam3 = None
         self.vscam4 = None
         self.state = None
+        self.timefrequency = 10
         print(videoPath)
         if self.__IsInt(videoPath):
             #case of a usb camera (usually mounted at /dev/video* where * is an int)
@@ -194,6 +195,16 @@ class CameraCapture(object):
         if self.showVideo:
             self.imageServer = ImageServer(5012, self)
             self.imageServer.start()
+   
+
+    def check_clock(self):
+        current_time = datetime.utcnow()
+        if current_time.minute % self.timefrequency == 0 and current_time.second == 0:
+            # perform action
+           return True
+        else:
+            re
+
     def __uploadToAzure(self, filename, frame):
         try:
             print("uploading to azure" + filename)
@@ -334,6 +345,9 @@ class CameraCapture(object):
         now = datetime.now()
         rowkey = str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(now.second) + str(now.microsecond)
         url = ""
+        if(self.check_clock):
+            self.__uploadToAzure(filename=rowkey+id +"_GOOD",frame=preroi_img)
+           
         if(predictions.pred_score>threshold):
             try:
                 height, width, channels = preroi_img_ot.shape
