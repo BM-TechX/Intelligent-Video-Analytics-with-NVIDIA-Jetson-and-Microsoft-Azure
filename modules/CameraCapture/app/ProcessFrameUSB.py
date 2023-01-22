@@ -146,6 +146,7 @@ class ProcessFrameUSB(threading.Thread):
             return False
     def setcam(self,camid,str1):
         try:
+            print("setcam " + camid + " " + str1")
             if(camid == "CAM1"):
                 self.cam1 = str1
                 self.camera1 = cv2.VideoCapture(self.cam1)
@@ -180,6 +181,8 @@ class ProcessFrameUSB(threading.Thread):
                                             
     def retryCamEstab(self,camid):
         try:
+            print("retrying to open camera :" + str(camid) )
+            
             for i in range(0, 11):
                 if(self.containsCheck(str(i)) == False):
                     vcap = cv2.VideoCapture("/dev/video"+str(i))
@@ -187,11 +190,11 @@ class ProcessFrameUSB(threading.Thread):
                     if vcap.isOpened():
                         vcap.release()
                         self.setcam(camid,"/dev/video"+str(i))
-                        break
+                        break   
                     else:
                         vcap.release()
-             
-            
+
+
             
         except Exception as e:
             print("Error initCamera  " + str(camid) +str(e))
@@ -329,13 +332,13 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame1_ready = True
             except Exception as e:
                 print("Error grab 1")
-                if(self.errorgrap1  > 10):
-                    self.camera1.release()
-                    self.cam1=None
-                    self.retryCamEstab("CAM1")
-                    self.errorgrap1 = 0
-                else:
-                    self.errorgrap1 = self.errorgrap1 + 1
+                #if(self.errorgrap1  > 10):
+                self.camera1.release()
+                self.cam1=None
+                self.retryCamEstab("CAM1")
+                self.errorgrap1 = 0
+                #else:
+                #    self.errorgrap1 = self.errorgrap1 + 1
                 
     def processCAM2(self):
         while True:
@@ -347,13 +350,13 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame2_ready = True
             except:
                 print("Error grab 2")
-                if(self.errorgrap2  > 10):
-                    self.camera2.release()
-                    self.cam2=None
-                    self.retryCamEstab("CAM2")
-                    self.errorgrap2 = 0
-                else:
-                    self.errorgrap2 = self.errorgrap2 + 1
+                #if(self.errorgrap2  > 10):
+                self.camera2.release()
+                self.cam2=None
+                self.retryCamEstab("CAM2")
+                self.errorgrap2 = 0
+                #else:
+                #    self.errorgrap2 = self.errorgrap2 + 1
                 
                 
                 
@@ -368,13 +371,13 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame3_ready = True
             except:
                 print("Error grab 3")
-                if(self.errorgrap3  > 10):
-                    self.camera3.release()
-                    self.cam3=None
-                    self.retryCamEstab("CAM3")
-                    self.errorgrap3 = 0
-                else:
-                    self.errorgrap3 = self.errorgrap3 + 1
+                #if(self.errorgrap3  > 10):
+                self.camera3.release()
+                self.cam3=None
+                self.retryCamEstab("CAM3")
+                self.errorgrap3 = 0
+                #else:
+                    #self.errorgrap3 = self.errorgrap3 + 1
 
 
 
@@ -388,13 +391,13 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame4_ready = True
             except:
                 print("Error grab 4")
-                if(self.errorgrap4  > 10):
-                    self.camera4.release()
-                    self.cam4=None
-                    self.retryCamEstab("CAM4")
-                    self.errorgrap4 = 0
-                else:
-                    self.errorgrap1 = self.errorgrap1 + 1
+                #if(self.errorgrap4  > 10):
+                self.camera4.release()
+                self.cam4=None
+                self.retryCamEstab("CAM4")
+                self.errorgrap4 = 0
+                #else:
+                 #   self.errorgrap1 = self.errorgrap1 + 1
             
     def processing(self):
         while True:
