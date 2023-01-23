@@ -454,7 +454,7 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame4_ready = True
             except:
                 print("Error grab 3")
-                if(self.errorgrap4>)
+                if(self.errorgrap4> 10)
                     self.camera4.release()
                     self.cam4=None
                     self.retryCamEstab("CAM4")
