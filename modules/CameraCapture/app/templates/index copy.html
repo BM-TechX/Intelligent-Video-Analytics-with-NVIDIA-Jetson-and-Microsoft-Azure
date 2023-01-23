@@ -1,47 +1,17 @@
 <html class = "background">
   <style>
-    .mainContainer {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-evenly;
-      gap: 30px;
-      align-items: center;
-      margin-top: 20px;
-    }
     .container {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       justify-content: space-evenly;
       gap: 30px;
       align-items: center;
-      margin-top: 20px;
-    }
-    .switchcontainer {
-      display: inline-table;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .statusContainer {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;;
-      margin-bottom: -45;
-    }
-    .switchTable {
-      flex-direction: row;
-      justify-content: space-between;
-    }
-    .switchtext {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding-right: 20px;
-      margin-left: 10px;
+      margin-top: 100px;
     }
     .img {
       border-radius: 2px;
       width: 1000px;
-      height: 600;
+      height: 600px;
     }
     .textbox {
       display: flex;
@@ -79,7 +49,6 @@
     .left, .right {
       flex: 1;
       padding-left: 10px;
-      padding-top: 15px;
     }
     .myDIV {
       width: 100%;
@@ -89,99 +58,9 @@
       margin-top: 20px;
       display: none;
     }
-    .BM {
-      position: fixed;
-      bottom: -10px;
-    }
-    .button {
-      border: none;
-      text-align: center;
-      font-size: calc(var(--scale, 1) * 1rem);
-      font-family: 'Roboto', sans-serif;
-      color: white;
-      padding: .5em 1.25em; 
-      display: inline-block;
-      margin: 4px 2px;
-      border-radius: 12px;
-      border-color: #181818;
-      background-color: #3c8f73;
-    }
-    .button:hover {
-      background-color: #2e6d58;
-    }
-    .button-red {
-      background-color: rgb(255, 0, 0);
-    }
-    .button-green {
-      background-color: rgb(0, 255, 34);;
-    }
-    .button-yellow {
-      background-color: rgb(251, 255, 0);;
-    }
-    .button-blue {
-      background-color: rgb(4, 0, 255);;
-    }
-    /* The switch - the box around the slider */
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 60px;
-      height: 34px;
-    }
-
-    /* Hide default HTML checkbox */
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    /* The slider */
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #ccc;
-      -webkit-transition: .4s;
-      transition: .4s;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 26px;
-      width: 26px;
-      left: 4px;
-      bottom: 4px;
-      background-color: white;
-      -webkit-transition: .4s;
-      transition: .4s;
-    }
-
-    input:checked + .slider {
-      background-color: #2196F3;
-    }
-
-    input:focus + .slider {
-      box-shadow: 0 0 1px #2196F3;
-    }
-
-    input:checked + .slider:before {
-      -webkit-transform: translateX(26px);
-      -ms-transform: translateX(26px);
-      transform: translateX(26px);
-    }
-
-    /* Rounded sliders */
-    .slider.round {
-      border-radius: 34px;
-    }
-
-    .slider.round:before {
-      border-radius: 50%;
+    .checkbox {
+      width: 40px;
+      height:40px;
     }
   </style>
   <head>
@@ -197,127 +76,60 @@
         <img id="logo" src="fiberline-logo.svg" ">
       </div>
       <div class = "center">
-        <h1 class = "primaryText" style = "justify-content: center;">Anomaly Detection</h1>
+        <h1 class = "primaryText" style = "justify-content: center;">Anommaly Detection</h1>
         <div id="secondaryText" class = "secondaryText" style = "background-color: green";">.</div>
       </div>
       <div class = "right"></div>
     </div>
  
-    <div class = "mainContainer">
-
-      <div class = "switchTable">
-        <div class = "switchcontainer">
-          <div class="switchtext">
-            <h2 class = "primaryText" style = "justify-content: center;">M8aS1 Top</h1>
-            <div style = "padding-left: 20px;">
-              <label class="switch">
-                <input type="checkbox" onchange=sendtoBack(1)>
-                <span class="slider round"></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="switchtext">
-            <h2 class = "primaryText" style = "justify-content: center;">M8aS2 Top</h1>
-            <div style = "padding-left: 20px;">
-              <label class="switch">
-                <input type="checkbox" onchange=sendtoBack(2)>
-                <span class="slider round"></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="switchtext">
-            <h2 class = "primaryText" style = "justify-content: center;">M8aS3 Top</h1>
-            <div style = "padding-left: 20px;">
-              <label class="switch">
-                <input type="checkbox" onchange=sendtoBack(3)>
-                <span class="slider round"></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="switchtext">
-            <h2 class = "primaryText" style = "justify-content: center;">M8aS4 Top</h1>
-            <div style = "padding-left: 20px;">
-              <label class="switch">
-                <input type="checkbox" onchange=sendtoBack(4)>
-                <span class="slider round"></span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div class = "switchcontainer">
-          <div class="switchtext">
-            <h2 class = "primaryText" style = "justify-content: center;">M8aS1</h1>
-            <div style = "padding-left: 20px;">
-              <label class="switch">
-                <input type="checkbox" onchange=sendtoBack(5)>
-                <span class="slider round"></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="switchtext">
-            <h2 class = "primaryText" style = "justify-content: center;">M8aS2</h1>
-            <div style = "padding-left: 20px;">
-              <label class="switch">
-                <input type="checkbox" onchange=sendtoBack(6)>
-                <span class="slider round"></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="switchtext">
-            <h2 class = "primaryText" style = "justify-content: center;">M8aS3</h1>
-            <div style = "padding-left: 20px;">
-              <label class="switch">
-                <input type="checkbox" onchange=sendtoBack(7)>
-                <span class="slider round"></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="switchtext">
-            <h2 class = "primaryText" style = "justify-content: center;">M8aS4</h1>
-            <div style = "padding-left: 20px;">
-              <label class="switch">
-                <input type="checkbox" onchange=sendtoBack(8)>
-                <span class="slider round"></span>
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class = "container">
-        <!--Put the Object Detection Image here.-->
-        <div class = "statusContainer">
-          <h3 class = "secondaryText">Status: </h3>
-          <div style="margin-left: 20px";>
-            <h3 class = "secondaryText">Something went wrong here!</h3>
-          </div>
-        </div>
-        
-        <img id="currentImage" class = "img" >
-        <div style="position: relative;">
-          <button id="Stop" class="button button" onclick="stop">Stop Detection</button>
-          <button id="Start" class="button button" onclick="start">Start Detection</button>
-          <button id="Turnoffalarm" class="button" onclick="turnoff">STOP ALARM</button>
-          <button id="noAnom" class="button button" onclick="noannom">No Anomaly</button>
-        </div>
-      </div>
-
-      
+    <div class = "container">
+      <!--Put the Object Detection Image here.-->
+      <img id="currentImage" class = "img">
     </div>
+    <table style="font-size:20;">
+      <tr>
+          <td>
+            <input type="checkbox" class="checkbox" checked="true" onchange=sendtoBack(1) id="LaneTop1">LaneTop1</input>
+          </td>
+          <td>
+            <input type="checkbox" class="checkbox" checked="true" onchange=sendtoBack(2)  id="LaneBot1USB1">LaneBot1USB1</input>
+          </td>
+      </tr>
+      <tr>
+        <td>
+          <input type="checkbox" class="checkbox" checked="true" onchange=sendtoBack(3) id="LaneTop2">LaneTop2</input>
+        </td>
+        <td>
+          <input type="checkbox" class="checkbox"  checked="true" onchange=sendtoBack(4) id="LaneBot2USB2">LaneBot2USB2</input>
+        </td>
+      <tr>
+        <td>
+          <input type="checkbox" class="checkbox"  checked="true" onchange=sendtoBack(5) id="LaneTop3">LaneTop3</input></br>
+        </td>
+        <td>
+          <input type="checkbox" class="checkbox" checked="true" onchange=sendtoBack(6) id="LaneBot3USB3">LabeBot3USB3</input>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type="checkbox" class="checkbox" checked="true" onchange=sendtoBack(7) id="LaneTop4">LaneTop4</input></br>
+        </td>
+        <td>
+          <input type="checkbox" class="checkbox" checked="true" onchange=sendtoBack(8) id="LaneBot3USB4">LabelBot4USB4</input>
+        </td>
+      <tr>
+    </table>
     <p id="text"></p>
     <div class="myDIV" id="myDIV">
       ALARM
     </div>  
+    <div style="position: relative;">
+      <button id="Stop" style="background-color: red;" onclick="stop">Stop Detection</button>
+      <button id="Start" style="background-color: green;" onclick="start">Start Detection</button>
+      <button id="Turnoffalarm" style="background-color: yellow;" onclick="turnoff">STOP ALARM</button>
+      <button id="noAnom" style="background-color: blue;" onclick="noannom">No Anommaly</button>
+    </div>
     
-    
-
     
     <script>
       var pausedetection = false;
@@ -502,7 +314,7 @@
       }
 
     </script>
-    <h1 class="BM"><span class="primaryText">BM  </span><span class="logoText">TECHX</span></h1>
+    <h1 id="logo"><span class="primaryText">BM  </span><span class="logoText">TECHX</span></h1>
   </body>
 
 </html>
