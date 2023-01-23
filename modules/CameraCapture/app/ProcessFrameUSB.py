@@ -193,7 +193,7 @@ class ProcessFrameUSB(threading.Thread):
                         break   
                     else:
                         vcap.release()
-
+            
 
             
         except Exception as e:
@@ -409,6 +409,10 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame1_ready = True
             except Exception as e:
                 print("Error grab 0 " + str(e))
+                self.camera1.release()
+                self.cam1=None
+                self.retryCamEstab("CAM1")
+                self.errorgrap1 = 0
             try:
                 _,frame2 = self.camera2.read()
                 frame_gray2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
@@ -425,6 +429,10 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame3_ready = True
             except:
                 print("Error grab 2")
+                self.camera3.release()
+                self.cam3=None
+                self.retryCamEstab("CAM3")
+                self.errorgrap3 = 0
             try:
                 _,frame4 = self.camera4.read()
                 frame_gray4 = cv2.cvtColor(frame4, cv2.COLOR_BGR2GRAY)
@@ -433,6 +441,11 @@ class ProcessFrameUSB(threading.Thread):
                 self.frame4_ready = True
             except:
                 print("Error grab 3")
+                self.camera4.release()
+                self.cam4=None
+                self.retryCamEstab("CAM4")
+                self.errorgrap4 = 0
+                #else:
 
     def getframe(self,cameraid):
         if(self.frame1_ready and cameraid == "0"):
