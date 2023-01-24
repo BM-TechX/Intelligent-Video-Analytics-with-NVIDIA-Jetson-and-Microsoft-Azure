@@ -1,0 +1,57 @@
+import cv2
+
+
+class ObjectTracker:
+    def __init__(self, frame, cv2Rectangles):
+        self.frame = frame
+        self.cv2Rectangles = cv2Rectangles
+        self.tracker = cv2.TrackerKCF_create()
+        self.boundingBoxes = []
+        self.trackingSuccess = False
+
+    def trackObjects(self):
+        for cv2Rectangle in self.cv2Rectangles:
+            self.trackingSuccess, boundingBox = self.tracker.init(
+                self.frame, tuple(cv2Rectangle))
+            if self.trackingSuccess:
+                self.boundingBoxes.append(boundingBox)
+        return self.boundingBoxes
+
+    def trackObject(self, cv2Rectangle):
+        self.trackingSuccess, boundingBox = self.tracker.init(
+            self.frame, tuple(cv2Rectangle))
+        if self.trackingSuccess:
+            self.boundingBoxes.append(boundingBox)
+        return self.boundingBoxes
+
+    def trackObjectWithID(self, cv2Rectangle, id):
+        self.trackingSuccess, boundingBox = self.tracker.init(
+            self.frame, tuple(cv2Rectangle))
+        if self.trackingSuccess:
+            self.boundingBoxes.append((boundingBox, id))
+        return self.boundingBoxes
+
+    def trackObjectsWithIDs(self, cv2Rectangles, ids):
+        for i in range(len(cv2Rectangles)):
+            self.trackingSuccess, boundingBox = self.tracker.init(
+                self.frame, tuple(cv2Rectangles[i]))
+            if self.trackingSuccess:
+                self.boundingBoxes.append((boundingBox, ids[i]))
+        return self.boundingBoxes
+
+    def trackObjectsWithIDsAndLabels(self, cv2Rectangles, ids, labels):
+        for i in range(len(cv2Rectangles)):
+            self.trackingSuccess, boundingBox = self.tracker.init(
+                self.frame, tuple(cv2Rectangles[i]))
+            if self.trackingSuccess:
+                self.boundingBoxes.append(
+                    (boundingBox, ids[i], labels[i]))
+        return self.boundingBoxes
+
+    def trackObjectsWithIDsAndLabelsAndConfidences(self, cv2Rectangles, ids, labels, confidences):
+        for i in range(len(cv2Rectangles)):
+            self.trackingSuccess, boundingBox = self.tracker.init(
+                self.frame, tuple(cv2Rectangles[i]))
+            if self.trackingSuccess:
+                self.boundingBoxes.append(
+                    (boundingBox, ids[i], labels[i], confidences[i
