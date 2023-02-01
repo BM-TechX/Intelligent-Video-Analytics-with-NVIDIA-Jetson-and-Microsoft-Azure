@@ -57,6 +57,6 @@ class ModelInference:
         for i, prob in enumerate(pred):
             top5i = prob.argsort(0,descending=True).tolist()
             for x in top5i:
-                stringbuilder = stringbuilder + ";" +self.names[top5i[x]] + ":" + str(prob.tolist()[top5i[x]]))
+                stringbuilder = stringbuilder + ";" +self.names[top5i[x]] + ":" + str(prob.tolist()[top5i[x]])
         return stringbuilder
 
