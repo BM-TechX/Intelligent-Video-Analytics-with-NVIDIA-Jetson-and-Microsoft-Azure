@@ -476,7 +476,7 @@ class CameraCapture(object):
                         print("Error undistorting frame " + str(e))
 
                     
-                    
+                    print("here berfore frame rotation")
                     preprocessedFrame=imutils.rotate(preprocessedFrame,genral_rotation)
                     threshold = self.threshold
                     numpy_horizontal_concat = None
@@ -506,7 +506,7 @@ class CameraCapture(object):
                         else:
                             numpy_horizontal_concat = preroi4_img_ot
                     state = "NORMAL"
-                    
+                    print("got to here")
                     
                     #####################COMBINE IMAGES#####################
                     print ("RTSP" + self.Lane1State + " " + self.Lane2State + " " + self.Lane3State + " " + self.Lane4State)
@@ -629,7 +629,8 @@ class CameraCapture(object):
                             frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
                             usberror=usberror+1
                             print("Error in frame4: " + str(e))
-                        try:                    
+                        try:
+                                            
                             print ("USB" + self.LaneStateUSB1 + " " + self.LaneStateUSB2 + " " + self.LaneStateUSB3 + " " + self.LaneStateUSB4)
                             numpy_horizontal_concat_usb_top = np.concatenate((frame1_resized, frame2_resized), axis=1)
                             numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
