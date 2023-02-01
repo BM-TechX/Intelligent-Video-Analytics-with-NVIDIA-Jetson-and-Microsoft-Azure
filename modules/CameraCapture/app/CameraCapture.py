@@ -338,7 +338,7 @@ class CameraCapture(object):
         frame_cropped_rotated=imutils.rotate(frame_cropped,rotation)
         frame_cropped_rotated_inner = frame_cropped_rotated[int(regioninner[1]):int(regioninner[1]+regioninner[3]), int(regioninner[0]):int(regioninner[0]+regioninner[2])]
         return frame_cropped_rotated_inner
-    def classify_lane(self,frame,threshold,id):
+    def classify_lane(self,frame,threshold):
         preroi_img_ot,predictions =self.infrencerTopSeondary.getInfrence(frame)
         LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
         print(LaneState)
