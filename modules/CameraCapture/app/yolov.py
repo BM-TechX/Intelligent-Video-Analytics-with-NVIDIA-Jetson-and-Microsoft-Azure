@@ -2,13 +2,17 @@
 load yolov5 model
 and run inference
 """
+
+import sys
+sys.path.append('yolov5')
+ROOT = 'yolov5'
+data=ROOT
+
 from IPython.core.display import ProgressBar
 import argparse
 import os
 import platform
-import sys
 from pathlib import Path
-
 import torch
 import torch.nn.functional as F
 from models.common import DetectMultiBackend
@@ -34,10 +38,12 @@ class ModelInference:
         self.imgsz = check_img_size(self.imgsz, s=self.stride)  # check image size
 
         self.vid_path, self.vid_writer = [None] * self.bs, [None] * self.bs
-
+    def warmup(self):
+        # Warmup
+        self.model.warmup(imgsz=(1 if self.pt else self.bs, 3, *self.imgsz))
+        
     def run_inference(self,frame):
         # Run inference
-        self.model.warmup(imgsz=(1 if self.pt else self.bs, 3, *self.imgsz))  # warmup
         seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
         torch_transforms= classify_transforms(self.imgsz[0])
         im = torch_transforms(image)
@@ -63,5 +69,12 @@ imgsz=(224,224)
 infrens = ModelInference(weights,imgsz,half,dnn,device,bs,vid_stride)
 source='/content/118104457733938usb1.jpg'
 image = cv2.imread(source,1)
+infrens.warmup()
 infrens.run_inference(image)
+infrens.run_inference(image)
+infrens.run_inference(image)
+infrens.run_inference(image)
+infrens.run_inference(image)
+infrens.run_inference(image)
+
 
