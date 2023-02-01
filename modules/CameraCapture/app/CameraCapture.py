@@ -169,7 +169,7 @@ class CameraCapture(object):
         self.activeLanes=[1,1,1,1]
         self.activeUSBLanes=[1,1,1,1]
         self.infrencerTop = Infrence(model_path='model_4.ckpt',config_path='config.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
-        self.infrencerTopSeondary = Infrence(model_path='model_top_clas.ckpt',config_path='config_top_clas.yaml',device='cuda',visualization_mode='segmentation',task='classification')
+        #self.infrencerTopSeondary = Infrence(model_path='model_top_clas.ckpt',config_path='config_top_clas.yaml',device='cuda',visualization_mode='segmentation',task='classification')
         #test if we have a usb camera
         if self.useUSB == True:
             self.infrencerbuttom = Infrence(model_path='model_bottom.ckpt',config_path='config_bot.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
@@ -339,9 +339,9 @@ class CameraCapture(object):
         frame_cropped_rotated_inner = frame_cropped_rotated[int(regioninner[1]):int(regioninner[1]+regioninner[3]), int(regioninner[0]):int(regioninner[0]+regioninner[2])]
         return frame_cropped_rotated_inner
     def classify_lane(self,frame,threshold):
-        preroi_img_ot,predictions =self.infrencerTopSeondary.getInfrence(frame)
-        LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
-        return LaneState
+        # preroi_img_ot,predictions =self.infrencerTopSeondary.getInfrence(frame)
+        # LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
+        # return LaneState
         
     def process_lane(self,frame,threshold,id):
         preroi_img = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
@@ -362,7 +362,7 @@ class CameraCapture(object):
                 color = (0,0,255)
                 thickness = 8
                 try:
-                    predictions.pred_label = predictions.pred_label + ":" + self.classify_lane(preroi_img_ot,threshold)
+                    #predictions.pred_label = predictions.pred_label + ":" + self.classify_lane(preroi_img_ot,threshold)
                 except Exception as e:
                     print("something went wrong while classifying lane" + str(e))
                 preroi_img_ot = cv2.rectangle(preroi_img_ot, start_point, end_point, color, thickness)
