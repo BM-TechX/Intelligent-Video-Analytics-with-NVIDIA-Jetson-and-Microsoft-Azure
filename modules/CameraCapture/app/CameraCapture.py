@@ -144,14 +144,14 @@ class CameraCapture(object):
         self.useUSB=True
         self.useFile=True
         self.displayFrame = None
-        self.Lane1State = None
-        self.Lane2State = None
-        self.Lane3State = None
-        self.Lane4State = None
-        self.LaneStateUSB1 = None
-        self.LaneStateUSB2 = None
-        self.LaneStateUSB3 = None
-        self.LaneStateUSB4 = None
+        self.Lane1State = ""
+        self.Lane2State = ""
+        self.Lane3State = ""
+        self.Lane4State = ""
+        self.LaneStateUSB1 = ""
+        self.LaneStateUSB2 = ""
+        self.LaneStateUSB3 = ""
+        self.LaneStateUSB4 = ""
         self.previousUSBFrame1 = None
         self.previousUSBFrame2 = None
         self.previousUSBFrame3 = None
@@ -475,8 +475,6 @@ class CameraCapture(object):
                     except Exception as e:
                         print("Error undistorting frame " + str(e))
 
-                    
-                    print("here berfore frame rotation")
                     preprocessedFrame=imutils.rotate(preprocessedFrame,genral_rotation)
                     threshold = self.threshold
                     numpy_horizontal_concat = None
