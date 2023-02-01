@@ -105,7 +105,7 @@ class TorchInferencer(Inferencer):
         """
         model = get_model(self.config)
         model.load_state_dict(torch.load(path, map_location=self.device)["state_dict"])
-        
+        print(str(model.load_state_dict))
         return model.to(self.device)
 
     def pre_process(self, image: np.ndarray) -> Tensor:
