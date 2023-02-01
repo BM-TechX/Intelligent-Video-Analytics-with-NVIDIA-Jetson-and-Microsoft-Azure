@@ -45,7 +45,7 @@ class ModelInference:
         # Run inference
         seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
         torch_transforms= classify_transforms(self.imgsz[0])
-        im = torch_transforms(image)
+        im = torch_transforms(frame)
         im = torch.Tensor(im).to(self.model.device)
         im = im.half() if self.model.fp16 else im.float()
         if len(im.shape)==3:
