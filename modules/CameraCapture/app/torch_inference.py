@@ -43,7 +43,6 @@ class Infrence:
     def getInfrence(self, image):
         # Perform inference
         predictions = self.inferencer.predict(image=image)
-        print(predictions.pred_label)
         output = self.visualizer.visualize_image(predictions)
         return output,predictions
     
