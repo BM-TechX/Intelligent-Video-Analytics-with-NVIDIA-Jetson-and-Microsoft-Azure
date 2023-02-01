@@ -341,6 +341,7 @@ class CameraCapture(object):
     def classify_lane(self,frame,threshold,id):
         preroi_img_ot,predictions =self.infrencerTopSeondary.getInfrence(frame)
         LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
+        print(LaneState)
         return LaneState
         
     def process_lane(self,frame,threshold,id):
@@ -364,7 +365,7 @@ class CameraCapture(object):
                 try:
                     predictions.pred_label = predictions.pred_label + ":" + self.classify_lane(preroi_img_ot,threshold)
                 except Exception as e:
-                    print("something went wrong while classifying lane")
+                    print("something went wrong while classifying lane" + str(e))
                 preroi_img_ot = cv2.rectangle(preroi_img_ot, start_point, end_point, color, thickness)
                 if(self.uploadToAzure==1):
                     self.__uploadToAzure(filename=rowkey+id,frame=preroi_img)
