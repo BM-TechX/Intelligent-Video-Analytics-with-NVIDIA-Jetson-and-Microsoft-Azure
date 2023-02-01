@@ -62,6 +62,9 @@ RUN rm -rf /var/lib/apt/lists/* \
     && apt-get -y autoremove
 RUN pip3 install azure-data-tables
 RUN pip3 install pyusb
+RUN git clone https://github.com/ultralytics/yolov5.git && cd yolov5 && pip install -r requirements.txt
+RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_bottom_class.pt
+RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_top_class.pt
 ADD /app/ .
 
 # Expose the port
