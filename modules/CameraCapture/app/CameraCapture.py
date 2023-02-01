@@ -362,10 +362,10 @@ class CameraCapture(object):
                 end_point = (width, height)
                 color = (0,0,255)
                 thickness = 8
-                try:
-                    #predictions.pred_label = predictions.pred_label + ":" + self.classify_lane(preroi_img_ot,threshold)
-                except Exception as e:
-                    print("something went wrong while classifying lane" + str(e))
+                # try:
+                #     #predictions.pred_label = predictions.pred_label + ":" + self.classify_lane(preroi_img_ot,threshold)
+                # except Exception as e:
+                #     print("something went wrong while classifying lane" + str(e))
                 preroi_img_ot = cv2.rectangle(preroi_img_ot, start_point, end_point, color, thickness)
                 if(self.uploadToAzure==1):
                     self.__uploadToAzure(filename=rowkey+id,frame=preroi_img)
