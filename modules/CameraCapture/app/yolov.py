@@ -5,8 +5,7 @@ and run inference
 
 import sys
 sys.path.append('yolov5')
-ROOT = 'yolov5'
-data=ROOT
+
 
 from IPython.core.display import ProgressBar
 import argparse
@@ -33,6 +32,8 @@ class ModelInference:
         self.bs = bs
         self.vid_stride = vid_stride
         self.device = select_device(self.device)
+        ROOT = 'yolov5'
+        data=ROOT
         self.model = DetectMultiBackend(self.weights, device=self.device, dnn=self.dnn, data=data, fp16=self.half)
         self.stride, self.names, self.pt = self.model.stride, self.model.names, self.model.pt
         self.imgsz = check_img_size(self.imgsz, s=self.stride)  # check image size
@@ -58,23 +59,4 @@ class ModelInference:
             top5i = prob.argsort(0,descending=True).tolist()
             for x in top5i:
                 print( self.names[top5i[x]] + ":" + str(prob.tolist()[top5i[x]]))
-
-weights='/content/model_bottom_class.pt'
-half=False
-dnn=False
-device=''
-bs=1
-vid_stride=1 # video frame-rate stride
-imgsz=(224,224)
-infrens = ModelInference(weights,imgsz,half,dnn,device,bs,vid_stride)
-source='/content/118104457733938usb1.jpg'
-image = cv2.imread(source,1)
-infrens.warmup()
-infrens.run_inference(image)
-infrens.run_inference(image)
-infrens.run_inference(image)
-infrens.run_inference(image)
-infrens.run_inference(image)
-infrens.run_inference(image)
-
 

@@ -37,6 +37,8 @@ import UndistortParser
 from UndistortParser import UndistortParser
 import torch_inference
 from torch_inference import Infrence
+from yolov
+from yolov import ModelInference
 import string
 import random
 import imutils
@@ -169,11 +171,14 @@ class CameraCapture(object):
         self.activeLanes=[1,1,1,1]
         self.activeUSBLanes=[1,1,1,1]
         self.infrencerTop = Infrence(model_path='model_4.ckpt',config_path='config.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
-        self.infrencerTopSeondary = Infrence(model_path='model_top_clas.ckpt',config_path='config_top_clas.yaml',device='cuda',visualization_mode='segmentation',task='classification')
+        #self.infrencerTopSeondary = Infrence(model_path='model_top_clas.ckpt',config_path='config_top_clas.yaml',device='cuda',visualization_mode='segmentation',task='classification')
+        self.infrencerTopSeondary = ModelInference(weights='model_top_class.pt',imgsz=(224,224),half=False,dnn=False,device='',bs=1,vid_stride=1)
+        self.infrencerTopSeondary.warmup()
+
         #test if we have a usb camera
         if self.useUSB == True:
             self.infrencerbuttom = Infrence(model_path='model_bottom.ckpt',config_path='config_bot.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
-        
+            
         print("booting up")
         if self.convertToGray:
             self.nbOfPreprocessingSteps +=1
@@ -339,8 +344,9 @@ class CameraCapture(object):
         frame_cropped_rotated_inner = frame_cropped_rotated[int(regioninner[1]):int(regioninner[1]+regioninner[3]), int(regioninner[0]):int(regioninner[0]+regioninner[2])]
         return frame_cropped_rotated_inner
     def classify_lane(self,frame,threshold):
-        preroi_img_ot,predictions =self.infrencerTopSeondary.getInfrence(frame)
-        LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
+        preroi_img_ot,predictions =self.infrencerTopSeondary.run_inference(frame)
+        #LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
+        LaneState= "hello"
         return LaneState
         
     def process_lane(self,frame,threshold,id):
