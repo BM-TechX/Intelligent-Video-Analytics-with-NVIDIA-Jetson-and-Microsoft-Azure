@@ -118,7 +118,7 @@ class ProcessFrameUSB(threading.Thread):
             self.camera2.set(cv2.CAP_PROP_BUFFERSIZE, 1)
             self.camera2.set(cv2.CAP_PROP_FPS, self.framerate)
             time.sleep(2.0)
-        except:
+        except Exception as e:
             print("Error initCamera 1 " +str(e))
         try:
             self.camera3 = cv2.VideoCapture(self.cam3)
@@ -127,7 +127,7 @@ class ProcessFrameUSB(threading.Thread):
             self.camera3.set(cv2.CAP_PROP_BUFFERSIZE, 1)
             self.camera4.set(cv2.CAP_PROP_FPS, self.framerate)
             time.sleep(2.0)
-        except:
+        except Exception as e:
             print("Error initCamera 2 " +str(e))
         try:
             self.camera4 = cv2.VideoCapture(self.cam4)
@@ -136,7 +136,7 @@ class ProcessFrameUSB(threading.Thread):
             self.camera4.set(cv2.CAP_PROP_BUFFERSIZE, 1)
             self.camera4.set(cv2.CAP_PROP_FPS, self.framerate)
             time.sleep(2.0)
-        except:
+        except Exception as e:
             print("Error initCamera 3 " +str(e))
             
     def containsCheck(self,str1):

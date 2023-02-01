@@ -435,9 +435,7 @@ class CameraCapture(object):
                 frame = self.vs.read() 
             #Pre-process locally
             try:
-                print("frame starting preprocessing")
                 preprocessedFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                print ("frame processed")
             except:
                 count = count + 1
                 if count > 4:
@@ -458,7 +456,7 @@ class CameraCapture(object):
                     if(self.useFile):
                         self.read_json()
                         self.vscam1.uploadToAzure = self.uploadToAzure
-                    print("general rotaion")
+                    
                     genral_rotation = float(self.genral_rotation)
                 
                     roi1_rotation=float(self.roi1_rotation)
@@ -468,8 +466,6 @@ class CameraCapture(object):
                     roi3_rotation=float(self.roi3_rotation)
           
                     roi4_rotation=float(self.roi4_rotation)
-                    print("aftergeneral rotation")
-                    print("read",read)
                     roi1a =self.convertROIstringToTuple(self.roi1a,read)
                     roi2a =self.convertROIstringToTuple(self.roi2a,read) 
                     roi3a =self.convertROIstringToTuple(self.roi3a,read)
@@ -479,7 +475,7 @@ class CameraCapture(object):
                     except Exception as e:
                         print("Error undistorting frame " + str(e))
 
-                    print("Frame undistorted")
+                    
                     
                     preprocessedFrame=imutils.rotate(preprocessedFrame,genral_rotation)
                     threshold = self.threshold
@@ -567,7 +563,7 @@ class CameraCapture(object):
                                 frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
                                 self.LaneStateUSB1=None
                                 print("USBlane1 not active")
-                                
+                           
                         except:
                             print("frame1 error")
                             frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
@@ -634,6 +630,7 @@ class CameraCapture(object):
                             usberror=usberror+1
                             print("Error in frame4: " + str(e))
                         try:                    
+                            print ("USB" + self.LaneStateUSB1 + " " + self.LaneStateUSB2 + " " + self.LaneStateUSB3 + " " + self.LaneStateUSB4)
                             numpy_horizontal_concat_usb_top = np.concatenate((frame1_resized, frame2_resized), axis=1)
                             numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
                             numpy_horizontal_concat_usb = np.concatenate((numpy_horizontal_concat_usb_top, numpy_horizontal_concat_usb_bottom), axis=0)
