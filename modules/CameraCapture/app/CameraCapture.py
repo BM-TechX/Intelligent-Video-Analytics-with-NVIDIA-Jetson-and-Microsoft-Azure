@@ -344,9 +344,9 @@ class CameraCapture(object):
         frame_cropped_rotated_inner = frame_cropped_rotated[int(regioninner[1]):int(regioninner[1]+regioninner[3]), int(regioninner[0]):int(regioninner[0]+regioninner[2])]
         return frame_cropped_rotated_inner
     def classify_lane(self,frame,threshold):
-        predictions =self.infrencerTopSeondary.run_inference(frame)
-        LaneState= predictions
-        return LaneState
+        mostlikely,predictions =self.infrencerTopSeondary.run_inference(frame)
+        
+        return mostlikely,predictions
         
     def process_lane(self,frame,threshold,id):
         preroi_img = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
@@ -368,9 +368,8 @@ class CameraCapture(object):
                 thickness = 8
                 try:
                     print("classifying lane")
-                    pred = self.classify_lane(preroi_img_ot,threshold)
-                    most_likely,predictions.pred_label = predictions.pred_label + " : " + pred
-                    print (most_likely)
+                    most_likely,pred = self.classify_lane(preroi_img_ot,threshold)
+                    predictions.pred_label = predictions.pred_label + " : " + most_likely
                 except Exception as e:
                     print("something went wrong while classifying lane" + str(e))
                 preroi_img_ot = cv2.rectangle(preroi_img_ot, start_point, end_point, color, thickness)
