@@ -44,11 +44,13 @@ RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/config.yaml
 #RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_2.ckpt
 RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_3.ckpt
 RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_4.ckpt
-RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_bottom.ckpt
-RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/config_bot.yaml
+#RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_bottom.ckpt
+#RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/config_bot.yaml
 RUN pip3 install datetime
 RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_top_clas.ckpt
 RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/config_top_clas.yaml
+RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_bottom_segm.ckpt -O model_bottom.ckpt
+RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/config_bottom_segm.yaml -O config_bot.yaml
 
 RUN pip3 install imutils
 RUN apt-get install -y nano
