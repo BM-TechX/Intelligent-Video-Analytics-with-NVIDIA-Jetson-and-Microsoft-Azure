@@ -370,6 +370,7 @@ class CameraCapture(object):
                     print("classifying lane")
                     most_likely,pred = self.classify_lane(preroi_img_ot,threshold)
                     predictions.pred_label = predictions.pred_label + " : " + most_likely
+                    LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
                 except Exception as e:
                     print("something went wrong while classifying lane" + str(e))
                 preroi_img_ot = cv2.rectangle(preroi_img_ot, start_point, end_point, color, thickness)
