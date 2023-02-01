@@ -43,6 +43,7 @@ class ModelInference:
         
     def run_inference(self,frame):
         # Run inference
+        stringbuilder = ""
         seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
         torch_transforms= classify_transforms(self.imgsz[0])
         im = torch_transforms(frame)
@@ -56,5 +57,6 @@ class ModelInference:
         for i, prob in enumerate(pred):
             top5i = prob.argsort(0,descending=True).tolist()
             for x in top5i:
-                print( self.names[top5i[x]] + ":" + str(prob.tolist()[top5i[x]]))
+                stringbuilder = stringbuilder + ";" +self.names[top5i[x]] + ":" + str(prob.tolist()[top5i[x]]))
+        return stringbuilder
 
