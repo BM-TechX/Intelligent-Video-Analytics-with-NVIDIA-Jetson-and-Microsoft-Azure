@@ -27,14 +27,13 @@ class Infrence:
         self.inferencer = inferencer
         self.visualizer = visualizer
     
-    def loadInfrencer(self,model_path,config_path,device,visualization_mode,task):
+    def loadInfrencer(self,model_path,config_path,device,visualization_mode,task='segmentation'):
         # Load the model
-        print(model_path)
         #model_path = 'model_3.ckpt'
         #config_path = 'config.yaml'
         device = 'cuda'
         visualization_mode = 'segmentation'
-        task = 'segmentation' # 'classification'
+        #task could be segmentation or 'classification'
         inferencer = TorchInferencer(config=config_path,model_source=model_path, device=device)
         visualizer = Visualizer(mode=visualization_mode, task=task)
 
