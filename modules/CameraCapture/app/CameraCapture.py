@@ -341,7 +341,7 @@ class CameraCapture(object):
     def classify_lane(self,frame,threshold):
         preroi_img_ot,predictions =self.infrencerTopSeondary.getInfrence(frame)
         LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
-        print(predictions)
+        print(LaneState)
         return LaneState
         
     def process_lane(self,frame,threshold,id):
