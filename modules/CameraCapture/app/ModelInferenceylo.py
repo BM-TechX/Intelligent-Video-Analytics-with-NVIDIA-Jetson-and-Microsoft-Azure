@@ -5,8 +5,6 @@ and run inference
 
 import sys
 sys.path.append('yolov5')
-
-
 from IPython.core.display import ProgressBar
 import argparse
 import os

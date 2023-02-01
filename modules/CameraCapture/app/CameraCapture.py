@@ -37,8 +37,8 @@ import UndistortParser
 from UndistortParser import UndistortParser
 import torch_inference
 from torch_inference import Infrence
-from yolov
-from yolov import ModelInference
+import ModelInferenceylo
+from ModelInferenceylo import ModelInference
 import string
 import random
 import imutils
