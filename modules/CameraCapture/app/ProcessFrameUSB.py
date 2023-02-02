@@ -103,7 +103,7 @@ class ProcessFrameUSB(threading.Thread):
 
  
         try:
-            self.camera1 = cv2.VideoCapture(self.cam1,cv2.CAP_DSHOW)
+            self.camera1 = cv2.VideoCapture(self.cam1)
             self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
             self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
             self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
@@ -114,7 +114,7 @@ class ProcessFrameUSB(threading.Thread):
         except Exception as e:
             print("Error initCamera 0 " + str(e))
         try:
-            self.camera2 = cv2.VideoCapture(self.cam2,cv2.CAP_DSHOW)
+            self.camera2 = cv2.VideoCapture(self.cam2)
             self.camera2.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
             self.camera2.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
             self.camera2.set(cv2.CAP_PROP_BUFFERSIZE, 1)
@@ -123,7 +123,7 @@ class ProcessFrameUSB(threading.Thread):
         except Exception as e:
             print("Error initCamera 1 " +str(e))
         try:
-            self.camera3 = cv2.VideoCapture(self.cam3,cv2.CAP_DSHOW)
+            self.camera3 = cv2.VideoCapture(self.cam3)
             self.camera3.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
             self.camera3.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
             self.camera3.set(cv2.CAP_PROP_BUFFERSIZE, 1)
@@ -132,7 +132,7 @@ class ProcessFrameUSB(threading.Thread):
         except Exception as e:
             print("Error initCamera 2 " +str(e))
         try:
-            self.camera4 = cv2.VideoCapture(self.cam4,cv2.CAP_DSHOW)
+            self.camera4 = cv2.VideoCapture(self.cam4)
             self.camera4.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
             self.camera4.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
             self.camera4.set(cv2.CAP_PROP_BUFFERSIZE, 1)
@@ -157,7 +157,7 @@ class ProcessFrameUSB(threading.Thread):
             print("setcam " + camid + " " + str1)
             if(camid == "CAM1"):
                 self.cam1 = str1
-                self.camera1 = cv2.VideoCapture(self.cam1,cv2.CAP_DSHOW)
+                self.camera1 = cv2.VideoCapture(self.cam1)
                 self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
                 self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
                 self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
@@ -165,7 +165,7 @@ class ProcessFrameUSB(threading.Thread):
                 return True
             elif(camid == "CAM2"):
                 self.cam2 = str1
-                self.camera2 = cv2.VideoCapture(self.cam2,cv2.CAP_DSHOW)
+                self.camera2 = cv2.VideoCapture(self.cam2)
                 self.camera2.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
                 self.camera2.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
                 self.camera2.set(cv2.CAP_PROP_BUFFERSIZE, 1)
@@ -173,7 +173,7 @@ class ProcessFrameUSB(threading.Thread):
                 return True
             elif(camid == "CAM3"):
                 self.cam3 = str1
-                self.camera3 = cv2.VideoCapture(self.cam3,cv2.CAP_DSHOW)
+                self.camera3 = cv2.VideoCapture(self.cam3)
                 self.camera3.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
                 self.camera3.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
                 self.camera3.set(cv2.CAP_PROP_BUFFERSIZE, 1)
@@ -181,7 +181,7 @@ class ProcessFrameUSB(threading.Thread):
                 return True
             elif(camid == "CAM4"):
                 self.cam4 = str1
-                self.camera4 = cv2.VideoCapture(self.cam4,cv2.CAP_DSHOW)
+                self.camera4 = cv2.VideoCapture(self.cam4)
                 self.camera4.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
                 self.camera4.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
                 self.camera4.set(cv2.CAP_PROP_BUFFERSIZE, 1)
