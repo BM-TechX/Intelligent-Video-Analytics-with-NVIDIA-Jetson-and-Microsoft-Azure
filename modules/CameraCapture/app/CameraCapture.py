@@ -567,12 +567,12 @@ class CameraCapture(object):
                                     print("reuse usb1")
                                 else:
                                     frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                    self.LaneStateUSB1=None
+                                    self.LaneStateUSB1=""
                                     usberror=usberror+1
                                     print("created zero")
                             else:
                                 frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                self.LaneStateUSB1=None
+                                self.LaneStateUSB1=""
                                 print("USBlane1 not active")
                            
                         except:
@@ -589,11 +589,11 @@ class CameraCapture(object):
                                     usbreuse=usbreuse+1
                                 else:
                                     frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                    self.LaneStateUSB2=None
+                                    self.LaneStateUSB2=""
                                     usberror=usberror+1
                             else:
                                 frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                self.LaneStateUSB2=None
+                                self.LaneStateUSB2=""
                                 print("USBlane2 not active")
                         except:
                             print("frame2 error")
@@ -609,11 +609,11 @@ class CameraCapture(object):
                                     usbreuse=usbreuse+1
                                 else:
                                     frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                    self.LaneStateUSB3=None
+                                    self.LaneStateUSB3=""
                                     usberror=usberror+1
                             else:
                                 frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                self.LaneStateUSB3=None
+                                self.LaneStateUSB3=""
                                 print("USBlane3 not active")
                         except:
                             print("frame3 error")
@@ -629,11 +629,11 @@ class CameraCapture(object):
                                     usbreuse=usbreuse+1
                                 else:
                                     frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                    self.LaneStateUSB4=None
+                                    self.LaneStateUSB4=""
                                     usberror=usberror+1
                             else:
                                 frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                self.LaneStateUSB4=None
+                                self.LaneStateUSB4=""
                                 print("USBlane4 not active")
 
                         except Exception as e:
