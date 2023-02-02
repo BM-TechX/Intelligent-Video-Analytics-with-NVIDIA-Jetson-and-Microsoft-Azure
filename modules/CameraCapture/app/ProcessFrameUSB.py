@@ -327,7 +327,7 @@ class ProcessFrameUSB(threading.Thread):
                     most_likely,pred = self.classify_lane(preroi_img_ot,threshold)
                     LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
                     cv2.putText(preroi_img_ot, LaneState, (40, 100), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 3)
-                    cv2.putText(preroi_img_ot, most_likely, (40, 150), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 3)
+                    cv2.putText(preroi_img_ot, most_likely, (40, 200), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 3)
                     print(LaneState + ":" + pred)
                     predictions.pred_label = predictions.pred_label + " " + pred
                 except Exception as e:
