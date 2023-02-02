@@ -103,11 +103,13 @@ class ProcessFrameUSB(threading.Thread):
 
  
         try:
-            self.camera1 = cv2.VideoCapture(self.cam1)
-            self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
-            self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-            self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-            self.camera1.set(cv2.CAP_PROP_FPS, self.framerate)
+            self.camera1 = BufferLess(self.cam1,setFPS=self.frameRate,setHeight=self.height,setWidth=self.witdh)
+
+            # self.camera1 = cv2.VideoCapture(self.cam1)
+            # self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
+            # self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+            # self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            # self.camera1.set(cv2.CAP_PROP_FPS, self.framerate)
             
             #self.camera1 = BufferLess(0)
             time.sleep(2.0)      
