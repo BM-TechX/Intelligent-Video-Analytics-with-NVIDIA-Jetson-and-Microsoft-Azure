@@ -366,12 +366,15 @@ class CameraCapture(object):
                 end_point = (width, height)
                 color = (0,0,255)
                 thickness = 8
+                pred=''
                 try:
                     print("classifying lane")
                     most_likely,pred = self.classify_lane(preroi_img_ot,threshold)
-                    predictions.pred_label = predictions.pred_label + " : " + most_likely
                     LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
-                    print(LaneState)
+                    cv2.putText(preroi_img_ot, LaneState, (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
+                    cv2.putText(preroi_img_ot, most_likely, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
+                    print(LaneState + ":" + pred)
+                    predictions.pred_label = predictions.pred_label + " " + pred
                 except Exception as e:
                     print("something went wrong while classifying lane" + str(e))
                 preroi_img_ot = cv2.rectangle(preroi_img_ot, start_point, end_point, color, thickness)
@@ -383,9 +386,10 @@ class CameraCapture(object):
                     print("something went wrong while uploading to azure")
         else:
             LaneState = "Normal" + " " + str(round(predictions.pred_score,2))
+            cv2.putText(preroi_img_ot, LaneState, (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
+
         if(self.uploadToAzure==1):
             self.azUp(predictions,id,rowkey,url)
-        cv2.putText(preroi_img_ot, LaneState, (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
         return preroi_img_ot,LaneState
         
     def read_json(self):
