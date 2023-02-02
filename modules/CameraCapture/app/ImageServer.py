@@ -13,7 +13,7 @@ import json
 class ImageStreamHandler(tornado.websocket.WebSocketHandler):
     def editconfig(self,msg):
         try:
-            with open('config.json') as json_file:
+            with open('config/config.json') as json_file:
                 data = json.load(json_file)
                 if (msg.split(",")[0]=="activeLanes"):
                     

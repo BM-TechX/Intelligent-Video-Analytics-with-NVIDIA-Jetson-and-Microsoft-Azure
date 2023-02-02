@@ -395,7 +395,7 @@ class CameraCapture(object):
     def read_json(self):
         try:
             print("Reading config file")
-            with open('config.json') as json_file:
+            with open('config/config.json') as json_file:
                 data = json.load(json_file)
                 self.ROI1 = data['roi1']
                 self.ROI2 = data['roi2']
