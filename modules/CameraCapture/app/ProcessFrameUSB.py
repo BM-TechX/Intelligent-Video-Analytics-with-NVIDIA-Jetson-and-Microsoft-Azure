@@ -326,8 +326,8 @@ class ProcessFrameUSB(threading.Thread):
                     print("classifying lane")
                     most_likely,pred = self.classify_lane(preroi_img_ot,threshold)
                     LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
-                    cv2.putText(preroi_img_ot, LaneState, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 1)
-                    cv2.putText(preroi_img_ot, most_likely, (40, 60), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 1)
+                    cv2.putText(preroi_img_ot, LaneState, (40, 60), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 0, 255), 1)
+                    cv2.putText(preroi_img_ot, most_likely, (40, 100), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 0, 255), 1)
                     print(LaneState + ":" + pred)
                     predictions.pred_label = predictions.pred_label + " " + pred
                 except Exception as e:
@@ -339,7 +339,7 @@ class ProcessFrameUSB(threading.Thread):
                 self.ALARM = self.ALARM + 1
             except Exception as e:
                     print("something went wrong while uploading to azure")
-            cv2.putText(preroi_img_ot, LaneState, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 0, 255), 1)
+            
         else:
             cv2.putText(preroi_img_ot, LaneState, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 1)
         if(self.uploadToAzure==1):
