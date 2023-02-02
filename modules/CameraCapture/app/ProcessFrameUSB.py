@@ -422,7 +422,7 @@ class ProcessFrameUSB(threading.Thread):
             try:
                 _,frame4 = self.camera4.read()
                 frame_gray4 = cv2.cvtColor(frame4, cv2.COLOR_BGR2GRAY)
-                if(self.usbactive[3]==1)
+                if(self.usbactive[3]==1):
                     frame_pred4,self.LaneState4 = self.process_lane_bottom(frame_gray4,self.threshold,"usb4")
                     self.frame4 = frame_pred4
                     self.frame4_ready = True
