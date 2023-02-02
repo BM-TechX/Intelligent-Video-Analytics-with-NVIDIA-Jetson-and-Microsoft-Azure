@@ -261,7 +261,7 @@ class CameraCapture(object):
                
                 #self.vs.setFPS(15)
                 if self.useUSB ==True:
-                    self.vscam1=ProcessFrameUSB(threshold=self.threshold,infrencerbuttom=self.infrencerbuttom,infrencerbuttomSecondary,self.infrencerbuttomSecondary,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
+                    self.vscam1=ProcessFrameUSB(threshold=self.threshold,infrencerbuttom=self.infrencerbuttom,infrencerbuttomSecondary=self.infrencerbuttomSecondary,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
                     self.vscam1.start_processing()
 
             ##self.vs.start()
