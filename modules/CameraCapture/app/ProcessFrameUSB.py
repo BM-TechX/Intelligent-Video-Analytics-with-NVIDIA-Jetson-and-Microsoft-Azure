@@ -30,7 +30,7 @@ class ProcessFrameUSB(threading.Thread):
         # 1280×960@100fps; 
         # 1280×760@100fps; 
         # 640×480@80fps
-    def __init__(self,threshold=0.7,infrencerbuttom = None,height=1080,witdh=1920,table="notSet",AZURE_STORAGE_BLOB=None):
+    def __init__(self,threshold=0.7,infrencerbuttom = None,infrencerbuttomSecondary=None,height=1080,witdh=1920,table="notSet",AZURE_STORAGE_BLOB=None):
         self.camera1 = None
         self.camera2 = None
         self.camera3 = None
@@ -51,6 +51,7 @@ class ProcessFrameUSB(threading.Thread):
         self.table = table
         self.threshold = threshold
         self.infrencerbuttom = infrencerbuttom
+        self.infrencerbuttomSecondary = infrencerbuttomSecondary
         self.thread1 = None
         self.height = height
         self.witdh = witdh
@@ -188,7 +189,10 @@ class ProcessFrameUSB(threading.Thread):
         except Exception as e:
             print("Error initCamera  " + str(camid) +str(e))
             return False
-                                            
+    def classify_lane(self,frame,threshold):
+        mostlikely,predictions =self.infrencerbuttomSecondary.run_inference(frame)
+        return mostlikely,predictions      
+                               
     def retryCamEstab(self,camid):
         try:
             print("retrying to open camera :" + str(camid) )
@@ -317,6 +321,17 @@ class ProcessFrameUSB(threading.Thread):
                 end_point = (width, height)
                 color = (0,0,255)
                 thickness = 8
+                pred=''
+                try:
+                    print("classifying lane")
+                    most_likely,pred = self.classify_lane(preroi_img_ot,threshold)
+                    LaneState = predictions.pred_label + " " + str(round(predictions.pred_score,2))
+                    cv2.putText(preroi_img_ot, LaneState, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 1)
+                    cv2.putText(preroi_img_ot, most_likely, (40, 60), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 1)
+                    print(LaneState + ":" + pred)
+                    predictions.pred_label = predictions.pred_label + " " + pred
+                except Exception as e:
+                    print("something went wrong while classifying lane" + str(e))
                 preroi_img_ot = cv2.rectangle(preroi_img_ot, start_point, end_point, color, thickness)
                 if(self.uploadToAzure ==1):
                     self.__uploadToAzure(filename=rowkey+id,frame=preroi_img)
@@ -324,9 +339,9 @@ class ProcessFrameUSB(threading.Thread):
                 self.ALARM = self.ALARM + 1
             except Exception as e:
                     print("something went wrong while uploading to azure")
-            cv2.putText(preroi_img_ot, LaneState, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 5, (0, 0, 255), 1)
+            cv2.putText(preroi_img_ot, LaneState, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 0, 255), 1)
         else:
-            cv2.putText(preroi_img_ot, LaneState, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 5, (255, 255, 255), 1)
+            cv2.putText(preroi_img_ot, LaneState, (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 1)
         if(self.uploadToAzure==1):
             self.azUp(predictions,id,rowkey,url)
         return preroi_img_ot,LaneState

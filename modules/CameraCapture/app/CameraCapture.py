@@ -171,14 +171,14 @@ class CameraCapture(object):
         self.activeLanes=[1,1,1,1]
         self.activeUSBLanes=[1,1,1,1]
         self.infrencerTop = Infrence(model_path='model_4.ckpt',config_path='config.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
-        #self.infrencerTopSeondary = Infrence(model_path='model_top_clas.ckpt',config_path='config_top_clas.yaml',device='cuda',visualization_mode='segmentation',task='classification')
         self.infrencerTopSeondary = ModelInference(weights='model_top_class.pt',imgsz=(224,224),half=False,dnn=False,device='',bs=1,vid_stride=1)
         self.infrencerTopSeondary.warmup()
 
         #test if we have a usb camera
         if self.useUSB == True:
             self.infrencerbuttom = Infrence(model_path='model_bottom.ckpt',config_path='config_bot.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
-            
+            self.infrencerbuttomSecondary = ModelInference(weights='model_bottom_class.pt',imgsz=(224,224),half=False,dnn=False,device='',bs=1,vid_stride=1)
+            self.infrencerbuttomSecondary.warmup()
         print("booting up")
         if self.convertToGray:
             self.nbOfPreprocessingSteps +=1
@@ -261,7 +261,7 @@ class CameraCapture(object):
                
                 #self.vs.setFPS(15)
                 if self.useUSB ==True:
-                    self.vscam1=ProcessFrameUSB(threshold=self.threshold,infrencerbuttom=self.infrencerbuttom,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
+                    self.vscam1=ProcessFrameUSB(threshold=self.threshold,infrencerbuttom=self.infrencerbuttom,infrencerbuttomSecondary,self.infrencerbuttomSecondary,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
                     self.vscam1.start_processing()
 
             ##self.vs.start()
