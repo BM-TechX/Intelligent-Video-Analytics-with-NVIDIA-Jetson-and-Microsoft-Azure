@@ -469,6 +469,7 @@ class CameraCapture(object):
                     if(self.useFile):
                         self.read_json()
                         self.vscam1.uploadToAzure = self.uploadToAzure
+                        
                     
                     genral_rotation = float(self.genral_rotation)
                 
@@ -534,6 +535,7 @@ class CameraCapture(object):
                         self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
                     if self.useUSB==True:
                         print("useUSb = true")
+                        self.vscam1.setActiveSate(self.activeUSBLanes)
                         if (usberror > 50):
                             try:
                                 self.vscam1.stop_processing()

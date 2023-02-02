@@ -73,6 +73,7 @@ class ProcessFrameUSB(threading.Thread):
         self.errorgrap4 = 0
         self.uploadToAzure = 0
         self.framerate=4
+        self.usbactive=[1,1,1,1]
         try :
             self.upload.connectToAzure()
             self.upload.createTable(self.table)
@@ -346,15 +347,24 @@ class ProcessFrameUSB(threading.Thread):
             self.azUp(predictions,id,rowkey,url)
         return preroi_img_ot,LaneState
     
+    def setActiveSate(self,usbactive):
+        try:
+            self.usbactive = usbactive
+            return True
+        except Exception as e:
+            print("Error setActiveSate" + str(e))
+            return False
+        
     
     def processCAM1(self):
         while True:
             try:
                 _,frame1 = self.camera1.read()
                 frame_gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
-                frame_pred1,self.LaneState1 = self.process_lane_bottom(frame_gray1,self.threshold,"usb1")
-                self.frame1= frame_pred1
-                self.frame1_ready = True
+                if(self.usbactive[0]==1):
+                    frame_pred1,self.LaneState1 = self.process_lane_bottom(frame_gray1,self.threshold,"usb1")
+                    self.frame1= frame_pred1
+                    self.frame1_ready = True
             except Exception as e:
                 print("Error grab 1")
                 #if(self.errorgrap1  > 10):
@@ -370,9 +380,10 @@ class ProcessFrameUSB(threading.Thread):
             try:
                 _,frame2 = self.camera2.read()
                 frame_gray2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
-                frame_pred2,self.LaneState2 = self.process_lane_bottom(frame_gray2,self.threshold,"usb2")
-                self.frame2 = frame_pred2
-                self.frame2_ready = True
+                if(self.usbactive[1]==1):
+                    frame_pred2,self.LaneState2 = self.process_lane_bottom(frame_gray2,self.threshold,"usb2")
+                    self.frame2 = frame_pred2
+                    self.frame2_ready = True
             except:
                 print("Error grab 2")
                 #if(self.errorgrap2  > 10):
@@ -391,9 +402,10 @@ class ProcessFrameUSB(threading.Thread):
             try:
                 _,frame3 = self.camera3.read()
                 frame_gray3 = cv2.cvtColor(frame3, cv2.COLOR_BGR2GRAY)
-                frame_pred3,self.LaneState3 = self.process_lane_bottom(frame_gray3,self.threshold,"usb3")
-                self.frame3 = frame_pred3
-                self.frame3_ready = True
+                if(self.usbactive[2]==1):
+                    frame_pred3,self.LaneState3 = self.process_lane_bottom(frame_gray3,self.threshold,"usb3")
+                    self.frame3 = frame_pred3
+                    self.frame3_ready = True
             except:
                 print("Error grab 3")
                 #if(self.errorgrap3  > 10):
@@ -405,15 +417,15 @@ class ProcessFrameUSB(threading.Thread):
                     #self.errorgrap3 = self.errorgrap3 + 1
 
 
-
     def processCAM4(self):
         while True:
             try:
                 _,frame4 = self.camera4.read()
                 frame_gray4 = cv2.cvtColor(frame4, cv2.COLOR_BGR2GRAY)
-                frame_pred4,self.LaneState4 = self.process_lane_bottom(frame_gray4,self.threshold,"usb4")
-                self.frame4 = frame_pred4
-                self.frame4_ready = True
+                if(self.usbactive[3]==1)
+                    frame_pred4,self.LaneState4 = self.process_lane_bottom(frame_gray4,self.threshold,"usb4")
+                    self.frame4 = frame_pred4
+                    self.frame4_ready = True
             except:
                 print("Error grab 4")
                 #if(self.errorgrap4  > 10):
