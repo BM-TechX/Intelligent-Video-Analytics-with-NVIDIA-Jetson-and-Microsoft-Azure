@@ -66,6 +66,13 @@ RUN git clone https://github.com/ultralytics/yolov5.git && cd yolov5 && pip inst
 RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_bottom_class.pt
 RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_top_class.pt
 
+ENV NVIDIA_DRIVER_CAPABILITIES $NVIDIA_DRIVER_CAPABILITIES,video
+ENV LOGLEVEL="INFO"
+ENV GST_DEBUG=2
+ENV GST_DEBUG_FILE=/app/output/GST_DEBUG.log
+
+RUN apt update
+RUN apt install -y python3-gi python3-dev python3-gst-1.0 python3-numpy python3-opencv
 
 RUN apt install python3-gi python3-dev python3-gst-1.0 python-gi-dev git python-dev \
     python3 python3-pip python3.8-dev cmake g++ build-essential libglib2.0-dev \
