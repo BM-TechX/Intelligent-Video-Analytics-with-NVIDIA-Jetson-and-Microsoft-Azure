@@ -97,6 +97,7 @@ RUN cd /opt/nvidia/deepstream/deepstream/sources/ \
 # RTSP
 RUN apt-get install -y libgstrtspserver-1.0-0 gstreamer1.0-rtsp libgirepository1.0-dev gobject-introspection gir1.2-gst-rtsp-server-1.0
 
+RUN apt-get install -y gstreamer1.0-plugins-bad
 
 
 
