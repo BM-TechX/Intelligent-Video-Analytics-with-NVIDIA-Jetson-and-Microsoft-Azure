@@ -167,7 +167,7 @@ class CameraCapture(object):
         self.takePhotoFrequency=0
         self.takePhoto=False             
         self.threshold=0.5
-        self.uploadToAzure=False
+        self.uploadToAzure=0
         self.activeLanes=[1,1,1,1]
         self.activeUSBLanes=[1,1,1,1]
         self.infrencerTop = Infrence(model_path='model_4.ckpt',config_path='config.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
