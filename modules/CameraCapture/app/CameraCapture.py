@@ -414,8 +414,12 @@ class CameraCapture(object):
                 self.timefrequency=int(data['timefrequency'])
                 self.takePhotoFrequency=int(data["takePhotoFrequency"])
                 self.takePhoto= data["takePhoto"]
-                self.uploadToAzure= int(data["uploadToAzure"])        
-                self.useUSB = self.strtobool(data['useUSB'])
+                self.uploadToAzure= int(data["uploadToAzure"])   
+                usb = int(data['useUSB'])
+                if use ==0:
+                    self.useUSB = False
+                else:
+                    self.useUSB = True     
                 self.threshold=float(data['threshold'])
                 activelanes=  data['activeLanes'].split(",")
                 self.activeLanes=[int(activelanes[0]),int(activelanes[1]),int(activelanes[2]),int(activelanes[3])]
