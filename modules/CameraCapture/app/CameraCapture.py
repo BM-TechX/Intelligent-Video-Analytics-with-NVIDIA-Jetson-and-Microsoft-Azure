@@ -414,7 +414,8 @@ class CameraCapture(object):
                 self.timefrequency=int(data['timefrequency'])
                 self.takePhotoFrequency=int(data["takePhotoFrequency"])
                 self.takePhoto= data["takePhoto"]
-                self.uploadToAzure= int(data["uploadToAzure"])   
+                self.uploadToAzure= int(data["uploadToAzure"]) 
+                print("uploadToAzure " + str(self.uploadToAzure))  
                 usb = int(data['useUSB'])
                 if usb ==0:
                     self.useUSB = False
