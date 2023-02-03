@@ -100,8 +100,6 @@ RUN apt-get install -y libgstrtspserver-1.0-0 gstreamer1.0-rtsp libgirepository1
 RUN apt-get install -y gstreamer1.0-plugins-bad
 
 
-
-
 ADD /app/ .
 
 # Expose the port
