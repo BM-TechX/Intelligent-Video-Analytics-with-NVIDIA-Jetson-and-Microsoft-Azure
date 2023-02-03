@@ -69,7 +69,7 @@ RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_top_class.pt
 ENV NVIDIA_DRIVER_CAPABILITIES $NVIDIA_DRIVER_CAPABILITIES,video
 ENV LOGLEVEL="INFO"
 ENV GST_DEBUG=2
-ENV GST_DEBUG_FILE=/app/output/GST_DEBUG.log
+ENV GST_DEBUG_FILE=/output/GST_DEBUG.log
 
 RUN apt update
 RUN apt install -y python3-gi python3-dev python3-gst-1.0 python3-numpy python3-opencv
