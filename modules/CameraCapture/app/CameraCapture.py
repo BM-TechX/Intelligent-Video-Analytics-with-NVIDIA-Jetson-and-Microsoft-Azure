@@ -416,7 +416,7 @@ class CameraCapture(object):
                 self.takePhoto= data["takePhoto"]
                 self.uploadToAzure= int(data["uploadToAzure"])   
                 usb = int(data['useUSB'])
-                if use ==0:
+                if usb ==0:
                     self.useUSB = False
                 else:
                     self.useUSB = True     
