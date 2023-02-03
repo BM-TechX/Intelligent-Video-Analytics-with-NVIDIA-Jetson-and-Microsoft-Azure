@@ -162,6 +162,7 @@ class CameraCapture(object):
         self.numpy_horizontal_concat_rtsp = None
         self.ALARM=0
         self.ALARMREPORTED=0
+        self.read_json()
         self.table="FiberlineTest"
         self.connectionstring = "DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net"
         self.takePhotoFrequency=0
@@ -414,7 +415,7 @@ class CameraCapture(object):
                 self.takePhotoFrequency=int(data["takePhotoFrequency"])
                 self.takePhoto= data["takePhoto"]
                 self.uploadToAzure= int(data["uploadToAzure"])        
-                # self.useUSB = self.strtobool(data['useUSB'])
+                self.useUSB = self.strtobool(data['useUSB'])
                 self.threshold=float(data['threshold'])
                 activelanes=  data['activeLanes'].split(",")
                 self.activeLanes=[int(activelanes[0]),int(activelanes[1]),int(activelanes[2]),int(activelanes[3])]
