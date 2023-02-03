@@ -103,7 +103,8 @@ class ProcessFrameUSB(threading.Thread):
 
  
         try:
-            self.camera1 = cv2.VideoCapture(self.cam1)
+            #self.camera1 = cv2.VideoCapture(self.cam1)
+            self.camera1 = cv2.VideoCapture("nvargussrc device="+self.cam1+" sync=false ! videoconvert ! appsink")
             self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
             self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
             self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
@@ -157,7 +158,8 @@ class ProcessFrameUSB(threading.Thread):
             print("setcam " + camid + " " + str1)
             if(camid == "CAM1"):
                 self.cam1 = str1
-                self.camera1 = cv2.VideoCapture(self.cam1)
+                #self.camera1 = cv2.VideoCapture(self.cam1)
+                self.camera1 = cv2.VideoCapture("nvargussrc device="+self.cam1+" sync=false ! videoconvert ! appsink")
                 self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
                 self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
                 self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
