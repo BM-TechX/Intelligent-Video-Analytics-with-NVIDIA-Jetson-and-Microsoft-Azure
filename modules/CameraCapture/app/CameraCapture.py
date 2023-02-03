@@ -474,7 +474,8 @@ class CameraCapture(object):
                     read =1
                     if(self.useFile):
                         self.read_json()
-                        self.vscam1.uploadToAzure = self.uploadToAzure
+                        if self.useUSB ==True:
+                            self.vscam1.uploadToAzure = self.uploadToAzure
                         
                     
                     genral_rotation = float(self.genral_rotation)
