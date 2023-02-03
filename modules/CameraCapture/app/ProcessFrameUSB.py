@@ -104,7 +104,8 @@ class ProcessFrameUSB(threading.Thread):
  
         try:
             #self.camera1 = cv2.VideoCapture(self.cam1)
-            self.camera1 =cv2.VideoCapture(__gstreamer_pipeline(self.cam1),cv2.CAP_GSTREAMER)
+            #self.camera1 =cv2.VideoCapture(self.__gstreamer_pipeline(self.cam1),cv2.CAP_GSTREAMER)
+            self.camera1  = cv2.VideoCapture("nvargussrc device=/dev/"+self.cam1+" sync=false ! videoconvert !appsink",cv2.CAP_GSTREAMER)
 
             #self.camera1 = cv2.VideoCapture("nvargussrc device="+self.cam1+" sync=false ! videoconvert ! appsink")
             self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
@@ -161,7 +162,8 @@ class ProcessFrameUSB(threading.Thread):
             if(camid == "CAM1"):
                 self.cam1 = str1
                 #self.camera1 = cv2.VideoCapture(self.cam1)
-                self.camera1 =cv2.VideoCapture(__gstreamer_pipeline(self.cam1),cv2.CAP_GSTREAMER)
+                self.camera1  = cv2.VideoCapture("nvargussrc device=/dev/"+self.cam1+" sync=false ! videoconvert !appsink",cv2.CAP_GSTREAMER)
+                #self.camera1 =cv2.VideoCapture(self.__gstreamer_pipeline(self.cam1),cv2.CAP_GSTREAMER)
 
                 self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
                 self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
@@ -219,7 +221,7 @@ class ProcessFrameUSB(threading.Thread):
         except Exception as e:
             print("Error initCamera  " + str(camid) +str(e))
             return None
-    def __gstreamer_pipeline(
+    def __gstreamer_pipeline(self,
         camera_id,
         capture_width=1920,
         capture_height=1080,
