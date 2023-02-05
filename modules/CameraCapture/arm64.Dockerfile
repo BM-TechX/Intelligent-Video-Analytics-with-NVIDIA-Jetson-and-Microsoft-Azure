@@ -85,7 +85,6 @@ RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_top_class.pt
 
 
 ADD /app/ .
-RUN mkdir /output
 # Expose the port
 EXPOSE 5012
 
