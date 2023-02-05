@@ -221,25 +221,7 @@ class ProcessFrameUSB(threading.Thread):
         except Exception as e:
             print("Error initCamera  " + str(camid) +str(e))
             return None
-    def __gstreamer_pipeline(self,
-        camera_id,
-        capture_width=1920,
-        capture_height=1080,
-        display_width=1920,
-        display_height=1080,
-        framerate=4,
-        flip_method=0,
-        ):
-        return (
-                "nvarguscamerasrc sensor-id="+camera_id+" ! "
-                "video/x-raw(memory:NVMM), "
-                "width=(int)"+capture_width+", height=(int)"+capture_height+", "
-                "format=(string)NV12, framerate=(fraction)"+framerate+"/1 ! "
-                "nvvidconv flip-method="+flip_method+" ! "
-                "video/x-raw, width=(int)"+display_width+", height=(int)"+display_height+", format=(string)BGRx ! "
-                "videoconvert ! "
-                "video/x-raw, format=(string)BGR ! appsink max-buffers=1 drop=True"
-        )
+  
     def __gstreamer_pipelineold(
         camera_id,
         capture_width=1920,
