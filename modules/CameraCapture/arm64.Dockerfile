@@ -77,22 +77,6 @@ RUN apt install -y python3-gi python3-dev python3-gst-1.0 python3-numpy python3-
 RUN apt install python3-gi python3-dev python3-gst-1.0 python-gi-dev git python-dev \
     python3 python3-pip python3.8-dev cmake g++ build-essential libglib2.0-dev \
     libglib2.0-dev-bin libgstreamer1.0-dev libtool m4 autoconf automake libgirepository1.0-dev libcairo2-dev -y
-RUN cd /opt/nvidia/deepstream/deepstream/sources/ \
-    && git clone https://github.com/NVIDIA-AI-IOT/deepstream_python_apps.git \
-    && cd deepstream_python_apps \
-    && git submodule update --init \
-    && apt-get install -y apt-transport-https ca-certificates -y \
-    && update-ca-certificates \
-    && cd 3rdparty/gst-python/ \
-    && ./autogen.sh \
-    && make \
-    && make install \
-    && cd ../../bindings \
-    && mkdir build \
-    && cd build \
-    && cmake .. \
-    && make \
-    && pip3 install ./pyds-*.whl
 
 # RTSP
 RUN apt-get install -y libgstrtspserver-1.0-0 gstreamer1.0-rtsp libgirepository1.0-dev gobject-introspection gir1.2-gst-rtsp-server-1.0
@@ -101,7 +85,7 @@ RUN apt-get install -y gstreamer1.0-plugins-bad
 
 
 ADD /app/ .
-
+RUN mkdir /output
 # Expose the port
 EXPOSE 5012
 
