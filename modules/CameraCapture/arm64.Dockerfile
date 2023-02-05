@@ -79,7 +79,7 @@ RUN wget https://camtagstoreaiem.blob.core.windows.net/carb/model_top_class.pt
 #    libglib2.0-dev-bin libgstreamer1.0-dev libtool m4 autoconf automake libgirepository1.0-dev libcairo2-dev -y
 
 # RTSP
-RUN apt-get install -y libgstrtspserver-1.0-0 gstreamer1.0-rtsp libgirepository1.0-dev gobject-introspection gir1.2-gst-rtsp-server-1.0
+#RUN apt-get install -y libgstrtspserver-1.0-0 gstreamer1.0-rtsp libgirepository1.0-dev gobject-introspection gir1.2-gst-rtsp-server-1.0
 
 #RUN apt-get install -y gstreamer1.0-plugins-bad
 
