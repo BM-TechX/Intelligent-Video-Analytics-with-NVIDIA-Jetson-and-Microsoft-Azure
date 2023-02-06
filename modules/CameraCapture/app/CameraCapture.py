@@ -45,6 +45,7 @@ import imutils
 import UploadToAzure
 from UploadToAzure import UploadToAzure
 from datetime import datetime
+from threading import Thread
 class CameraCapture(object):
 
     def __IsInt(self,string):
@@ -168,6 +169,7 @@ class CameraCapture(object):
         self.takePhoto=False             
         self.threshold=0.5
         self.uploadToAzure=0
+        self.thread=None
         self.activeLanes=[1,1,1,1]
         self.activeUSBLanes=[1,1,1,1]
         self.infrencerTop = Infrence(model_path='model_4.ckpt',config_path='config.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
@@ -264,7 +266,7 @@ class CameraCapture(object):
                     self.vscam1.start_processing()
                     thread1 = threading.Thread(target=self.useUSBThread)
                     thread1.start()
-                    #self.thread1 = thread1
+                    self.thread = thread1
 
             ##self.vs.start()
             time.sleep(1.0)
