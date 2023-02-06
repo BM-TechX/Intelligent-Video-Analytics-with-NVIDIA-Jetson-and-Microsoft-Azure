@@ -355,9 +355,10 @@ class ProcessFrameUSB(threading.Thread):
             
         else:
             cv2.putText(preroi_img_ot, LaneState, (40, 100), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 3)
+        height, width = preroi_img_ot.shape[:2]
         font = cv2.FONT_HERSHEY_SIMPLEX
         scale = 5
-        thickness = 1
+        thickness = 8
         text_size, baseline = cv2.getTextSize(id, font, scale, thickness)
         text_x = (width - text_size[0]) // 2
         text_y = height - text_size[1] - 10
