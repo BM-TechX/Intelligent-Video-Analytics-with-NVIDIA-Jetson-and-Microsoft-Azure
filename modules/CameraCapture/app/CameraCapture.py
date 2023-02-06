@@ -46,6 +46,7 @@ import UploadToAzure
 from UploadToAzure import UploadToAzure
 from datetime import datetime
 from threading import Thread
+import threading
 class CameraCapture(object):
 
     def __IsInt(self,string):
