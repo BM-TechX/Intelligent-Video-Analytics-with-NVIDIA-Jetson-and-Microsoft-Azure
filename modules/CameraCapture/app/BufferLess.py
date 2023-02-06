@@ -71,5 +71,7 @@ class BufferLess:
         return frame
     def stop(self):
         self.cap.release()
-        
+        return True
+    def release(self):
+        self.cap.release()
         return True
