@@ -30,7 +30,7 @@ class ProcessFrameUSB(threading.Thread):
         # 1280×960@100fps; 
         # 1280×760@100fps; 
         # 640×480@80fps
-    def __init__(self,threshold=0.7,infrencerbuttom = None,infrencerbuttomSecondary=None,height=1080,witdh=1920,table="notSet",AZURE_STORAGE_BLOB=None):
+    def __init__(self,threshold=0.5,infrencerbuttom = None,infrencerbuttomSecondary=None,height=1080,witdh=1920,table="notSet",AZURE_STORAGE_BLOB=None):
         self.camera1 = None
         self.camera2 = None
         self.camera3 = None
@@ -72,7 +72,7 @@ class ProcessFrameUSB(threading.Thread):
         self.errorgrap3 = 0
         self.errorgrap4 = 0
         self.uploadToAzure = 0
-        self.framerate=4
+        self.framerate=30
         self.usbactive=[1,1,1,1]
         try :
             self.upload.connectToAzure()
@@ -366,7 +366,6 @@ class ProcessFrameUSB(threading.Thread):
                 frame1 = self.camera1.read()
                 frame_gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
                 frame_pred1,self.LaneState1 = self.process_lane_bottom(frame_gray1,self.threshold,"BL4")
-                print("test")
                 self.frame1= frame_pred1
                 self.frame1_ready = True
             except Exception as e:

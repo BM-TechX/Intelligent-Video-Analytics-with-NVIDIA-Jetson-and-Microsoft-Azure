@@ -606,6 +606,7 @@ class CameraCapture(object):
                                 elif (self.previousUSBFrame2 is not None):
                                     frame2_resized = self.previousUSBFrame2
                                     usbreuse=usbreuse+1
+                                    print("reuse usb2")
                                 else:
                                     frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
                                     self.LaneStateUSB2=""
@@ -626,6 +627,7 @@ class CameraCapture(object):
                                 elif (self.previousUSBFrame3 is not None):
                                     frame3_resized = self.previousUSBFrame3
                                     usbreuse=usbreuse+1
+                                    print("reuse usb3")
                                 else:
                                     frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
                                     self.LaneStateUSB3=""
@@ -646,6 +648,7 @@ class CameraCapture(object):
                                 elif (self.previousUSBFrame4 is not None):
                                     frame4_resized = self.previousUSBFrame4
                                     usbreuse=usbreuse+1
+                                    print("reuse usb4")
                                 else:
                                     frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
                                     self.LaneStateUSB4=""
