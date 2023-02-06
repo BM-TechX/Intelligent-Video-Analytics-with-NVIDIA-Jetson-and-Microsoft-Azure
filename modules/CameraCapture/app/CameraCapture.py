@@ -693,7 +693,6 @@ class CameraCapture(object):
         height = self.height
         while True:
             #time.sleep(1.0)  
-            print("useUSb = true")
             self.vscam1.setActiveSate(self.activeUSBLanes)
             try:
                 if(self.activeUSBLanes[0]==1):
@@ -786,7 +785,6 @@ class CameraCapture(object):
                 numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
                 numpy_horizontal_concat_usb = np.concatenate((numpy_horizontal_concat_usb_top, numpy_horizontal_concat_usb_bottom), axis=0)
                 self.numpy_horizontal_concat_usb = numpy_horizontal_concat_usb
-                print("USB concat")
                 #numpy_horizontal_concat = np.concatenate((self.numpy_horizontal_concat_rtsp , numpy_horizontal_concat_usb), axis=1)
                 #self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()# +"|"+state
             except Exception as e:
