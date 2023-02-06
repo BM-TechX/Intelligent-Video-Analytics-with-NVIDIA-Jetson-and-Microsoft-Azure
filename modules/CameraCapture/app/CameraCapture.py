@@ -264,7 +264,7 @@ class CameraCapture(object):
                     self.vscam1.start_processing()
                     thread1 = threading.Thread(target=self.useUSBThread)
                     thread1.start()
-                    self.thread1 = thread1
+                    #self.thread1 = thread1
 
             ##self.vs.start()
             time.sleep(1.0)
