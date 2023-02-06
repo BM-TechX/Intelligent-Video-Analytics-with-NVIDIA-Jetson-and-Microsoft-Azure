@@ -103,16 +103,18 @@ class ProcessFrameUSB(threading.Thread):
 
  
         try:
-            self.camera1 = cv2.VideoCapture(self.cam1)
-            #self.camera1 =cv2.VideoCapture(self.__gstreamer_pipeline(self.cam1),cv2.CAP_GSTREAMER)
-            #self.camera1  = cv2.VideoCapture("nvargussrc device="+self.cam1+" sync=false ! videoconvert !appsink",cv2.CAP_GSTREAMER)
-            #self.camera1 = cv2.VideoCapture(self.__gstreamer_pipeline(camera_id=1, flip_method=2), cv2.CAP_GSTREAMER)
+            self.camera1 = BufferLess(self.cam1,setFPS=self.framerate,setHeight=self.height,setWidth=self.witdh)
 
-            #self.camera1 = cv2.VideoCapture("nvargussrc device="+self.cam1+" sync=false ! videoconvert ! appsink")
-            self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
-            self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-            self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-            self.camera1.set(cv2.CAP_PROP_FPS, self.framerate)
+            # self.camera1 = cv2.VideoCapture(self.cam1)
+            # #self.camera1 =cv2.VideoCapture(self.__gstreamer_pipeline(self.cam1),cv2.CAP_GSTREAMER)
+            # #self.camera1  = cv2.VideoCapture("nvargussrc device="+self.cam1+" sync=false ! videoconvert !appsink",cv2.CAP_GSTREAMER)
+            # #self.camera1 = cv2.VideoCapture(self.__gstreamer_pipeline(camera_id=1, flip_method=2), cv2.CAP_GSTREAMER)
+
+            # #self.camera1 = cv2.VideoCapture("nvargussrc device="+self.cam1+" sync=false ! videoconvert ! appsink")
+            # self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
+            # self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+            # self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            # self.camera1.set(cv2.CAP_PROP_FPS, self.framerate)
             
             #self.camera1 = BufferLess(0)
             time.sleep(2.0)      
@@ -162,15 +164,15 @@ class ProcessFrameUSB(threading.Thread):
             print("setcam " + camid + " " + str1)
             if(camid == "CAM1"):
                 self.cam1 = str1
-                self.camera1 = cv2.VideoCapture(self.cam1)
+                #self.camera1 = cv2.VideoCapture(self.cam1)
+                self.camera1 = BufferLess(self.cam1,setFPS=self.framerate,setHeight=self.height,setWidth=self.witdh)
                 #self.camera1  = cv2.VideoCapture("nvargussrc device="+self.cam1+" sync=false ! videoconvert !appsink",cv2.CAP_GSTREAMER)
                 #self.camera1 =cv2.VideoCapture(self.__gstreamer_pipeline(self.cam1),cv2.CAP_GSTREAMER)
                 #self.camera1 =cv2.VideoCapture(self.__gstreamer_pipeline(camera_id=1, flip_method=2), cv2.CAP_GSTREAMER)
-
-                self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
-                self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-                self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-                self.camera1.set(cv2.CAP_PROP_FPS,self.framerate)
+                # self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
+                # self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+                # self.camera1.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                # self.camera1.set(cv2.CAP_PROP_FPS,self.framerate)
                 return True
             elif(camid == "CAM2"):
                 self.cam2 = str1
