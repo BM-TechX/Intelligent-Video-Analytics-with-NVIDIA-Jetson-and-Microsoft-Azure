@@ -121,29 +121,34 @@ class ProcessFrameUSB(threading.Thread):
         except Exception as e:
             print("Error initCamera 0 " + str(e))
         try:
-            self.camera2 = cv2.VideoCapture(self.cam2)
-            self.camera2.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
-            self.camera2.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-            self.camera2.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-            self.camera2.set(cv2.CAP_PROP_FPS, self.framerate)
+            self.camera2 = BufferLess(self.cam2,setFPS=30,setHeight=self.height,setWidth=self.witdh)
+
+            # self.camera2 = cv2.VideoCapture(self.cam2)
+            # self.camera2.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
+            # self.camera2.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+            # self.camera2.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            # self.camera2.set(cv2.CAP_PROP_FPS, self.framerate)
             time.sleep(2.0)
         except Exception as e:
             print("Error initCamera 1 " +str(e))
         try:
-            self.camera3 = cv2.VideoCapture(self.cam3)
-            self.camera3.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
-            self.camera3.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-            self.camera3.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-            self.camera4.set(cv2.CAP_PROP_FPS, self.framerate)
+            self.camera3 = BufferLess(self.cam3,setFPS=30,setHeight=self.height,setWidth=self.witdh)
+
+            # self.camera3 = cv2.VideoCapture(self.cam3)
+            # self.camera3.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
+            # self.camera3.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+            # self.camera3.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            # self.camera4.set(cv2.CAP_PROP_FPS, self.framerate)
             time.sleep(2.0)
         except Exception as e:
             print("Error initCamera 2 " +str(e))
         try:
-            self.camera4 = cv2.VideoCapture(self.cam4)
-            self.camera4.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
-            self.camera4.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-            self.camera4.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-            self.camera4.set(cv2.CAP_PROP_FPS, self.framerate)
+            self.camera4 = BufferLess(self.cam4,setFPS=30,setHeight=self.height,setWidth=self.witdh)
+            # self.camera4 = cv2.VideoCapture(self.cam4)
+            # self.camera4.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
+            # self.camera4.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+            # self.camera4.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            # self.camera4.set(cv2.CAP_PROP_FPS, self.framerate)
             time.sleep(2.0)
         except Exception as e:
             print("Error initCamera 3 " +str(e))
@@ -362,7 +367,7 @@ class ProcessFrameUSB(threading.Thread):
         text_size, baseline = cv2.getTextSize(id, font, scale, thickness)
         text_x = (width - text_size[0]) // 2
         text_y = height - text_size[1] - 10
-        cv2.putText(preroi_img_ot, id, (text_x, text_y), font, scale, (255, 255, 255), thickness)
+        cv2.putText(preroi_img_ot, id, (text_x, text_y), font, scale, (50, 205, 50), thickness)
         if(self.uploadToAzure==1):
             self.azUp(predictions,id,rowkey,url)
         return preroi_img_ot,LaneState

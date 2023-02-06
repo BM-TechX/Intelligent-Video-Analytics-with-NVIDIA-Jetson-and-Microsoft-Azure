@@ -398,7 +398,7 @@ class CameraCapture(object):
         text_size, baseline = cv2.getTextSize(id, font, scale, thickness)
         text_x = (width - text_size[0]) // 2
         text_y = height - text_size[1] - 10
-        cv2.putText(preroi_img_ot, id, (text_x, text_y), font, scale, (255, 255, 255), thickness)
+        cv2.putText(preroi_img_ot, id, (text_x, text_y), font, scale, (50, 205, 50), thickness)
         if(self.uploadToAzure==1):
             self.azUp(predictions,id,rowkey,url)
         return preroi_img_ot,LaneState
