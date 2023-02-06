@@ -692,7 +692,7 @@ class CameraCapture(object):
         width = self.width
         height = self.height
         while True:
-            time.sleep(1.0)  
+            #time.sleep(1.0)  
             print("useUSb = true")
             self.vscam1.setActiveSate(self.activeUSBLanes)
             try:
