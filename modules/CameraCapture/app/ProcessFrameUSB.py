@@ -103,10 +103,10 @@ class ProcessFrameUSB(threading.Thread):
 
  
         try:
-            #self.camera1 = cv2.VideoCapture(self.cam1)
+            self.camera1 = cv2.VideoCapture(self.cam1)
             #self.camera1 =cv2.VideoCapture(self.__gstreamer_pipeline(self.cam1),cv2.CAP_GSTREAMER)
             #self.camera1  = cv2.VideoCapture("nvargussrc device="+self.cam1+" sync=false ! videoconvert !appsink",cv2.CAP_GSTREAMER)
-            self.camera1 = cv2.VideoCapture(self.__gstreamer_pipeline(camera_id=1, flip_method=2), cv2.CAP_GSTREAMER)
+            #self.camera1 = cv2.VideoCapture(self.__gstreamer_pipeline(camera_id=1, flip_method=2), cv2.CAP_GSTREAMER)
 
             #self.camera1 = cv2.VideoCapture("nvargussrc device="+self.cam1+" sync=false ! videoconvert ! appsink")
             self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
