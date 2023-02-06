@@ -481,9 +481,7 @@ class CameraCapture(object):
                         print("rtsp restart failed")
                         time.sleep(1.0)
                 print("frame size is 0")
-                time.sleep(1.0)
-                
-
+                time.sleep(1.0)            
             if self.showVideo:
                 try:
                     read =1
@@ -780,7 +778,7 @@ class CameraCapture(object):
             #concat images
             try:
                                 
-                print ("USB" + self.LaneStateUSB1 + " " + self.LaneStateUSB2 + " " + self.LaneStateUSB3 + " " + self.LaneStateUSB4)
+                #print ("USB" + self.LaneStateUSB1 + " " + self.LaneStateUSB2 + " " + self.LaneStateUSB3 + " " + self.LaneStateUSB4)
                 numpy_horizontal_concat_usb_top = np.concatenate((frame1_resized, frame2_resized), axis=1)
                 numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
                 numpy_horizontal_concat_usb = np.concatenate((numpy_horizontal_concat_usb_top, numpy_horizontal_concat_usb_bottom), axis=0)
