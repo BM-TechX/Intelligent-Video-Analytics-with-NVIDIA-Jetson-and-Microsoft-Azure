@@ -511,25 +511,25 @@ class CameraCapture(object):
                     numpy_horizontal_concat = None
                     if(self.activeLanes[0]==1):
                         preroi1 = self.get_process_lane(self.ROI1,roi1a,roi1_rotation,preprocessedFrame,read)
-                        preroi1_img_ot,self.Lane1State = self.process_lane(preroi1,threshold,"Lane1Top")
+                        preroi1_img_ot,self.Lane1State = self.process_lane(preroi1,threshold,"Lane4Top")
                         numpy_horizontal_concat = preroi1_img_ot
                     if(self.activeLanes[1]==1):
                         preroi2 = self.get_process_lane(self.ROI2,roi2a,roi2_rotation,preprocessedFrame,read)
-                        preroi2_img_ot,self.Lane2State = self.process_lane(preroi2,threshold,"Lane2Top")
+                        preroi2_img_ot,self.Lane2State = self.process_lane(preroi2,threshold,"Lane3Top")
                         if(numpy_horizontal_concat is not None):
                             numpy_horizontal_concat = np.concatenate((numpy_horizontal_concat, preroi2_img_ot), axis=1)
                         else:
                             numpy_horizontal_concat = preroi2_img_ot
                     if(self.activeLanes[2]==1):
                         preroi3 = self.get_process_lane(self.ROI3,roi3a,roi3_rotation,preprocessedFrame,read)
-                        preroi3_img_ot,self.Lane3State = self.process_lane(preroi3,threshold,"Lane3Top")
+                        preroi3_img_ot,self.Lane3State = self.process_lane(preroi3,threshold,"Lane2Top")
                         if(numpy_horizontal_concat is not None):
                             numpy_horizontal_concat = np.concatenate((numpy_horizontal_concat, preroi3_img_ot), axis=1)
                         else:
                             numpy_horizontal_concat = preroi3_img_ot
                     if(self.activeLanes[3]==1):
                         preroi4 = self.get_process_lane(self.ROI4,roi4a,roi4_rotation,preprocessedFrame,read)
-                        preroi4_img_ot,self.Lane4State = self.process_lane(preroi4,threshold,"Lane4Top")  
+                        preroi4_img_ot,self.Lane4State = self.process_lane(preroi4,threshold,"Lane1Top")  
                         if(numpy_horizontal_concat is not None):
                             numpy_horizontal_concat = np.concatenate((numpy_horizontal_concat, preroi4_img_ot), axis=1)
                         else:
