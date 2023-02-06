@@ -103,7 +103,7 @@ class ProcessFrameUSB(threading.Thread):
 
  
         try:
-            self.camera1 = BufferLess(self.cam1,setFPS=self.framerate,setHeight=self.height,setWidth=self.witdh)
+            self.camera1 = BufferLess(self.cam1,setFPS=30,setHeight=self.height,setWidth=self.witdh)
 
             # self.camera1 = cv2.VideoCapture(self.cam1)
             # #self.camera1 =cv2.VideoCapture(self.__gstreamer_pipeline(self.cam1),cv2.CAP_GSTREAMER)
@@ -165,7 +165,7 @@ class ProcessFrameUSB(threading.Thread):
             if(camid == "CAM1"):
                 self.cam1 = str1
                 #self.camera1 = cv2.VideoCapture(self.cam1)
-                self.camera1 = BufferLess(self.cam1,setFPS=self.framerate,setHeight=self.height,setWidth=self.witdh)
+                self.camera1 = BufferLess(self.cam1,setFPS=30,setHeight=self.height,setWidth=self.witdh)
                 #self.camera1  = cv2.VideoCapture("nvargussrc device="+self.cam1+" sync=false ! videoconvert !appsink",cv2.CAP_GSTREAMER)
                 #self.camera1 =cv2.VideoCapture(self.__gstreamer_pipeline(self.cam1),cv2.CAP_GSTREAMER)
                 #self.camera1 =cv2.VideoCapture(self.__gstreamer_pipeline(camera_id=1, flip_method=2), cv2.CAP_GSTREAMER)
