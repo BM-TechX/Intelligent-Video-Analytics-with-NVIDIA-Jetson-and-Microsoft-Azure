@@ -362,11 +362,12 @@ class ProcessFrameUSB(threading.Thread):
     def processing(self):
         while True:
             try:
-                #_,frame1 = self.camera1.read()
-                frame1 = self.camera1.read()
-                frame_gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
-                frame_pred1,self.LaneState1 = self.process_lane_bottom(frame_gray1,self.threshold,"BL4")
-                self.frame1= frame_pred1
+                if (self.usbactive[0]==1):
+                    #_,frame1 = self.camera1.read()
+                    frame1 = self.camera1.read()
+                    frame_gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
+                    frame_pred1,self.LaneState1 = self.process_lane_bottom(frame_gray1,self.threshold,"BL4")
+                    self.frame1= frame_pred1
                 self.frame1_ready = True
             except Exception as e:
                 print("Error grab 0 " + str(e))
@@ -378,10 +379,11 @@ class ProcessFrameUSB(threading.Thread):
                 else:
                     self.errorgrap1 = self.errorgrap1 + 1
             try:
-                frame2 = self.camera2.read()
-                frame_gray2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
-                frame_pred2,self.LaneState2 = self.process_lane_bottom(frame_gray2,self.threshold,"BL3")
-                self.frame2 = frame_pred2
+                if (self.usbactive[1]==1):
+                    frame2 = self.camera2.read()
+                    frame_gray2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
+                    frame_pred2,self.LaneState2 = self.process_lane_bottom(frame_gray2,self.threshold,"BL3")
+                    self.frame2 = frame_pred2
                 self.frame2_ready = True
             except:
                 print("Error grab 1")
@@ -393,10 +395,11 @@ class ProcessFrameUSB(threading.Thread):
                 else:
                     self.errorgrap2 = self.errorgrap2 + 1
             try:
-                frame3 = self.camera3.read()
-                frame_gray3 = cv2.cvtColor(frame3, cv2.COLOR_BGR2GRAY)
-                frame_pred3,self.LaneState3 = self.process_lane_bottom(frame_gray3,self.threshold,"BL1")
-                self.frame3 = frame_pred3
+                if (self.usbactive[2]==1):
+                    frame3 = self.camera3.read()
+                    frame_gray3 = cv2.cvtColor(frame3, cv2.COLOR_BGR2GRAY)
+                    frame_pred3,self.LaneState3 = self.process_lane_bottom(frame_gray3,self.threshold,"BL1")
+                    self.frame3 = frame_pred3
                 self.frame3_ready = True
             except:
                 print("Error grab 2")
@@ -408,10 +411,11 @@ class ProcessFrameUSB(threading.Thread):
                 else:
                     self.errorgrap2 = self.errorgrap2 + 1
             try:
-                frame4 = self.camera4.read()
-                frame_gray4 = cv2.cvtColor(frame4, cv2.COLOR_BGR2GRAY)
-                frame_pred4,self.LaneState4 = self.process_lane_bottom(frame_gray4,self.threshold,"BM2")
-                self.frame4 = frame_pred4
+                if (self.usbactive[3]==1):
+                    frame4 = self.camera4.read()
+                    frame_gray4 = cv2.cvtColor(frame4, cv2.COLOR_BGR2GRAY)
+                    frame_pred4,self.LaneState4 = self.process_lane_bottom(frame_gray4,self.threshold,"BM2")
+                    self.frame4 = frame_pred4
                 self.frame4_ready = True
             except:
                 print("Error grab 3")
