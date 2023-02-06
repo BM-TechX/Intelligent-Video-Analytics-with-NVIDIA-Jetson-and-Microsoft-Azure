@@ -687,6 +687,7 @@ class CameraCapture(object):
                     print('Excpetion -' + str(e))
     def useUSBThread(self):
         usbreuse=0
+        usberror=0
         width = self.width
         height = self.height
         while True:
