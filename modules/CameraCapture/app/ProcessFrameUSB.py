@@ -72,7 +72,7 @@ class ProcessFrameUSB(threading.Thread):
         self.errorgrap3 = 0
         self.errorgrap4 = 0
         self.uploadToAzure = 0
-        self.framerate=1
+        self.framerate=4
         self.usbactive=[1,1,1,1]
         try :
             self.upload.connectToAzure()
@@ -162,10 +162,10 @@ class ProcessFrameUSB(threading.Thread):
             print("setcam " + camid + " " + str1)
             if(camid == "CAM1"):
                 self.cam1 = str1
-                #self.camera1 = cv2.VideoCapture(self.cam1)
+                self.camera1 = cv2.VideoCapture(self.cam1)
                 #self.camera1  = cv2.VideoCapture("nvargussrc device="+self.cam1+" sync=false ! videoconvert !appsink",cv2.CAP_GSTREAMER)
                 #self.camera1 =cv2.VideoCapture(self.__gstreamer_pipeline(self.cam1),cv2.CAP_GSTREAMER)
-                self.camera1 =cv2.VideoCapture(self.__gstreamer_pipeline(camera_id=1, flip_method=2), cv2.CAP_GSTREAMER)
+                #self.camera1 =cv2.VideoCapture(self.__gstreamer_pipeline(camera_id=1, flip_method=2), cv2.CAP_GSTREAMER)
 
                 self.camera1.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
                 self.camera1.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
