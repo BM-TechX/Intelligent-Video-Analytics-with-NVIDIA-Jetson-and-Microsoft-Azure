@@ -390,12 +390,14 @@ class CameraCapture(object):
             LaneState = "Normal" + " " + str(round(predictions.pred_score,2))
             cv2.putText(preroi_img_ot, LaneState, (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
         height, width = preroi_img_ot.shape[:2]
-        text_x = (width - text_size[0]) // 2
-        text_y = height - text_size[1] - 10
+
         # Set the font and scale for the text
         font = cv2.FONT_HERSHEY_SIMPLEX
         scale = 1
         thickness = 1
+        text_size, baseline = cv2.getTextSize(id, font, scale, thickness)
+        text_x = (width - text_size[0]) // 2
+        text_y = height - text_size[1] - 10
         cv2.putText(preroi_img_ot, id, (text_x, text_y), font, scale, (255, 255, 255), thickness)
         if(self.uploadToAzure==1):
             self.azUp(predictions,id,rowkey,url)
