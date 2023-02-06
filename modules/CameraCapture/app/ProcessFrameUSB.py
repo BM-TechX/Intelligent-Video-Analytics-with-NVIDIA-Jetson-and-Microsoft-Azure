@@ -366,6 +366,7 @@ class ProcessFrameUSB(threading.Thread):
                 frame1 = self.camera1.read()
                 frame_gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
                 frame_pred1,self.LaneState1 = self.process_lane_bottom(frame_gray1,self.threshold,"BL4")
+                print("test")
                 self.frame1= frame_pred1
                 self.frame1_ready = True
             except Exception as e:
