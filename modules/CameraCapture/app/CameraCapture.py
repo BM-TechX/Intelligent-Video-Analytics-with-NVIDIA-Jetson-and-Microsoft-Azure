@@ -551,7 +551,8 @@ class CameraCapture(object):
                     self.width = int(width/2)
                     self.height = int(height/2)
                     if (self.numpy_horizontal_concat_usb is not None):
-                        numpy_horizontal_concat = np.concatenate((numpy_horizontal_concat,self.numpy_horizontal_concat_usb), axis=1)
+                        print("trying to combine usb and rtsp")
+                        numpy_horizontal_concat = np.concatenate((numpy_horizontal_concat,cv2.resize(self.numpy_horizontal_concat_usb,dsize=(height, width))), axis=1)
                         self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
                     else:
                         self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
@@ -794,6 +795,7 @@ class CameraCapture(object):
                 numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
                 numpy_horizontal_concat_usb = np.concatenate((numpy_horizontal_concat_usb_top, numpy_horizontal_concat_usb_bottom), axis=0)
                 self.numpy_horizontal_concat_usb = numpy_horizontal_concat_usb
+                print("USB concat")
                 #numpy_horizontal_concat = np.concatenate((self.numpy_horizontal_concat_rtsp , numpy_horizontal_concat_usb), axis=1)
                 #self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()# +"|"+state
             except Exception as e:
