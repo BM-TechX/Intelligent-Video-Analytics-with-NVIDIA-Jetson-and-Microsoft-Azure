@@ -378,7 +378,8 @@ class ProcessFrameUSB(threading.Thread):
     def processCAM1(self):
         while True:
             try:
-                _,frame1 = self.camera1.read()
+                #_,frame1 = self.camera1.read()
+                frame1= self.camera1.read()
                 frame_gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
                 if(self.usbactive[0]==1):
                     frame_pred1,self.LaneState1 = self.process_lane_bottom(frame_gray1,self.threshold,"usb1")
