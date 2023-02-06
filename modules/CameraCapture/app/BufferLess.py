@@ -35,8 +35,6 @@ class BufferLess:
         print ("doing some initial grabs")
         try:
             self.cap.read()
-            self.cap.read()
-            self.cap.read()
         except:
             print("Error grabbing initial frames")
         while True:
