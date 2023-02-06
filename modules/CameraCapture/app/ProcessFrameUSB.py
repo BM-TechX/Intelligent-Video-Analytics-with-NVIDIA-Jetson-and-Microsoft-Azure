@@ -380,7 +380,7 @@ class ProcessFrameUSB(threading.Thread):
             try:
                 frame2 = self.camera2.read()
                 frame_gray2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
-                frame_pred2,self.LaneState2 = self.process_lane_bottom(frame_gray2,self.threshold,"BM3")
+                frame_pred2,self.LaneState2 = self.process_lane_bottom(frame_gray2,self.threshold,"BL3")
                 self.frame2 = frame_pred2
                 self.frame2_ready = True
             except:
@@ -395,7 +395,7 @@ class ProcessFrameUSB(threading.Thread):
             try:
                 frame3 = self.camera3.read()
                 frame_gray3 = cv2.cvtColor(frame3, cv2.COLOR_BGR2GRAY)
-                frame_pred3,self.LaneState3 = self.process_lane_bottom(frame_gray3,self.threshold,"BM2")
+                frame_pred3,self.LaneState3 = self.process_lane_bottom(frame_gray3,self.threshold,"BL1")
                 self.frame3 = frame_pred3
                 self.frame3_ready = True
             except:
@@ -410,7 +410,7 @@ class ProcessFrameUSB(threading.Thread):
             try:
                 frame4 = self.camera4.read()
                 frame_gray4 = cv2.cvtColor(frame4, cv2.COLOR_BGR2GRAY)
-                frame_pred4,self.LaneState4 = self.process_lane_bottom(frame_gray4,self.threshold,"BM1")
+                frame_pred4,self.LaneState4 = self.process_lane_bottom(frame_gray4,self.threshold,"BM2")
                 self.frame4 = frame_pred4
                 self.frame4_ready = True
             except:
