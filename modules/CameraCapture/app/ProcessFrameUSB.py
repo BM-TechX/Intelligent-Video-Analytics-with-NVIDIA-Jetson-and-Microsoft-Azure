@@ -356,7 +356,7 @@ class ProcessFrameUSB(threading.Thread):
         else:
             cv2.putText(preroi_img_ot, LaneState, (40, 100), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 3)
         font = cv2.FONT_HERSHEY_SIMPLEX
-        scale = 1
+        scale = 5
         thickness = 1
         text_size, baseline = cv2.getTextSize(id, font, scale, thickness)
         text_x = (width - text_size[0]) // 2
@@ -459,7 +459,8 @@ class ProcessFrameUSB(threading.Thread):
     def processing(self):
         while True:
             try:
-                _,frame1 = self.camera1.read()
+                #_,frame1 = self.camera1.read()
+                frame1 = self.camera1.read()
                 frame_gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
                 frame_pred1,self.LaneState1 = self.process_lane_bottom(frame_gray1,self.threshold,"usb1")
                 self.frame1= frame_pred1
