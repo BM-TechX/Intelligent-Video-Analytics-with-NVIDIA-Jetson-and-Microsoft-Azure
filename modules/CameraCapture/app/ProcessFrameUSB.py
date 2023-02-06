@@ -378,7 +378,7 @@ class ProcessFrameUSB(threading.Thread):
                 else:
                     self.errorgrap1 = self.errorgrap1 + 1
             try:
-                _,frame2 = self.camera2.read()
+                frame2 = self.camera2.read()
                 frame_gray2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
                 frame_pred2,self.LaneState2 = self.process_lane_bottom(frame_gray2,self.threshold,"usb2")
                 self.frame2 = frame_pred2
@@ -393,7 +393,7 @@ class ProcessFrameUSB(threading.Thread):
                 else:
                     self.errorgrap2 = self.errorgrap2 + 1
             try:
-                _,frame3 = self.camera3.read()
+                frame3 = self.camera3.read()
                 frame_gray3 = cv2.cvtColor(frame3, cv2.COLOR_BGR2GRAY)
                 frame_pred3,self.LaneState3 = self.process_lane_bottom(frame_gray3,self.threshold,"usb3")
                 self.frame3 = frame_pred3
@@ -408,7 +408,7 @@ class ProcessFrameUSB(threading.Thread):
                 else:
                     self.errorgrap2 = self.errorgrap2 + 1
             try:
-                _,frame4 = self.camera4.read()
+                frame4 = self.camera4.read()
                 frame_gray4 = cv2.cvtColor(frame4, cv2.COLOR_BGR2GRAY)
                 frame_pred4,self.LaneState4 = self.process_lane_bottom(frame_gray4,self.threshold,"usb4")
                 self.frame4 = frame_pred4
