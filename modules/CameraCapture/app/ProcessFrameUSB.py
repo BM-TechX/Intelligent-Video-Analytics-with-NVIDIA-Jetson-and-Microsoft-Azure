@@ -72,7 +72,7 @@ class ProcessFrameUSB(threading.Thread):
         self.errorgrap3 = 0
         self.errorgrap4 = 0
         self.uploadToAzure = 0
-        self.framerate=4
+        self.framerate=15
         self.usbactive=[1,1,1,1]
         try :
             self.upload.connectToAzure()
@@ -103,7 +103,7 @@ class ProcessFrameUSB(threading.Thread):
 
  
         try:
-            self.camera1 = BufferLess(self.cam1,setFPS=30,setHeight=self.height,setWidth=self.witdh)
+            self.camera1 = BufferLess(self.cam1,setFPS=self.framerate,setHeight=self.height,setWidth=self.witdh)
 
             # self.camera1 = cv2.VideoCapture(self.cam1)
             # #self.camera1 =cv2.VideoCapture(self.__gstreamer_pipeline(self.cam1),cv2.CAP_GSTREAMER)
@@ -121,7 +121,7 @@ class ProcessFrameUSB(threading.Thread):
         except Exception as e:
             print("Error initCamera 0 " + str(e))
         try:
-            self.camera2 = BufferLess(self.cam2,setFPS=30,setHeight=self.height,setWidth=self.witdh)
+            self.camera2 = BufferLess(self.cam2,setFPS=self.framerate,setHeight=self.height,setWidth=self.witdh)
 
             # self.camera2 = cv2.VideoCapture(self.cam2)
             # self.camera2.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
@@ -132,7 +132,7 @@ class ProcessFrameUSB(threading.Thread):
         except Exception as e:
             print("Error initCamera 1 " +str(e))
         try:
-            self.camera3 = BufferLess(self.cam3,setFPS=30,setHeight=self.height,setWidth=self.witdh)
+            self.camera3 = BufferLess(self.cam3,setFPS=self.framerate,setHeight=self.height,setWidth=self.witdh)
 
             # self.camera3 = cv2.VideoCapture(self.cam3)
             # self.camera3.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
@@ -143,7 +143,7 @@ class ProcessFrameUSB(threading.Thread):
         except Exception as e:
             print("Error initCamera 2 " +str(e))
         try:
-            self.camera4 = BufferLess(self.cam4,setFPS=30,setHeight=self.height,setWidth=self.witdh)
+            self.camera4 = BufferLess(self.cam4,setFPS=self.framerate,setHeight=self.height,setWidth=self.witdh)
             # self.camera4 = cv2.VideoCapture(self.cam4)
             # self.camera4.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
             # self.camera4.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
@@ -170,7 +170,7 @@ class ProcessFrameUSB(threading.Thread):
             if(camid == "CAM1"):
                 self.cam1 = str1
                 #self.camera1 = cv2.VideoCapture(self.cam1)
-                self.camera1 = BufferLess(self.cam1,setFPS=30,setHeight=self.height,setWidth=self.witdh)
+                self.camera1 = BufferLess(self.cam1,setFPS=self.framerate,setHeight=self.height,setWidth=self.witdh)
                 #self.camera1  = cv2.VideoCapture("nvargussrc device="+self.cam1+" sync=false ! videoconvert !appsink",cv2.CAP_GSTREAMER)
                 #self.camera1 =cv2.VideoCapture(self.__gstreamer_pipeline(self.cam1),cv2.CAP_GSTREAMER)
                 #self.camera1 =cv2.VideoCapture(self.__gstreamer_pipeline(camera_id=1, flip_method=2), cv2.CAP_GSTREAMER)
@@ -181,27 +181,33 @@ class ProcessFrameUSB(threading.Thread):
                 return True
             elif(camid == "CAM2"):
                 self.cam2 = str1
-                self.camera2 = cv2.VideoCapture(self.cam2)
-                self.camera2.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
-                self.camera2.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-                self.camera2.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-                self.camera2.set(cv2.CAP_PROP_FPS, self.framerate)
+                self.camera2 = BufferLess(self.cam2,setFPS=self.framerate,setHeight=self.height,setWidth=self.witdh)
+
+                # self.camera2 = cv2.VideoCapture(self.cam2)
+                # self.camera2.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
+                # self.camera2.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+                # self.camera2.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                # self.camera2.set(cv2.CAP_PROP_FPS, self.framerate)
                 return True
             elif(camid == "CAM3"):
                 self.cam3 = str1
-                self.camera3 = cv2.VideoCapture(self.cam3)
-                self.camera3.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
-                self.camera3.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-                self.camera3.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-                self.camera3.set(cv2.CAP_PROP_FPS, self.framerate)
+                self.camera3 = BufferLess(self.cam3,setFPS=self.framerate,setHeight=self.height,setWidth=self.witdh)
+
+                # self.camera3 = cv2.VideoCapture(self.cam3)
+                # self.camera3.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
+                # self.camera3.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+                # self.camera3.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                # self.camera3.set(cv2.CAP_PROP_FPS, self.framerate)
                 return True
             elif(camid == "CAM4"):
                 self.cam4 = str1
-                self.camera4 = cv2.VideoCapture(self.cam4)
-                self.camera4.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
-                self.camera4.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-                self.camera4.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-                self.camera4.set(cv2.CAP_PROP_FPS, self.framerate)
+                self.camera4 = BufferLess(self.cam4,setFPS=self.framerate,setHeight=self.height,setWidth=self.witdh)
+
+                # self.camera4 = cv2.VideoCapture(self.cam4)
+                # self.camera4.set(cv2.CAP_PROP_FRAME_WIDTH,  self.witdh)
+                # self.camera4.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+                # self.camera4.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                # self.camera4.set(cv2.CAP_PROP_FPS, self.framerate)
                 return True
         except Exception as e:
             print("Error initCamera  " + str(camid) +str(e))
@@ -230,35 +236,7 @@ class ProcessFrameUSB(threading.Thread):
         except Exception as e:
             print("Error initCamera  " + str(camid) +str(e))
             return None
-        def __gstreamer_pipeline(self,
-                camera_id,
-                capture_width=1920,
-                capture_height=1080,
-                display_width=1920,
-                display_height=1080,
-                framerate=1,
-                flip_method=0,
-            ):
-            return (
-                    "nvarguscamerasrc sensor-id=%d ! "
-                    "video/x-raw(memory:NVMM), "
-                    "width=(int)%d, height=(int)%d, "
-                    "format=(string)NV12, framerate=(fraction)%d/1 ! "
-                    "nvvidconv flip-method=%d ! "
-                    "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
-                    "videoconvert ! "
-                    "video/x-raw, format=(string)BGR ! appsink max-buffers=1 drop=True"
-                    % (
-                            camera_id,
-                            capture_width,
-                            capture_height,
-                            framerate,
-                            flip_method,
-                            display_width,
-                            display_height,
-                    )
-            )
-   
+       
 
     # grab frames as soon as they are available
     def get_process_lane(self,rs,regioninner,rotation,frame):
