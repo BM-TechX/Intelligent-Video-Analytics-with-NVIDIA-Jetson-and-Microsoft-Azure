@@ -555,7 +555,7 @@ class CameraCapture(object):
                         self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
                     else:
                         self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
-                    if self.useUSB==24:
+                    if self.useUSB==None:
                         print("useUSb = true")
                         self.vscam1.setActiveSate(self.activeUSBLanes)
                         if (usberror > 50):
@@ -691,6 +691,7 @@ class CameraCapture(object):
         width = self.width
         height = self.height
         while True:
+            time.sleep(1.0)  
             print("useUSb = true")
             self.vscam1.setActiveSate(self.activeUSBLanes)
             try:
