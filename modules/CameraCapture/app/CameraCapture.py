@@ -785,6 +785,9 @@ class CameraCapture(object):
                 numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
                 numpy_horizontal_concat_usb = np.concatenate((numpy_horizontal_concat_usb_top, numpy_horizontal_concat_usb_bottom), axis=0)
                 self.numpy_horizontal_concat_usb = numpy_horizontal_concat_usb
+                width, height, channels = self.numpy_horizontal_concat_rtsp.shape
+                numpy_horizontal_concat = np.concatenate((self.numpy_horizontal_concat_rtsp,cv2.resize(self.numpy_horizontal_concat_usb,dsize=(height, width))), axis=1)
+                self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
                 #numpy_horizontal_concat = np.concatenate((self.numpy_horizontal_concat_rtsp , numpy_horizontal_concat_usb), axis=1)
                 #self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()# +"|"+state
             except Exception as e:
