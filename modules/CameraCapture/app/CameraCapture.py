@@ -171,6 +171,8 @@ class CameraCapture(object):
         self.threshold=0.5
         self.uploadToAzure=0
         self.thread=None
+        self.width = 1000
+        self.height=1000
         self.activeLanes=[1,1,1,1]
         self.activeUSBLanes=[1,1,1,1]
         self.infrencerTop = Infrence(model_path='model_4.ckpt',config_path='config.yaml',device='cuda',visualization_mode='segmentation',task='segmentation')
@@ -546,8 +548,8 @@ class CameraCapture(object):
                             
                     self.numpy_horizontal_concat_rtsp= numpy_horizontal_concat
                     width, height, channels = numpy_horizontal_concat.shape
-                    width = int(width/2)
-                    height = int(height/2)
+                    self.width = int(width/2)
+                    self.height = int(height/2)
                     if (self.numpy_horizontal_concat_usb is not None):
                         numpy_horizontal_concat = np.concatenate((numpy_horizontal_concat,self.numpy_horizontal_concat_usb), axis=1)
                         self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
@@ -685,6 +687,8 @@ class CameraCapture(object):
                     print('Excpetion -' + str(e))
     def useUSBThread(self):
         usbreuse=0
+        width = self.width
+        height = self.height
         while True:
             print("useUSb = true")
             self.vscam1.setActiveSate(self.activeUSBLanes)
