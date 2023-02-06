@@ -556,133 +556,133 @@ class CameraCapture(object):
                         self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
                     else:
                         self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()
-                    if self.useUSB==None:
-                        print("useUSb = true")
-                        self.vscam1.setActiveSate(self.activeUSBLanes)
-                        if (usberror > 50):
-                            try:
-                                self.vscam1.stop_processing()
-                                self.vscam1=ProcessFrameUSB(threshold=self.threshold,infrencerbuttom=self.infrencerbuttom,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
-                                self.vscam1.start_processing()
-                            except:
-                                print("usb restart failed")
-                            usberror=0
-                        if (usbreuse > 400):
-                            try:
-                                self.vscam1.stop_processing()
-                                self.vscam1=ProcessFrameUSB(threshold=self.threshold,infrencerbuttom=self.infrencerbuttom,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
-                                self.vscam1.start_processing()
-                            except:
-                                print("usb restart failed")
-                            usbreuse=0
-                        try:
-                            numpy_horizontal_concat = cv2.resize(numpy_horizontal_concat, dsize=(height*2, width*2))
-                        except:
-                            print("resize error")
-                        try:
-                            if(self.activeUSBLanes[0]==1):
-                                if(self.vscam1.frame1_ready):
-                                    self.LaneStateUSB1,frame1=self.vscam1.getframe("0")
-                                    frame1_resized = cv2.resize(frame1, dsize=(height, width))
-                                    self.previousUSBFrame1 = frame1_resized
-                                    usbreuse=0
-                                    print("freshframe")
-                                elif (self.previousUSBFrame1 is not None):
-                                    frame1_resized = self.previousUSBFrame1
-                                    usbreuse=usbreuse+1
-                                    print("reuse usb1")
-                                else:
-                                    frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                    self.LaneStateUSB1=""
-                                    usberror=usberror+1
-                                    print("created zero")
-                            else:
-                                frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                self.LaneStateUSB1=""
-                                print("USBlane1 not active")
+                    # if self.useUSB==None:
+                    #     print("useUSb = true")
+                    #     self.vscam1.setActiveSate(self.activeUSBLanes)
+                    #     if (usberror > 50):
+                    #         try:
+                    #             self.vscam1.stop_processing()
+                    #             self.vscam1=ProcessFrameUSB(threshold=self.threshold,infrencerbuttom=self.infrencerbuttom,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
+                    #             self.vscam1.start_processing()
+                    #         except:
+                    #             print("usb restart failed")
+                    #         usberror=0
+                    #     if (usbreuse > 400):
+                    #         try:
+                    #             self.vscam1.stop_processing()
+                    #             self.vscam1=ProcessFrameUSB(threshold=self.threshold,infrencerbuttom=self.infrencerbuttom,table=self.table,AZURE_STORAGE_BLOB=self.AZURE_STORAGE_BLOB)
+                    #             self.vscam1.start_processing()
+                    #         except:
+                    #             print("usb restart failed")
+                    #         usbreuse=0
+                    #     try:
+                    #         numpy_horizontal_concat = cv2.resize(numpy_horizontal_concat, dsize=(height*2, width*2))
+                    #     except:
+                    #         print("resize error")
+                    #     try:
+                    #         if(self.activeUSBLanes[0]==1):
+                    #             if(self.vscam1.frame1_ready):
+                    #                 self.LaneStateUSB1,frame1=self.vscam1.getframe("0")
+                    #                 frame1_resized = cv2.resize(frame1, dsize=(height, width))
+                    #                 self.previousUSBFrame1 = frame1_resized
+                    #                 usbreuse=0
+                    #                 print("freshframe")
+                    #             elif (self.previousUSBFrame1 is not None):
+                    #                 frame1_resized = self.previousUSBFrame1
+                    #                 usbreuse=usbreuse+1
+                    #                 print("reuse usb1")
+                    #             else:
+                    #                 frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
+                    #                 self.LaneStateUSB1=""
+                    #                 usberror=usberror+1
+                    #                 print("created zero")
+                    #         else:
+                    #             frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
+                    #             self.LaneStateUSB1=""
+                    #             print("USBlane1 not active")
                            
-                        except:
-                            print("frame1 error")
-                            frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
-                        try:
-                            if(self.activeUSBLanes[1]==1):
-                                if(self.vscam1.frame2_ready):
-                                    self.LaneStateUSB2,frame2 = self.vscam1.getframe("1")
-                                    frame2_resized = cv2.resize(frame2, dsize=(height, width))
-                                    self.previousUSBFrame2 = frame2_resized
-                                    usbreuse=0
-                                elif (self.previousUSBFrame2 is not None):
-                                    frame2_resized = self.previousUSBFrame2
-                                    usbreuse=usbreuse+1
-                                    print("reuse usb2")
-                                else:
-                                    frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                    self.LaneStateUSB2=""
-                                    usberror=usberror+1
-                            else:
-                                frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                self.LaneStateUSB2=""
-                                print("USBlane2 not active")
-                        except:
-                            print("frame2 error")
-                            frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
-                        try:
-                            if(self.activeUSBLanes[2]==1):
-                                if(self.vscam1.frame3_ready):
-                                    self.LaneStateUSB3,frame3 = self.vscam1.getframe("2")
-                                    frame3_resized = cv2.resize(frame3, dsize=(height, width))
-                                    self.previousUSBFrame3 = frame3_resized
-                                    usbreuse=0
-                                elif (self.previousUSBFrame3 is not None):
-                                    frame3_resized = self.previousUSBFrame3
-                                    usbreuse=usbreuse+1
-                                    print("reuse usb3")
-                                else:
-                                    frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                    self.LaneStateUSB3=""
-                                    usberror=usberror+1
-                            else:
-                                frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                self.LaneStateUSB3=""
-                                print("USBlane3 not active")
-                        except:
-                            print("frame3 error")
-                            frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
-                        try:
-                            if(self.activeUSBLanes[3]==1):
-                                if(self.vscam1.frame4_ready):
-                                    self.LaneStateUSB4,frame4= self.vscam1.getframe("3")
-                                    frame4_resized = cv2.resize(frame4, dsize=(height, width))
-                                    self.previousUSBFrame4 = frame4_resized
-                                    usbreuse=0
-                                elif (self.previousUSBFrame4 is not None):
-                                    frame4_resized = self.previousUSBFrame4
-                                    usbreuse=usbreuse+1
-                                    print("reuse usb4")
-                                else:
-                                    frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                    self.LaneStateUSB4=""
-                                    usberror=usberror+1
-                            else:
-                                frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
-                                self.LaneStateUSB4=""
-                                print("USBlane4 not active")
+                    #     except:
+                    #         print("frame1 error")
+                    #         frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
+                    #     try:
+                    #         if(self.activeUSBLanes[1]==1):
+                    #             if(self.vscam1.frame2_ready):
+                    #                 self.LaneStateUSB2,frame2 = self.vscam1.getframe("1")
+                    #                 frame2_resized = cv2.resize(frame2, dsize=(height, width))
+                    #                 self.previousUSBFrame2 = frame2_resized
+                    #                 usbreuse=0
+                    #             elif (self.previousUSBFrame2 is not None):
+                    #                 frame2_resized = self.previousUSBFrame2
+                    #                 usbreuse=usbreuse+1
+                    #                 print("reuse usb2")
+                    #             else:
+                    #                 frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
+                    #                 self.LaneStateUSB2=""
+                    #                 usberror=usberror+1
+                    #         else:
+                    #             frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
+                    #             self.LaneStateUSB2=""
+                    #             print("USBlane2 not active")
+                    #     except:
+                    #         print("frame2 error")
+                    #         frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
+                    #     try:
+                    #         if(self.activeUSBLanes[2]==1):
+                    #             if(self.vscam1.frame3_ready):
+                    #                 self.LaneStateUSB3,frame3 = self.vscam1.getframe("2")
+                    #                 frame3_resized = cv2.resize(frame3, dsize=(height, width))
+                    #                 self.previousUSBFrame3 = frame3_resized
+                    #                 usbreuse=0
+                    #             elif (self.previousUSBFrame3 is not None):
+                    #                 frame3_resized = self.previousUSBFrame3
+                    #                 usbreuse=usbreuse+1
+                    #                 print("reuse usb3")
+                    #             else:
+                    #                 frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
+                    #                 self.LaneStateUSB3=""
+                    #                 usberror=usberror+1
+                    #         else:
+                    #             frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
+                    #             self.LaneStateUSB3=""
+                    #             print("USBlane3 not active")
+                    #     except:
+                    #         print("frame3 error")
+                    #         frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
+                    #     try:
+                    #         if(self.activeUSBLanes[3]==1):
+                    #             if(self.vscam1.frame4_ready):
+                    #                 self.LaneStateUSB4,frame4= self.vscam1.getframe("3")
+                    #                 frame4_resized = cv2.resize(frame4, dsize=(height, width))
+                    #                 self.previousUSBFrame4 = frame4_resized
+                    #                 usbreuse=0
+                    #             elif (self.previousUSBFrame4 is not None):
+                    #                 frame4_resized = self.previousUSBFrame4
+                    #                 usbreuse=usbreuse+1
+                    #                 print("reuse usb4")
+                    #             else:
+                    #                 frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
+                    #                 self.LaneStateUSB4=""
+                    #                 usberror=usberror+1
+                    #         else:
+                    #             frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
+                    #             self.LaneStateUSB4=""
+                    #             print("USBlane4 not active")
 
-                        except Exception as e:
-                            frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
-                            usberror=usberror+1
-                            print("Error in frame4: " + str(e))
-                        try:
+                    #     except Exception as e:
+                    #         frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
+                    #         usberror=usberror+1
+                    #         print("Error in frame4: " + str(e))
+                    #     try:
                                             
-                            print ("USB" + self.LaneStateUSB1 + " " + self.LaneStateUSB2 + " " + self.LaneStateUSB3 + " " + self.LaneStateUSB4)
-                            numpy_horizontal_concat_usb_top = np.concatenate((frame1_resized, frame2_resized), axis=1)
-                            numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
-                            numpy_horizontal_concat_usb = np.concatenate((numpy_horizontal_concat_usb_top, numpy_horizontal_concat_usb_bottom), axis=0)
-                            self.numpy_horizontal_concat_usb = numpy_horizontal_concat_usb
-                            numpy_horizontal_concat = np.concatenate((self.numpy_horizontal_concat_rtsp , numpy_horizontal_concat_usb), axis=1)
-                            self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()# +"|"+state
-                        except Exception as e:
-                            print("Error in concat: " + str(e))
+                    #         print ("USB" + self.LaneStateUSB1 + " " + self.LaneStateUSB2 + " " + self.LaneStateUSB3 + " " + self.LaneStateUSB4)
+                    #         numpy_horizontal_concat_usb_top = np.concatenate((frame1_resized, frame2_resized), axis=1)
+                    #         numpy_horizontal_concat_usb_bottom = np.concatenate((frame3_resized, frame4_resized), axis=1)
+                    #         numpy_horizontal_concat_usb = np.concatenate((numpy_horizontal_concat_usb_top, numpy_horizontal_concat_usb_bottom), axis=0)
+                    #         self.numpy_horizontal_concat_usb = numpy_horizontal_concat_usb
+                    #         numpy_horizontal_concat = np.concatenate((self.numpy_horizontal_concat_rtsp , numpy_horizontal_concat_usb), axis=1)
+                    #         self.displayFrame = cv2.imencode('.jpg', numpy_horizontal_concat)[1].tobytes()# +"|"+state
+                    #     except Exception as e:
+                    #         print("Error in concat: " + str(e))
                 except Exception as e:
                     print("Could not display the video to a web browser.") 
                     print('Excpetion -' + str(e))
@@ -713,7 +713,6 @@ class CameraCapture(object):
                 else:
                     frame1_resized = np.zeros((width,height,3), dtype=np.uint8)
                     self.LaneStateUSB1=""
-                    print("USBlane1 not active")
                 
             except:
                 print("frame1 error")
@@ -735,7 +734,6 @@ class CameraCapture(object):
                 else:
                     frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
                     self.LaneStateUSB2=""
-                    print("USBlane2 not active")
             except:
                 print("frame2 error")
                 frame2_resized = np.zeros((width,height,3), dtype=np.uint8)
@@ -756,7 +754,6 @@ class CameraCapture(object):
                 else:
                     frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
                     self.LaneStateUSB3=""
-                    print("USBlane3 not active")
             except:
                 print("frame3 error")
                 frame3_resized = np.zeros((width,height,3), dtype=np.uint8)
@@ -777,7 +774,6 @@ class CameraCapture(object):
                 else:
                     frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
                     self.LaneStateUSB4=""
-                    print("USBlane4 not active")
             except Exception as e:
                 frame4_resized = np.zeros((width,height,3), dtype=np.uint8)
                 usberror=usberror+1
