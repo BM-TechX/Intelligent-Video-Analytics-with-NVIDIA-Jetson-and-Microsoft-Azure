@@ -579,6 +579,7 @@ class CameraCapture(object):
                                     self.LaneStateUSB1,frame1=self.vscam1.getframe("0")
                                     frame1_resized = cv2.resize(frame1, dsize=(height, width))
                                     self.previousUSBFrame1 = frame1_resized
+                                    usbreuse=0
                                     print("freshframe")
                                 elif (self.previousUSBFrame1 is not None):
                                     frame1_resized = self.previousUSBFrame1
@@ -603,6 +604,7 @@ class CameraCapture(object):
                                     self.LaneStateUSB2,frame2 = self.vscam1.getframe("1")
                                     frame2_resized = cv2.resize(frame2, dsize=(height, width))
                                     self.previousUSBFrame2 = frame2_resized
+                                    usbreuse=0
                                 elif (self.previousUSBFrame2 is not None):
                                     frame2_resized = self.previousUSBFrame2
                                     usbreuse=usbreuse+1
@@ -624,6 +626,7 @@ class CameraCapture(object):
                                     self.LaneStateUSB3,frame3 = self.vscam1.getframe("2")
                                     frame3_resized = cv2.resize(frame3, dsize=(height, width))
                                     self.previousUSBFrame3 = frame3_resized
+                                    usbreuse=0
                                 elif (self.previousUSBFrame3 is not None):
                                     frame3_resized = self.previousUSBFrame3
                                     usbreuse=usbreuse+1
@@ -645,6 +648,7 @@ class CameraCapture(object):
                                     self.LaneStateUSB4,frame4= self.vscam1.getframe("3")
                                     frame4_resized = cv2.resize(frame4, dsize=(height, width))
                                     self.previousUSBFrame4 = frame4_resized
+                                    usbreuse=0
                                 elif (self.previousUSBFrame4 is not None):
                                     frame4_resized = self.previousUSBFrame4
                                     usbreuse=usbreuse+1
