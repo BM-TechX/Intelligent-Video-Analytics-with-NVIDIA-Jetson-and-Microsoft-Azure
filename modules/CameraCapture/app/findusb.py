@@ -38,7 +38,7 @@ class findUsb:
     def getDevice(self,desired_serial):
         
         selected_device = None
-        print("Looking for device with serial: " + serial)
+        print("Looking for device with serial: " + desired_serial)
         for device_path, serial in self.devices.items():
             if serial == desired_serial:
                 selected_device = device_path
