@@ -16,7 +16,7 @@ class findUsb:
                         serial = info_line.split(':')[1].strip()
                         devices[device_path] = serial
                         break
-        self.deivces = devices
+        self.devices = devices
     def run_v4l2_command(self,command):
         result = subprocess.run(command.split(), stdout=subprocess.PIPE)
         return result.stdout.decode('utf-8').strip()
