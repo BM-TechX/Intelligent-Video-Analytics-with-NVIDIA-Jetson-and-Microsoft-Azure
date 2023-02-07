@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Net.Http;
 
 
-const string blobContainerName = "fiberdefects";
+const string blobContainerName = "fiberdefectstest";
 const string connectionstring = @"DefaultEndpointsProtocol=https;AccountName=camtagstoreaiem;AccountKey=TwURR9XUNY+jsvTvMzGdjUxb+x8q+MCSLiVxNwGBdg5vjwkBEP6q1DWUI+SId91AxHxJKIzOLjBq+ASt2YALow==;EndpointSuffix=core.windows.net";
 
 try
@@ -17,7 +17,7 @@ try
 
     BlobContainerClient blobContainer = blobServiceClient.GetBlobContainerClient(blobContainerName);
     await blobContainer.CreateIfNotExistsAsync(PublicAccessType.Blob);
-    string searchString = "118";
+    string searchString = "262";
     int number = 50000;
 
     // To view the uploaded blob in a browser, you have two options. The first option is to use a Shared Access Signature (SAS) token to delegate  
@@ -30,13 +30,14 @@ try
     { 
         //if(blob.Properties.CreatedOn>DateTimeOffset.Parse("15-01-2023 10:10:00 +00:00"))
         //{
+        if (blob.Name.Contains("BL4")) { 
             Console.WriteLine(blob.Properties.CreatedOn.ToString());
             Console.WriteLine(blob.Name);
         //}
         //if (blob.Name.ToLower().Contains(""))
         //{
             await DownloadToStream(blobContainer.GetBlobClient(blob.Name), blob.Name);
-        //}
+        }
     }
 }
 catch (Exception ex)

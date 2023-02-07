@@ -12,6 +12,8 @@ import UploadToAzure
 from UploadToAzure import UploadToAzure
 from azure.storage.blob import BlobServiceClient, PublicAccess
 import usb.core
+import findusb
+from findusb import findUsb
 
 from datetime import datetime
 
@@ -30,7 +32,7 @@ class ProcessFrameUSB(threading.Thread):
         # 1280×960@100fps; 
         # 1280×760@100fps; 
         # 640×480@80fps
-    def __init__(self,threshold=0.5,infrencerbuttom = None,infrencerbuttomSecondary=None,height=1080,witdh=1920,table="notSet",AZURE_STORAGE_BLOB=None):
+    def __init__(self,threshold=0.76,infrencerbuttom = None,infrencerbuttomSecondary=None,height=1080,witdh=1920,table="notSet",AZURE_STORAGE_BLOB=None):
         self.camera1 = None
         self.camera2 = None
         self.camera3 = None
@@ -84,24 +86,18 @@ class ProcessFrameUSB(threading.Thread):
         except Exception as e:
             print("Error initCamera " + str(e))
         #######figure out which usb camera is associated with which lane
-        for i in range(0, 11):
-            vcap = cv2.VideoCapture("/dev/video"+str(i))
-            print("trying to open camera :" + str(i) )
-            if vcap.isOpened():
-                print("camera opened :" + str(i))
-                if(self.cam1 == None):
-                    self.cam1= "/dev/video"+str(i)
-                elif(self.cam2 == None):
-                    self.cam2= "/dev/video"+str(i)
-                elif(self.cam3 == None):
-                    self.cam3= "/dev/video"+str(i)
-                elif(self.cam4 == None):
-                    self.cam4= "/dev/video"+str(i)
-                vcap.release()
-            else:
-                vcap.release()
-
- 
+        devices = findUsb()
+        try:
+            self.cam1 = devices.getDevice("M8aS1")
+            print(self.cam1)
+            self.cam2 = devices.getDevice("M8aS2")
+            print(self.cam2)
+            self.cam3 = devices.getDevice("M8aS3")
+            print(self.cam3)
+            self.cam4 = devices.getDevice("M8aS4")
+            print(self.cam4)
+        except Exception as e:
+            print("Error initCamera " + str(e))
         try:
             self.camera1 = BufferLess(self.cam1,setFPS=self.framerate,setHeight=self.height,setWidth=self.witdh)
 
@@ -366,7 +362,7 @@ class ProcessFrameUSB(threading.Thread):
                     #_,frame1 = self.camera1.read()
                     frame1 = self.camera1.read()
                     frame_gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
-                    frame_pred1,self.LaneState1 = self.process_lane_bottom(frame_gray1,self.threshold,"BL2")
+                    frame_pred1,self.LaneState1 = self.process_lane_bottom(frame_gray1,self.threshold,"M8aS1")
                     self.frame1= frame_pred1
                 self.frame1_ready = True
             except Exception as e:
@@ -382,7 +378,7 @@ class ProcessFrameUSB(threading.Thread):
                 if (self.usbactive[1]==1):
                     frame2 = self.camera2.read()
                     frame_gray2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
-                    frame_pred2,self.LaneState2 = self.process_lane_bottom(frame_gray2,self.threshold,"BL3")
+                    frame_pred2,self.LaneState2 = self.process_lane_bottom(frame_gray2,self.threshold,"M8aS2")
                     self.frame2 = frame_pred2
                 self.frame2_ready = True
             except:
@@ -398,7 +394,7 @@ class ProcessFrameUSB(threading.Thread):
                 if (self.usbactive[2]==1):
                     frame3 = self.camera3.read()
                     frame_gray3 = cv2.cvtColor(frame3, cv2.COLOR_BGR2GRAY)
-                    frame_pred3,self.LaneState3 = self.process_lane_bottom(frame_gray3,self.threshold,"BL1")
+                    frame_pred3,self.LaneState3 = self.process_lane_bottom(frame_gray3,self.threshold,"M8aS3")
                     self.frame3 = frame_pred3
                 self.frame3_ready = True
             except:
@@ -414,7 +410,7 @@ class ProcessFrameUSB(threading.Thread):
                 if (self.usbactive[3]==1):
                     frame4 = self.camera4.read()
                     frame_gray4 = cv2.cvtColor(frame4, cv2.COLOR_BGR2GRAY)
-                    frame_pred4,self.LaneState4 = self.process_lane_bottom(frame_gray4,self.threshold,"BL4")
+                    frame_pred4,self.LaneState4 = self.process_lane_bottom(frame_gray4,self.threshold,"M8aS4")
                     self.frame4 = frame_pred4
                 self.frame4_ready = True
             except:

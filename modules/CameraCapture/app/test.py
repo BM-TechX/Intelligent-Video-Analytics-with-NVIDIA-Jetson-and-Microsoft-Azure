@@ -1,30 +1,42 @@
-import cv2
+import usb.core
+import os
+# specify the serial ID
+serial_id = "M8aS1"
 
-# Open the video capture using the pipeline string
-cap = cv2.VideoCapture("nvargussrc sensor-id:1  ! videoconvert ! appsink", cv2.CAP_GSTREAMER)
+# find all connected devices
+devices = usb.core.find(find_all=True)
 
-# Check if the video capture was successfully opened
-if not cap.isOpened():
-    print("Failed to open the video capture")
-    exit()
+# find the device with the matching serial ID
+device = None
+for dev in devices:
+    try:
+        if dev.serial_number == serial_id:
+            device = dev
+            break
+    except Exception:
+        pass
 
-# Start capturing frames
-while True:
-    # Read a frame from the video capture
-    ret, frame = cap.read()
+# check if the device was found
+if device is None:
+    raise ValueError("Device not found")
 
-    # Check if the frame was successfully read
-    if not ret:
-        print("Failed to read a frame from the video capture")
-        break
-    print("Frame read successfully")
-    # Display the frame
+# get the bus number of the device
+bus = device.bus
+address = device.address
 
-    # Check if the user pressed the 'q' key
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
 
-# Release the video capture
-cap.release()
+for i in range(10):
+    video_device = "/dev/video%d" % i
+    if os.path.exists(video_device):
+        try:
+            bus_number = int(open("/sys/class/video4linux/video%d/dev" % i).read().strip().split(":")[0], 16)
+            if bus_number == bus:
+                video_device = "/dev/video%d" % i
+                print(video_device)
+                break
+        except Exception:
+            pass
 
-# Destroy all OpenCV windows
+# check if the video device file was found
+if not os.path.exists(video_device):
+    raise ValueError("Video device not found")
